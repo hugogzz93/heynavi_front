@@ -1,23 +1,11 @@
-import Link from 'next/link';
-
-import { Button } from '../button/Button';
-import { CTABanner } from '../cta/CTABanner';
-import { Section } from '../layout/Section';
-
 const Banner = () => (
-  <Section>
-    <CTABanner
-      title="Lorem ipsum dolor sit amet consectetur adipisicing elit."
-      subtitle="Start your Free Trial."
-      button={
-        <Link href="https://creativedesignsguru.com/category/nextjs/">
-          <a>
-            <Button>Get Started</Button>
-          </a>
-        </Link>
-      }
-    />
-  </Section>
+  <div className="flex p-12 flex-col items-center bg-blue-500 text-white">
+    <div className="text-4xl mb-4">Comparte</div>
+    <div className="text-lg">
+      Entre mas peronas accedan al documento, mas nos ayuda a ofrecer
+      herramientos de inversion de valor.
+    </div>
+  </div>
 );
 
 export { Banner };
