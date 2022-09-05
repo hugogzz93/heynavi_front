@@ -152,7 +152,6 @@ const Questionnaire: React.FC = () => {
 
     return (
         <div className="flex flex-col">
-            <div className="text-md">{JSON.stringify(state.answers)}</div>
             <QuestionnaireHeading/>
             <QuestionnaireForm question={Questions[state.currentQuestion]} dispatch={dispatch} state={state}/>
         </div>

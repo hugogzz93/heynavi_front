@@ -14,8 +14,8 @@ const Logo = (props: ILogoProps) => {
     : 'font-semibold text-xl';
 
   return (
-    <span className={`text-gray-900 inline-flex items-center ${fontStyle}`}>
-      <Image alt="logo" src="/logo_navio.png" width="50px" height="50px" />
+    <span className={`text-white inline-flex items-center ${fontStyle}`}>
+      <Image alt="logo" src="/logo_navio_white.png" width="50px" height="50px" />
       {AppConfig.site_name}
     </span>
   );

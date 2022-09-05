@@ -2,6 +2,7 @@ import className from 'classnames';
 
 type IButtonProps = {
   xl?: boolean;
+  classes?: string;
   children: string;
 };
 
@@ -14,7 +15,7 @@ const Button = (props: IButtonProps) => {
   });
 
   return (
-    <div className={btnClass}>
+    <div className={props.classes ? props.classes : btnClass}>
       {props.children}
 
       <style jsx>
