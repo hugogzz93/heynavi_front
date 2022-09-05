@@ -11,7 +11,7 @@ const Hero = () => (
     <>
       <Background color="#0099ff">
         <Section yPadding="py-6">
-          <NavbarTwoColumns logo={<Logo xl />}>
+          <NavbarTwoColumns logo={<Logo xl white/>}>
             <div></div>
           </NavbarTwoColumns>
         </Section>

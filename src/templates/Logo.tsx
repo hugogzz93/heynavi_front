@@ -6,6 +6,8 @@ import { AppConfig } from '../utils/AppConfig';
 
 type ILogoProps = {
   xl?: boolean;
+  white?: boolean;
+  textless?: boolean;
 };
 
 const Logo = (props: ILogoProps) => {
@@ -14,9 +16,9 @@ const Logo = (props: ILogoProps) => {
     : 'font-semibold text-xl';
 
   return (
-    <span className={`text-white inline-flex items-center ${fontStyle}`}>
-      <Image alt="logo" src="/logo_navio_white.png" width="50px" height="50px" />
-      {AppConfig.site_name}
+    <span className={`${props.white ? 'text-white' : 'text-black'} inline-flex items-center ${fontStyle}`}>
+      <Image alt="logo" src={props.white ? "/logo_navio_white.png" : '/logo_navio.png'} width="50px" height="50px" />
+      {!props.textless && AppConfig.site_name}
     </span>
   );
 };

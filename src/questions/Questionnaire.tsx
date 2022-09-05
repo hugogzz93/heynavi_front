@@ -72,7 +72,14 @@ const InitialState = {
 
 const QuestionnaireHeading: React.FC= () => {
     return (
-        <div></div>
+        <div className="flex flex-col mb-8">
+            <div className="text-md">
+                Nuestra base de datos cuenta con más de 100 opciones de inversión.
+            </div>
+            <div className="text-md">
+                Las próximas preguntas ayudaran a segmentar las que mas se ajusten a tu perfil.
+            </div>
+        </div>
     )
 }
 
@@ -130,6 +137,11 @@ const QuestionComponent: React.FC<{question: QuestionType, state?: Questionnaire
                 onClick={() => dispatch({type: 'submitQuestion', payload: {questionId: question.id, answer: opt.id}})}
                 className="border border-1 border-gray-300 bg-white rounded-md p-4 cursor-pointer hover:bg-blue-200 duration-300 transitiont-all">{opt.text}</div>
             ))}
+            <div className='mt-8'>
+               <button className="float-right inline-block bg-gray-200 p-4 rounded-md text-slate-800 hover:text-white hover:bg-blue-500 duration-300 transition-all" onClick={() => dispatch({type: 'prevQuestion'})}>
+                    Regresar
+                </button>
+            </div>
         </div>
 
     )

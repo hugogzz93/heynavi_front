@@ -9,7 +9,7 @@ const Footer = () => (
   <Background color="#0099ff">
     <Section>
       <CenteredFooter
-        logo={<Logo />}
+        logo={<Logo textless white/>}
         iconList={
           <>
             <Link href="/">
@@ -83,11 +83,6 @@ const Footer = () => (
         <li>
           <Link href="/">
             <a>Empresas</a>
-          </Link>
-        </li>
-        <li>
-          <Link href="https://github.com/ixartz/Next-JS-Landing-Page-Starter-Template">
-            <a>GitHub</a>
           </Link>
         </li>
       </CenteredFooter>
