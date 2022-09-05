@@ -4,6 +4,12 @@ import { Banner } from './Banner';
 import { Footer } from './Footer';
 import { Hero } from './Hero';
 import { VerticalFeatures } from './VerticalFeatures';
+// import {
+//   BrowserRouter as Router,
+//   Switch,
+//   Route,
+//   Link
+// } from "react-router-dom";
 
 const Base = () => (
   <div className="antialiased text-gray-600">

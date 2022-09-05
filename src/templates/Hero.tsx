@@ -27,7 +27,7 @@ const Hero = () => (
         }
         description="La base de datos que tiene todas las opciones para invertir en Mexico"
         button={
-          <Link href="https://creativedesignsguru.com/category/nextjs/">
+          <Link href="form">
             <a>
               <Button xl>Ingresa de forma gratuita a Navio</Button>
             </a>
