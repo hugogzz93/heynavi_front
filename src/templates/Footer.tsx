@@ -70,21 +70,6 @@ const Footer = () => (
           </>
         }
       >
-        <li>
-          <Link href="/">
-            <a>Home</a>
-          </Link>
-        </li>
-        <li>
-          <Link href="/">
-            <a>Nosotros</a>
-          </Link>
-        </li>
-        <li>
-          <Link href="/">
-            <a>Empresas</a>
-          </Link>
-        </li>
       </CenteredFooter>
     </Section>
   </Background>

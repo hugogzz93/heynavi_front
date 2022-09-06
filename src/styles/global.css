@@ -3,3 +3,41 @@
 @tailwind components;
 
 @tailwind utilities;
+
+
+.material-symbols-outlined {
+  font-variation-settings:
+  'FILL' 0,
+  'wght' 400,
+  'GRAD' 0,
+  'opsz' 48
+}
+
+table.content__table {
+    --color: #1d4ed8;
+    border-collapse: collapse;
+    margin: 25px 0;
+    font-size: 0.9em;
+    overflow: hidden;
+
+}
+
+table.content__table thead tr {
+    text-align: left;
+}
+
+.content__table td {
+    padding: 12px 15px;
+}
+
+.content__table tbody tr {
+    border-bottom: 1px solid #dddddd;
+}
+
+.content__table tbody tr:nth-of-type(even) {
+    background-color: #f3f3f3;
+}
+
+.content__table tbody tr:last-of-type {
+    border-bottom: 2px solid var(--color);
+}
