@@ -23,6 +23,7 @@
     "react-range": "^1.8.14",
     "react-router-dom": "^6.3.0",
     "react-tooltip": "^4.2.21",
+    "sharp": "^0.31.0",
     "styled-jsx-plugin-postcss": "^4.0.1"
   },
   "devDependencies": {
