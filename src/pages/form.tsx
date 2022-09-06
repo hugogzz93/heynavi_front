@@ -9,7 +9,7 @@ import { Logo } from '../templates/Logo';
 import { Footer } from '../templates/Footer';
 import Questionnaire, {TAnswerType} from '../questions/Questionnaire'
 
-import Table from './table'
+import Table from '../table/table'
 
 
 export type TFormResults = {
