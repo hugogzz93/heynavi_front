@@ -1,7 +1,7 @@
 import ReactTooltip from 'react-tooltip';
 
 import { Section } from '../layout/Section';
-import Database, { IDBType } from './database'
+import Database, { IDBType } from '../lib/database'
 import { TAnswerType } from '../questions/Questionnaire'
 import { TFormResults } from './form'
 
