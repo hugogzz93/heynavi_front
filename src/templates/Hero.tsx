@@ -28,7 +28,7 @@ const Hero = () => (
                 </span>
               </>
             }
-            description="La base de datos que tiene todas las opciones para invertir en Mexico"
+            description="La base de datos que tiene todas las opciones para invertir en México"
             button={
               <Link href="form">
                 <a>

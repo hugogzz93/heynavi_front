@@ -84,7 +84,7 @@ const QuestionnaireHeading: React.FC= () => {
                 Nuestra base de datos cuenta con más de 100 opciones de inversión.
             </div>
             <div className="text-md">
-                Las próximas preguntas ayudaran a segmentar las que mas se ajusten a tu perfil.
+                Las próximas preguntas ayudaran a segmentar las que más se ajusten a tu perfil.
             </div>
         </div>
     )
@@ -130,7 +130,7 @@ const QuestionComponent: React.FC<{question: QuestionType, state: QuestionnaireS
 
             <div className='mt-8'>
                <button className="float-right inline-block bg-blue-500 p-4 rounded-md text-white" onClick={() => dispatch({type: 'submitQuestion', payload: {questionId: question.id, id: 0, value: sliderValue[0]}})}>
-                    Siguente
+                    Siguiente
                 </button>
             </div>
             </div>

@@ -1,5 +1,5 @@
 const Questions = [
-    {id: 1, text: 'Cuanto dinero te gustaría invertir?', type: 'slider', min: 0, max: 100000},
+    {id: 1, text: '¿Cuanto dinero te gustaría invertir?', type: 'slider', min: 0, max: 100000},
     {id: 2, text: 'Cuanto tiempo te gustaría dejar ese dinero invertido? (en meses)', options: [
         {id: 1, text: '<3 meses'},
         {id: 2, text: '3-6 meses'},
