@@ -155,7 +155,7 @@ const QuestionComponent: React.FC<{question: QuestionType, state: QuestionnaireS
         ): (<div></div>)}
         {state.answers.find(a => a.questionId == question.id) && (state.currentQuestion != Object.keys(Questions).length - 1) &&(
                 <button className="ml-2 float-right inline-block bg-gray-200 p-4 rounded-md text-slate-800 hover:text-white hover:bg-blue-500 duration-300 transition-all" onClick={() => dispatch({type: 'nextQuestion'})}>
-                    Siguente
+                    Siguiente
                </button>
         )}
                <button className="float-right inline-block bg-gray-200 p-4 rounded-md text-slate-800 hover:text-white hover:bg-blue-500 duration-300 transition-all" onClick={() => dispatch({type: 'prevQuestion'})}>
