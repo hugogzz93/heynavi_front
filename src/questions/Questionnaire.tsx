@@ -80,7 +80,7 @@ const InitialState = {
 const QuestionnaireHeading: React.FC= () => {
     return (
         <div className="flex flex-col mb-8">
-            <div className="text-md">
+            <div className="text-2xl font-bold">
                 Nuestra base de datos cuenta con más de 100 opciones de inversión.
             </div>
             <div className="text-md">

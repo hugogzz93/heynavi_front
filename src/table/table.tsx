@@ -1,5 +1,7 @@
+import { useState } from 'react';
 import ReactTooltip from 'react-tooltip';
 
+import { Button } from '../button/Button'
 import { Section } from '../layout/Section';
 import Database, { IDBType } from '../lib/database'
 import { TAnswerType } from '../questions/Questionnaire'
@@ -19,7 +21,8 @@ import { TFormResults } from './form'
 
 
 const Row: React.FC<{rowElement: IDBType}> = ({rowElement}) => {
-    const keys = Object.keys(rowElement)
+    const keys = Object.keys(rowElement).filter(e => !['fijaVariable', 'generales', 'apertura', 'recurrencia'].includes(e))
+    debugger
     return (
         <tr>
             {keys.map(k => {
@@ -71,8 +74,6 @@ const plazoMinimoValid = ({row, plazoMinimo}) => {
         value = extractPlazoMinimoFromOption(row.tiempo) >= 36
     else if(plazoMinimo.value == 5)
         value = true
-    if(!value)
-        debugger
     return value
 }
 
@@ -89,7 +90,6 @@ const disponibilidadValid = ({row, disponibilidad}) => {
     else if(disponibilidad.value == 5)
          value = !!row.recurrencia.match(new RegExp(/\(Anual|Semestral\)/))
 
-    if(!value) debugger
     return value
 }
 
@@ -101,12 +101,12 @@ const riesgoValid = ({row, riesgo}) => {
         value = row.riesgo == 'Moderado' || row.riesgo == 'Bajo'
     else if(riesgo == 3)
         value = row.riesgo == 'Alto'
-    if(!value) debugger
     return value
 }
 
 
 const Table: React.FC<TFormResults> = ({answers}) => {
+    const [isFiltering, setFiltering] = useState(true)
     const filter = (row: IDBType) => {
         const montoMinimo = answers.find(a => a.questionId == 1).value
         const plazoMinimo = answers.find((a: TAnswerType) => a.questionId == 2)
@@ -117,34 +117,36 @@ const Table: React.FC<TFormResults> = ({answers}) => {
         const disp =  disponibilidadValid({row, disponibilidad}) 
         const riesg = riesgoValid({row, riesgo}) 
         const plaz = plazoMinimoValid({row, plazoMinimo})
-        debugger
         return disp && riesg && plaz
     }
 
+    let rows = Database;
+    if(isFiltering)
+        rows = rows.filter(filter).slice(0,3)
+
     return (
         <div>
-                    <Section>
-                            <div className="flex justify-center">
+                    <Section title='Base de Inversiones México'>
+                        <div className="flex justify-center flex-col">
+                            <div className='w-full' onClick={() => setFiltering(!isFiltering)}>
+                                <Button>{isFiltering ? 'Ver todas las opciones' : 'Ver opciones filtradas'}</Button>
+                            </div>
                             <table className='content__table shadow-lg rounded-md'>
                                 <thead>
                                     <tr className='bg-gray-200 font-bold'>
                                         <td>Tipo</td>
                                         <td>Nombre</td>
-                                        <td>Descripcion</td>
+                                        <td>Descripción</td>
                                         <td>Rentabilidad</td>
                                         <td>Riesgo</td>
-                                        <td>Tiempo</td>
-                                        <td>Monto Minimo</td>
-                                        <td>Recurrencia</td>
-                                        <td>Generales</td>
-                                        <td>FijaVariable</td>
-                                        <td>Respaldado</td>
-                                        <td>Apertura</td>
+                                        <td>Tiempo Mínimo</td>
+                                        <td>Monto Mínimo (en pesos)</td>
+                                        <td>Garantías</td>
                                         <td>Contacto</td>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {Database.filter(filter).slice(0,3).map(d => (
+                                    {rows.map(d => (
                                         <Row rowElement={d}/>
                                     ))}
                                 </tbody>

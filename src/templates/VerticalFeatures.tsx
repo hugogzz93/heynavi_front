@@ -4,17 +4,17 @@ import { Section } from '../layout/Section';
 const VerticalFeatures = () => (
   <Section
     title="Diversifica tus ahorros"
-    description="Desde fondos en Bancos hasta Criptomonedas, Bienes Raices y Bolsa, tenemos la opcion que mas se ajusta a tus necesidades."
+    description="Desde fondos en Bancos hasta Criptomonedas, Bienes Raíces y Bolsa, tenemos la opción que más se ajusta a tus necesidades."
   >
     <VerticalFeatureRow
-      title="Nuevas Opciones cada dia"
-      description="Nuestro equipo filtra y agrega nuevas herramientas de inversion todos los dias para que tu puedas seguir explorando"
+      title="Nuevas Opciones cada día"
+      description="Nuestro equipo filtra y agrega nuevas herramientas de inversion todos los días para que tu puedas seguir explorando"
       image="/assets/images/feature.svg"
       imageAlt="First feature alt text"
     />
     <VerticalFeatureRow
-      title="Diversifica tus ahorros"
-      description="Desde Fondos en Bancos hasta Criptomonedas, Bienes Raíces y Bolsa, tenemos la opción que más se ajusta a tus necesidades."
+      title="Invierte seguro"
+      description="Las opciones que mostramos son filtradas por nuestro equipo de analistas."
       image="/assets/images/feature2.svg"
       imageAlt="diversifica tus ahorros"
       reverse

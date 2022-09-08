@@ -24,7 +24,7 @@ const Hero = () => (
                     {'Invertir es\n'}
                 </span>
                 <span className="text-white">
-                  Facil cuando puedes comparar
+                  Fácil cuando puedes comparar
                 </span>
               </>
             }
