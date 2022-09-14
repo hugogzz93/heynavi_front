@@ -1,5 +1,6 @@
 import { NextSeo } from 'next-seo';
 import Head from 'next/head';
+import Script from 'next/script';
 import { useRouter } from 'next/router';
 
 import { AppConfig } from '../utils/AppConfig';
@@ -17,6 +18,8 @@ const Meta = (props: IMetaProps) => {
     <>
       <Head>
         <meta charSet="UTF-8" key="charset" />
+
+
         <meta
           name="viewport"
           content="width=device-width,initial-scale=1"
@@ -33,6 +36,16 @@ const Meta = (props: IMetaProps) => {
           key="favicon"
         />
       </Head>
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-07XG78FMVK"></script>
+        <Script id="google-tag-manager" strategy="afterInteractive">
+          {`
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+
+              gtag('config', 'G-07XG78FMVK');
+          `}
+        </Script>
       <NextSeo
         title={props.title}
         description={props.description}
