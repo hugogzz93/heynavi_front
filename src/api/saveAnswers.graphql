@@ -1,0 +1,8 @@
+mutation SaveAnswers($input: [ClientQuestionAnswerInput!]!) {
+  saveAnswer(answers: $input) {
+    answers {
+      id
+      userId
+    }
+  }
+}

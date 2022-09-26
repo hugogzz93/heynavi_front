@@ -1,0 +1,13 @@
+query GetQuestions {
+    questions {
+        id
+        text
+        questionType
+        min
+        max
+        answers {
+            id
+            text
+        }
+    }
+}

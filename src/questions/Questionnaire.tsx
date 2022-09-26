@@ -1,6 +1,7 @@
 import { useReducer, useState } from 'react'
 import Questions from './questions'
 import { Range } from 'react-range'
+import { Answer, Question } from '../generated/graphql'
 
 export const numberWithCommas = (x: number): String => (
     x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
@@ -8,28 +9,13 @@ export const numberWithCommas = (x: number): String => (
 
 type ActionType = {
     type: String,
-    payload: TAnswerType
-}
-
-export type TAnswerType = {
-    questionId: number,
-    id: number,
-    value: any
+    payload: Answer
 }
 
 type QuestionnaireState = {
-    answers: Array<TAnswerType>,
-    questions: Array<QuestionType>,
+    answers: Array<Answer>,
+    questions: Array<Question>,
     currentQuestion: number
-}
-
-type QuestionType = {
-    id: number,
-    text: String,
-    type?: String,
-    min?: number,
-    max?: number,
-    options: [{id: number, text: String}]
 }
 
 const reducer = (state: QuestionnaireState, action: ActionType): QuestionnaireState => {
@@ -71,11 +57,11 @@ const reducer = (state: QuestionnaireState, action: ActionType): QuestionnaireSt
     }
 }
 
-const InitialState = {
+const InitialState = (input: {questions: Array<Question>}) => ({
     currentQuestion: 0,
-    questions: Questions,
+    questions: input.questions,
     answers: []
-}
+})
 
 const QuestionnaireHeading: React.FC= () => {
     return (
@@ -91,17 +77,17 @@ const QuestionnaireHeading: React.FC= () => {
 }
 
 
-const QuestionComponent: React.FC<{question: QuestionType, state: QuestionnaireState, dispatch: any, onSubmit: (any) => void}> = ({question, dispatch, onSubmit, state}) => {
+const QuestionComponent: React.FC<{question: Question, state: QuestionnaireState, dispatch: any, onSubmit: (arg0: any) => void}> = ({question, dispatch, onSubmit, state}) => {
     const [sliderValue, setSliderValue] = useState<any>([5000])
-    if(question.type === 'slider')
+    if(question.questionType === 'slider')
         return (
             <div className="flex flex-col">
             <div className="my-2 text-5xl text-blue-500 font-bold">${numberWithCommas(sliderValue)} {sliderValue == 100000 ? 'o más' : ''}</div>
             <Range
                 step={1000}
                 values={sliderValue}
-                min={question.min}
-                max={question.max}
+                min={Number(question.min)}
+                max={Number(question.max)}
                 onChange={(values: any) => setSliderValue(values)}
                 renderTrack={({props, children}) => (
                     <div {...props}
@@ -138,7 +124,7 @@ const QuestionComponent: React.FC<{question: QuestionType, state: QuestionnaireS
 
     return (
         <div className="flex flex-col">
-            {question.options.map(opt => (
+            {question.answers?.map(opt => (
                 <div 
                     key={`${question.id}-${opt.id}`}
                     onClick={() => dispatch({type: 'submitQuestion', payload: {questionId: question.id, id: opt.id, value: opt.id }})}
@@ -170,7 +156,7 @@ const QuestionComponent: React.FC<{question: QuestionType, state: QuestionnaireS
 
 
 
-const QuestionnaireForm: React.FC<{question: QuestionType, state: QuestionnaireState, dispatch: any, onSubmit: (any) => void}> = ({question, dispatch, onSubmit, state}) => {
+const QuestionnaireForm: React.FC<{question: Question, state: QuestionnaireState, dispatch: any, onSubmit: (arg0: any) => void}> = ({question, dispatch, onSubmit, state}) => {
     return (
         <div className="border-1 border-gray-300 rounded-md flex flex-col">
             <div className="text-2xl mb-4">{question.text}</div>
@@ -179,14 +165,14 @@ const QuestionnaireForm: React.FC<{question: QuestionType, state: QuestionnaireS
     )
 }
 
-const Questionnaire: React.FC<{onSubmit: (any) => void}> = ({onSubmit}) => {
-    const [state, dispatch] = useReducer(reducer, InitialState)
+const Questionnaire: React.FC<{onSubmit: (arg0: any) => void, questions: Array<Question>}> = ({onSubmit, questions}) => {
+    const [state, dispatch] = useReducer(reducer, InitialState({questions}))
 
     return (
         <div className="antialiased">
             <div className="flex flex-col">
                 <QuestionnaireHeading/>
-                <QuestionnaireForm onSubmit={() => onSubmit({answers: state.answers})} question={Questions[state.currentQuestion]} dispatch={dispatch} state={state}/>
+                <QuestionnaireForm onSubmit={() => onSubmit({answers: state.answers})} question={state.questions[state.currentQuestion]} dispatch={dispatch} state={state}/>
             </div>
         </div>
     )
