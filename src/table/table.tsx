@@ -22,7 +22,6 @@ import { TFormResults } from './form'
 
 const Row: React.FC<{rowElement: IDBType}> = ({rowElement}) => {
     const keys = Object.keys(rowElement).filter(e => !['fijaVariable', 'generales', 'apertura', 'recurrencia'].includes(e))
-    debugger
     return (
         <tr>
             {keys.map(k => {

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 
 import { Meta } from '../layout/Meta';
@@ -9,15 +9,15 @@ import { NavbarTwoColumns } from '../navigation/NavbarTwoColumns';
 import { Logo } from '../templates/Logo';
 import { Footer } from '../templates/Footer';
 import Questionnaire from '../questions/Questionnaire'
-import { dehydrate, useQuery } from 'react-query'
-import { queryClient, GetQuestions } from '../api'
+import { dehydrate, useQuery, useMutation } from 'react-query'
+import { queryClient, GetQuestions, SaveAnswers } from '../api'
 
 import Table from '../table/table'
-import { Answer } from '../generated/graphql'
+import { ClientQuestionAnswerInput } from '../generated/graphql'
 
 
 export type TFormResults = {
-    answers: Array<Answer>;
+    answers: Array<ClientQuestionAnswerInput>;
 }
 
 export async function getServerSideProps() {
@@ -32,8 +32,13 @@ export async function getServerSideProps() {
 const Form = () => {
     const [formResult, setFormResult] = useState<TFormResults>({answers: []})
     const { data } = useQuery(['questions'], () => GetQuestions())
-    if(data)
-        debugger
+    const { mutate } = useMutation(() => SaveAnswers({input: formResult.answers}))
+
+    useEffect(() => {
+        if(formResult.answers.length > 0) 
+            mutate()
+    }, [formResult])
+
 
     return (
         <div className="flex flex-col antialiased text-gray-600 justify-between" style={{height: '100vh'}}>

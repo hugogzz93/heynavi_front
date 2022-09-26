@@ -1,7 +1,7 @@
 import { useReducer, useState } from 'react'
 import Questions from './questions'
 import { Range } from 'react-range'
-import { Answer, Question } from '../generated/graphql'
+import { Question, ClientQuestionAnswerInput } from '../generated/graphql'
 
 export const numberWithCommas = (x: number): String => (
     x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
@@ -9,11 +9,11 @@ export const numberWithCommas = (x: number): String => (
 
 type ActionType = {
     type: String,
-    payload: Answer
+    payload: ClientQuestionAnswerInput
 }
 
 type QuestionnaireState = {
-    answers: Array<Answer>,
+    answers: Array<ClientQuestionAnswerInput>,
     questions: Array<Question>,
     currentQuestion: number
 }
@@ -115,7 +115,7 @@ const QuestionComponent: React.FC<{question: Question, state: QuestionnaireState
             />
 
             <div className='mt-8'>
-               <button className="float-right inline-block bg-blue-500 p-4 rounded-md text-white" onClick={() => dispatch({type: 'submitQuestion', payload: {questionId: question.id, id: 0, value: sliderValue[0]}})}>
+               <button className="float-right inline-block bg-blue-500 p-4 rounded-md text-white" onClick={() => dispatch({type: 'submitQuestion', payload: {questionId: question.id, customValue: sliderValue[0]}})}>
                     Siguiente
                 </button>
             </div>
@@ -127,7 +127,7 @@ const QuestionComponent: React.FC<{question: Question, state: QuestionnaireState
             {question.answers?.map(opt => (
                 <div 
                     key={`${question.id}-${opt.id}`}
-                    onClick={() => dispatch({type: 'submitQuestion', payload: {questionId: question.id, id: opt.id, value: opt.id }})}
+                    onClick={() => dispatch({type: 'submitQuestion', payload: {questionId: question.id, answerId: opt.id}})}
                     className={`my-1 border border-1 border-gray-300 bg-white rounded-md p-4 cursor-pointer hover:bg-blue-200 duration-300 transition-all ${state.answers.find(a => a.questionId == question.id)?.id == opt.id ? 'bg-blue-400 text-white': ''}`}
                   >{opt.text}</div>
             ))}

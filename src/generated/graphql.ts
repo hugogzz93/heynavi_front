@@ -32,8 +32,9 @@ export type ClientQuestionAnswer = {
 };
 
 export type ClientQuestionAnswerInput = {
-  answerId: Scalars['ID'];
+  answerId?: InputMaybe<Scalars['ID']>;
   clientId?: InputMaybe<Scalars['ID']>;
+  customValue?: InputMaybe<Scalars['ID']>;
   questionId: Scalars['ID'];
 };
 
@@ -60,8 +61,8 @@ export type Question = {
   __typename?: 'Question';
   answers?: Maybe<Array<Answer>>;
   id: Scalars['ID'];
-  max?: Scalars['String'];
-  min?: Scalars['String'];
+  max?: Maybe<Scalars['String']>;
+  min?: Maybe<Scalars['String']>;
   questionType: Scalars['String'];
   text: Scalars['String'];
 };
@@ -75,7 +76,7 @@ export type SaveAnswerPayload = {
 export type GetQuestionsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetQuestionsQuery = { __typename?: 'Query', questions: Array<{ __typename?: 'Question', id: string, text: string, questionType: string, min: string, max: string, answers?: Array<{ __typename?: 'Answer', id: string, text: string }> | null }> };
+export type GetQuestionsQuery = { __typename?: 'Query', questions: Array<{ __typename?: 'Question', id: string, text: string, questionType: string, min?: string | null, max?: string | null, answers?: Array<{ __typename?: 'Answer', id: string, text: string }> | null }> };
 
 export type SaveAnswersMutationVariables = Exact<{
   input: Array<ClientQuestionAnswerInput> | ClientQuestionAnswerInput;
