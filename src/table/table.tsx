@@ -21,7 +21,7 @@ import { TFormResults } from './form'
 
 
 const Row: React.FC<{rowElement: IDBType}> = ({rowElement}) => {
-    const keys = Object.keys(rowElement).filter(e => !['fijaVariable', 'generales', 'apertura', 'recurrencia'].includes(e))
+    const keys = Object.keys(rowElement).filter(e => !['respaldado', 'generales', 'apertura', 'recurrencia'].includes(e))
     return (
         <tr>
             {keys.map(k => {
@@ -123,6 +123,9 @@ const Table: React.FC<TFormResults> = ({answers}) => {
     if(isFiltering)
         rows = rows.filter(filter).slice(0,3)
 
+    if(rows.length < 3)
+        rows = Database.slice(0,3)
+
     return (
         <div>
                     <Section title='Base de Inversiones México'>
@@ -140,7 +143,7 @@ const Table: React.FC<TFormResults> = ({answers}) => {
                                         <td>Riesgo</td>
                                         <td>Tiempo Mínimo</td>
                                         <td>Monto Mínimo (en pesos)</td>
-                                        <td>Garantías</td>
+                                        <td>Tipo de Inversión </td>
                                         <td>Contacto</td>
                                     </tr>
                                 </thead>
