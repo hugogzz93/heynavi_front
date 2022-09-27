@@ -128,7 +128,7 @@ const QuestionComponent: React.FC<{question: Question, state: QuestionnaireState
                 <div 
                     key={`${question.id}-${opt.id}`}
                     onClick={() => dispatch({type: 'submitQuestion', payload: {questionId: question.id, answerId: opt.id}})}
-                    className={`my-1 border border-1 border-gray-300 bg-white rounded-md p-4 cursor-pointer hover:bg-blue-200 duration-300 transition-all ${state.answers.find(a => a.questionId == question.id)?.id == opt.id ? 'bg-blue-400 text-white': ''}`}
+                    className={`my-1 border border-1 border-gray-300 bg-white rounded-md p-4 cursor-pointer hover:bg-blue-200 duration-300 transition-all ${state.answers.find(a => a.questionId == question.id)?.answerId == opt.id ? 'bg-blue-400 text-white': ''}`}
                   >{opt.text}</div>
             ))}
             <div className='mt-8'>
