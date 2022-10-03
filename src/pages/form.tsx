@@ -12,7 +12,7 @@ import Questionnaire from '../questions/Questionnaire'
 import { dehydrate, useQuery, useMutation } from 'react-query'
 import { queryClient, GetQuestions, SaveAnswers } from '../api'
 
-import Table from '../table/table'
+import Table from 'components/InvestmentTable'
 import { ClientQuestionAnswerInput } from '../generated/graphql'
 
 
