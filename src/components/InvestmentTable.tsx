@@ -14,7 +14,11 @@ const InvestmentTableConfig = ({state, setState}: {state: {[key: string]: boolea
         id: 'list-investment-options',
         idColumn: 'nombre',
         getId: (d) => d.nombre,
-        tableActions: []
+        tableActions: [],
+        pagination: {
+            length: 5,
+            page: 0
+        }
     },
     columns: [
         { 

@@ -118,11 +118,11 @@ const ThemeFooterElement = ({state: {pagination, rowData}, dispatch}) => {
         {rowData.length > pagination.length && (
             <>
                 <div>
-                    <i className="fa-solid fa-caret-left text-slate-500 hover:text-slate-800 text-md cursor-pointer" onClick={() => dispatch({type: ACTIONS.SET_PAGE, payload: pagination.page - 1})}></i>
+                    <span className="material-symbols-outlined text-slate-500 hover:text-slate-800 text-md cursor-pointer" onClick={() => dispatch({type: ACTIONS.SET_PAGE, payload: pagination.page - 1})}> arrow_left </span>
                 </div>
-                <div className="text-md text-slate-500 mx-2">{first} - {last}</div>
+                <div className="text-md text-slate-500 mx-2">{first} - {last} ({rowData.length})</div>
                 <div>
-                    <i className="fa-solid fa-caret-right text-slate-500 hover:text-slate-800 text-md cursor-pointer" onClick={() => dispatch({type: ACTIONS.SET_PAGE, payload: pagination.page + 1})}></i>
+                    <span className="material-symbols-outlined text-slate-500 hover:text-slate-800 text-md cursor-pointer" onClick={() => dispatch({type: ACTIONS.SET_PAGE, payload: pagination.page + 1})}> arrow_right </span>
                 </div>
             </>
         )}
@@ -191,7 +191,7 @@ const TableContext = React.createContext()
 
 export const Table = ({configuration: _configuration, rowData, RowElement, HeadElement, TableElement, FooterElement }) => {
     const configuration = new TableConfiguration(_configuration)
-    const [state, dispatch] = useReducer(TableReducer, new TableStore({rowData, pagination: configuration.pagination}))
+    const [state, dispatch] = useReducer(TableReducer, new TableStore({rowData, pagination: configuration.header.pagination}))
 
     useEffect(() => {
         dispatch({type: ACTIONS.SET_ROW_DATA, payload: rowData})

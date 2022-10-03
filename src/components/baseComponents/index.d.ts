@@ -98,6 +98,10 @@ export interface ITableConfiguration {
         idColumn: string,
         getId: (d: any) => any,
         tableActions: Array<ReactElement>
+        pagination?: {
+            page: number;
+            length: number;
+        }
     },
     columns: Array<ITableColumnConfiguration>
 }

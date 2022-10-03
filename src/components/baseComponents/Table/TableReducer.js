@@ -2,7 +2,7 @@ import { useReducer } from 'react'
 import { ErrorObject } from '../ErrorObject'
 
 export class TableConfiguration {
-    constructor({header, columns, pagination}) {
+    constructor({header, columns}) {
         if(header == undefined || columns == undefined)
             throw new ErrorObject({
                 type: 'TableConfiguration Constructor',
@@ -11,7 +11,7 @@ export class TableConfiguration {
 
         this.header = header;
         this.columns = columns;
-        this.pagination = pagination
+        this.pagination = header.pagination;
     }
 
     columnLabels = () => this.columns.map(c => c.label)
