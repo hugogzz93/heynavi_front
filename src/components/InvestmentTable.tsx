@@ -31,10 +31,10 @@ const InvestmentTableConfig: ITableConfiguration = {
             label: 'Descripción',
             id: 'Descripción',
             renderFn: d => (
-                    <td data-tip={d.descripcion}>
-                        <span className="material-symbols-outlined">Descripcion</span>
+                    <div data-tip={d.descripcion}>
+                        <span className="material-symbols-outlined"> info </span>
                         <ReactTooltip/>
-                    </td>
+                    </div>
             )
         },
         {
