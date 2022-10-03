@@ -93,7 +93,7 @@ const FilterComponents = () => {
     return (
         <div className="w-full flex flex-wrap mb-5">
             {configuration.columns.filter(f => f.filterable).map(c => 
-                <div className="grow basis-2 mr-3 last-of-type:mr-0" key={c.id}>
+                <div className="grow basis-2 mr-3 last-of-type:mr-0" style={{maxWidth: '15em'}} key={c.id}>
                     <FilterComponent key={c.id} columnId={c.id}/>
                 </div>
             )}
@@ -142,6 +142,7 @@ const TableComponent = ({
     const TableHead = () => (
         <HeadElement
             columnNames={configuration.columns.map(col => col.label)}
+            columns={configuration.columns}
         />
     )
 

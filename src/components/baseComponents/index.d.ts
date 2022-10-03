@@ -88,6 +88,8 @@ export interface ITableColumnConfiguration {
     label: string;
     valueFn?: (any) => string | number;
     renderFn?: (any) => any;
+    filterable?: boolean;
+    filterFn?: (any) => boolean;
 }
 
 export interface ITableConfiguration {
@@ -126,6 +128,7 @@ export interface ITableRowElementProps {
 
 export interface ITableHeadElementProps {
     columnNames: Array<string>;
+    columns: Array<ITableColumnConfiguration>;
 }
 
 

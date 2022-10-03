@@ -9,7 +9,7 @@ import { Section } from 'layout/Section'
 import { TAnswerType } from 'questions/Questionnaire'
 
 
-const InvestmentTableConfig: ITableConfiguration = {
+const InvestmentTableConfig = ({state, setState}: {state: {[key: string]: boolean}, setState: (arg0: any) => any}): ITableConfiguration => ({
     header: {
         id: 'list-investment-options',
         idColumn: 'nombre',
@@ -19,17 +19,23 @@ const InvestmentTableConfig: ITableConfiguration = {
     columns: [
         { 
             label: 'Tipo',
-            id: 'Tipo',
-            valueFn: (d) => d.tipo
+            id: 'tipo',
+			filterable: state['tipo'],
+            valueFn: (d) => d.tipo,
+            filterFn: ({filterValue, dataValue}) => {debugger; return dataValue.tipo.match(new RegExp(filterValue, 'i'))},
         },
         {
             label: 'Nombre',
-            id: 'Nombre',
-            valueFn: (d) => d.nombre
+            id: 'nombre',
+			filterable: state['nombre'],
+            valueFn: (d) => d.nombre,
+            filterFn: ({filterValue, dataValue}) => {debugger; return dataValue.nombre.match(new RegExp(filterValue, 'i'))},
         },
         {
             label: 'Descripción',
-            id: 'Descripción',
+            id: 'descripción',
+			filterable: state['descripción'],
+            filterFn: ({filterValue, dataValue}) => dataValue.descripcion.match(new RegExp(filterValue, 'i')),
             renderFn: d => (
                     <div data-tip={d.descripcion}>
                         <span className="material-symbols-outlined"> info </span>
@@ -39,32 +45,43 @@ const InvestmentTableConfig: ITableConfiguration = {
         },
         {
             label: 'Rentabilidad',
-            id: 'Rentabilidad',
+            id: 'rentabilidad',
+			filterable: state['rentabilidad'],
+            filterFn: ({filterValue, dataValue}) => dataValue.rentabilidad.match(new RegExp(filterValue, 'i')),
             valueFn: (d) => d.rentabilidad
         },
         {
             label: 'Riesgo',
-            id: 'Riesgo',
+            id: 'riesgo',
+			filterable: state['riesgo'],
+            filterFn: ({filterValue, dataValue}) => dataValue.riesgo.match(new RegExp(filterValue, 'i')),
             valueFn: (d) => d.riesgo
         },
         {
             label: 'Tiempo Mínimo',
-            id: 'Tiempo',
+            id: 'tiempo',
+			filterable: state['tiempo'],
+            filterFn: ({filterValue, dataValue}) => dataValue.tiempo.match(new RegExp(filterValue, 'i')),
             valueFn: (d) => d.tiempo
         },
         {
             label: 'Monto Mínimo (en pesos)',
-            id: 'Monto',
+            id: 'monto',
+			filterable: state['monto'],
+            filterFn: ({filterValue, dataValue}) => dataValue.montoMin.match(new RegExp(filterValue, 'i')),
             valueFn: (d) => d.montoMin
         },
         {
             label: 'Tipo de Inversión ',
-            id: 'Tipo',
-            valueFn: (d) => d.tipo
+            id: 'fijaVariable',
+			filterable: state['fijaVariable'],
+            filterFn: ({filterValue, dataValue}) => dataValue.fijaVariable.match(new RegExp(filterValue, 'i')),
+            valueFn: (d) => d.fijaVariable
         },
         {
             label: 'Contacto',
-            id: 'Contacto',
+            id: 'contacto',
+			filterable: false,
             renderFn: _ => (
                 <td>
                     <a className='text-blue-500 cursor-pointer' href="https://api.whatsapp.com/send/?phone=5218132647979&text=Hola%2C+me+podr%C3%ADan+apoyar+a+resolver+mis+dudas%3F&type=phone_number&app_absent=0">Contacto</a>
@@ -72,30 +89,34 @@ const InvestmentTableConfig: ITableConfiguration = {
             )
         },
     ]
-}
+})
 
-// const ThemeRowElement: React.FC<ITableRowElementProps> = ({cells, data}) => {
-//     return (
-//         <tr>
-//             {cells.map((Cell, idx) => (
-//                 <td key={idx} className={"py-2 px-5"}>
-//                     { typeof(Cell) == 'function' ? <Cell/> : Cell}
-//                 </td>
-//             ))
-//             }
-//         </tr>
 
-//     )
-// }
-
-const ThemeTableHeadElement: React.FC<ITableHeadElementProps> = ({columnNames}) => {
+const ThemeTableHeadElement: React.FC<ITableHeadElementProps & {state: any, setState: (arg0: any) => void}> = ({columns, columnNames, state, setState}) => {
     return (
         <tr className='bg-gray-200 font-bold'>
-            {columnNames.map(name => 
-                <td key={name}>
-                    {name}
-                </td>
-            )}
+            {columnNames.map((name: string, idx: number) => {
+                if(name != 'Descripción' && name != 'Contacto') 
+                    return (
+
+                        <td key={name} onClick={() => setState(columns[idx].id)}>
+                            <div data-tip={`${state[columns[idx].id] ? 'Quitar' : 'Agregar'} Filtro de ${name}`}>
+                                    <div className="flex items-center">
+                                        {name}
+                                        <span className="material-symbols-outlined"> search </span>
+                                    </div>
+                                <ReactTooltip/>
+                            </div>
+                        </td>
+                    )
+                return (
+                    <td key={name}> 
+                        <div className="flex items-center">
+                            {name}
+                        </div>
+                    </td>
+                )
+            })}
         </tr>
     )
 }
@@ -104,6 +125,7 @@ const ThemeTableElement: React.FC<ITableElementProps> = ({id, TableHead, TableBo
     return (
         <div className="w-full bg-transparent" id={id}>
             <FilterComponents/>
+            <div className="text-sm">Hint: Puedes hacer click en columnas para agregar o quitar filtros.</div>
             <table className='content__table shadow-lg rounded-md'>
                 <thead>
                     <TableHead/>
@@ -175,6 +197,7 @@ const riesgoValid = ({row, riesgo}: {row: any, riesgo: any}) => {
 
 const InvestmentTable: React.FC<TFormResults> = ({answers}) => {
     const [isFiltering, setFiltering] = useState(true)
+    const [filterableColumns, setFilterableColumns] = useState({})
     const filter = (row: IDBType) => {
         const montoMinimo = answers.find(a => a.questionId == 1).value
         const plazoMinimo = answers.find((a: TAnswerType) => a.questionId == 2)
@@ -195,18 +218,26 @@ const InvestmentTable: React.FC<TFormResults> = ({answers}) => {
     if(rows.length < 3)
         rows = Database.slice(0,3)
 
+    const HeadElement: React.FC<ITableHeadElementProps> = (props) => {
+        return <ThemeTableHeadElement 
+                {...props}
+                state={filterableColumns}
+                setState={(columnId: string) => {debugger; setFilterableColumns({...filterableColumns, [columnId]: !filterableColumns[columnId]})}}
+            />
+    }
+
     return (
         <div>
                     <Section title='Base de Inversiones México'>
                         <div className="flex justify-center flex-col">
-                            <div className='w-full' onClick={() => setFiltering(!isFiltering)}>
-                                <Button>{isFiltering ? 'Ver todas las opciones' : 'Ver opciones filtradas'}</Button>
+                            <div className='w-full mb-5' onClick={() => setFiltering(!isFiltering)}>
+                                <Button>{isFiltering ? 'Ver todas las opciones' : 'Ver menos opciones'}</Button>
                             </div>
                             <Table
                                 rowData={rows}
-                                configuration={InvestmentTableConfig}
+                                configuration={InvestmentTableConfig({state: filterableColumns, setState: setFilterableColumns})}
                                 TableElement={ThemeTableElement}
-                                HeadElement={ThemeTableHeadElement}
+                                HeadElement={HeadElement}
                             />
                         </div>
                     </Section>
