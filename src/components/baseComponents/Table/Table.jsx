@@ -103,6 +103,7 @@ const FilterComponents = () => {
 
 const DataFilter = ({rowData, children}) => {
     const {state} = useContext(TableContext)
+    debugger
     const filteredData = state.filterValues.reduce((filteredData, fv) => (
         filteredData.filter(fv.filterFn)
     ), rowData)

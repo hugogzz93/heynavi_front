@@ -26,14 +26,14 @@ const InvestmentTableConfig = ({state, setState}: {state: {[key: string]: boolea
             id: 'tipo',
 			filterable: state['tipo'],
             valueFn: (d) => d.tipo,
-            filterFn: ({filterValue, dataValue}) => {debugger; return dataValue.tipo.match(new RegExp(filterValue, 'i'))},
+            filterFn: ({filterValue, dataValue}) => { return dataValue.tipo.match(new RegExp(filterValue, 'i'))},
         },
         {
             label: 'Nombre',
             id: 'nombre',
 			filterable: state['nombre'],
             valueFn: (d) => d.nombre,
-            filterFn: ({filterValue, dataValue}) => {debugger; return dataValue.nombre.match(new RegExp(filterValue, 'i'))},
+            filterFn: ({filterValue, dataValue}) => {return dataValue.nombre.match(new RegExp(filterValue, 'i'))},
         },
         {
             label: 'Descripción',
@@ -72,7 +72,7 @@ const InvestmentTableConfig = ({state, setState}: {state: {[key: string]: boolea
             label: 'Monto Mínimo (en pesos)',
             id: 'monto',
 			filterable: state['monto'],
-            filterFn: ({filterValue, dataValue}) => dataValue.montoMin.match(new RegExp(filterValue, 'i')),
+            filterFn: ({filterValue, dataValue}) => {try {return dataValue.montoMin.toString().match(new RegExp(filterValue, 'i'))} catch(e) {return false}},
             valueFn: (d) => d.montoMin
         },
         {
@@ -226,7 +226,7 @@ const InvestmentTable: React.FC<TFormResults> = ({answers}) => {
         return <ThemeTableHeadElement 
                 {...props}
                 state={filterableColumns}
-                setState={(columnId: string) => {debugger; setFilterableColumns({...filterableColumns, [columnId]: !filterableColumns[columnId]})}}
+                setState={(columnId: string) => {setFilterableColumns({...filterableColumns, [columnId]: !filterableColumns[columnId]})}}
             />
     }
 
