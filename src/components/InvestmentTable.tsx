@@ -72,7 +72,7 @@ const InvestmentTableConfig = ({state, setState}: {state: {[key: string]: boolea
             label: 'Monto Mínimo (en pesos)',
             id: 'monto',
 			filterable: state['monto'],
-            filterFn: ({filterValue, dataValue}) => {try {debugger; return dataValue.montoMin <= Number(filterValue)} catch(e) {return false}},
+            filterFn: ({filterValue, dataValue}) => {try {debugger; return dataValue.montoMin >= Number(filterValue)} catch(e) {return false}},
             valueFn: (d) => d.montoMin
         },
         {
