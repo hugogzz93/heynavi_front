@@ -1,0 +1,5 @@
+mutation UpdateInvestmentOption($input: InvestmentOptionInput!, $id: ID!) {
+    updateInvestmentOption(id: $id, input: $input) {
+        id
+    }
+}

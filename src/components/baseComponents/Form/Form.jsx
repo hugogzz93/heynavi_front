@@ -3,6 +3,7 @@ import { useForm, useWatch, Controller } from 'react-hook-form'
 import Select from 'react-select'
 import 'react-datepicker/dist/react-datepicker.css'
 import clsx from 'clsx'
+import { TailwindHelper } from 'lib/tailwindHelpers'
 
 
 import { ErrorObject } from '../ErrorObject'
@@ -230,7 +231,7 @@ export const FieldComponent = ({
 
 const GridWrapper = (props) => {
     return (
-        <div className={`grid gap-4 grid-cols-${props.configuration.layout.cols}`}>
+        <div className={`grid gap-4 ${TailwindHelper.makeGrid(props.configuration.layout.cols)}`}>
             {props.children}
         </div>
     )
@@ -248,7 +249,7 @@ export const FieldComponents = () => {
         .filter((config) => config.display != false)
         .map(({id}) => {
             const fieldLayout = configuration.getFieldLayoutById(id)
-            return <div key={id} className={`col-span-${fieldLayout.cols}`}>
+            return <div key={id} className={TailwindHelper.makeGridCol(fieldLayout.cols)}>
                 <FieldComponent id={id}/>
             </div>
     })

@@ -1,15 +1,25 @@
 import { useState } from 'react'
+import { Meta } from '../layout/Meta';
 import ReactTooltip from 'react-tooltip';
+import Link from 'next/link';
+import { Range } from 'react-range'
 
+import { dehydrate, useQuery, useMutation } from 'react-query'
+import { queryClient, GetInvestmentOptions } from '../api'
 import { Table, ITableConfiguration, ITableElementProps, ITableHeadElementProps } from 'components/baseComponents'
-import Database, { IDBType } from 'lib/database'
+import { IDBType } from 'lib/database'
 import { TFormResults } from 'pages/form'
 import { Button } from 'button/Button'
 import { Section } from 'layout/Section'
 import { TAnswerType } from 'questions/Questionnaire'
 
+const numberWithCommas = (x: number): String => (
+    x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+)
 
-const InvestmentTableConfig = ({state, setState}: {state: {[key: string]: boolean}, setState: (arg0: any) => any}): ITableConfiguration => ({
+
+
+const InvestmentTableConfig = ({sliderValue, state, setState, isAdmin = false}: {sliderValue: number, isAdmin: boolean, state: {[key: string]: boolean}, setState: (arg0: any) => any}): ITableConfiguration => ({
     header: {
         id: 'list-investment-options',
         idColumn: 'nombre',
@@ -21,6 +31,17 @@ const InvestmentTableConfig = ({state, setState}: {state: {[key: string]: boolea
         }
     },
     columns: [
+        { 
+            label: 'Link Edit',
+            id: 'link',
+            display: isAdmin,
+			filterable: false,
+            renderFn: (d) => {
+                return <Link href={`/edit/${d.id}`}>
+                    Edit
+                </Link>
+            }
+        },
         { 
             label: 'Tipo',
             id: 'tipo',
@@ -72,7 +93,7 @@ const InvestmentTableConfig = ({state, setState}: {state: {[key: string]: boolea
             label: 'Monto Mínimo (en pesos)',
             id: 'monto',
 			filterable: state['monto'],
-            filterFn: ({filterValue, dataValue}) => {try {debugger; return dataValue.montoMin >= Number(filterValue)} catch(e) {return false}},
+            filterFn: ({filterValue, dataValue}) => {try {return dataValue.montoMin >= Number(filterValue)} catch(e) {return false}},
             valueFn: (d) => d.montoMin
         },
         {
@@ -92,6 +113,20 @@ const InvestmentTableConfig = ({state, setState}: {state: {[key: string]: boolea
                 </td>
             )
         },
+        {
+            label: 'Interes Anual',
+            id: 'profit',
+            filterable: state['profit'],
+            filterFn: ({filterValue, dataValue}) => {
+                try {
+                    const num = Number(dataValue.rentabilidad.replace('%', ''))*sliderValue/100 
+                    return num >= Number(filterValue)
+                } catch(e) {
+                    return false
+                }
+            },
+            renderFn: d => <div className='text-blue-500'>{'$' + numberWithCommas(Number(d.rentabilidad.replace('%', ''))*sliderValue/100)}</div>
+        }
     ]
 })
 
@@ -129,7 +164,6 @@ const ThemeTableElement: React.FC<ITableElementProps> = ({id, TableHead, TableBo
     return (
         <div className="w-full bg-transparent" id={id}>
             <FilterComponents/>
-            <div className="text-sm">Hint: Puedes hacer click en columnas para agregar o quitar filtros.</div>
             <table className='content__table shadow-lg rounded-md'>
                 <thead>
                     <TableHead/>
@@ -138,6 +172,7 @@ const ThemeTableElement: React.FC<ITableElementProps> = ({id, TableHead, TableBo
                     <TableBody/>
                 </tbody>
             </table>
+            <div className="text-sm">Hint: Puedes hacer click en columnas para agregar o quitar filtros.</div>
             <TableFooter/>
         </div>
     )
@@ -199,9 +234,21 @@ const riesgoValid = ({row, riesgo}: {row: any, riesgo: any}) => {
     return value
 }
 
+export async function getServerSideProps({params}: {params: any}) {
+    await queryClient.prefetchQuery("getInvestmentOption", () => GetInvestmentOptions({id: params.id}))
+    return {
+        props: {
+            dehydratedState: dehydrate(queryClient),
+        }
+    }
+}
+
+
 const InvestmentTable: React.FC<TFormResults> = ({answers}) => {
+    const [sliderValue, setSliderValue] = useState<any>([5000])
     const [isFiltering, setFiltering] = useState(true)
     const [filterableColumns, setFilterableColumns] = useState({})
+    const {data, isLoading} = useQuery('getInvestmentOption', () => GetInvestmentOptions())
     const filter = (row: IDBType) => {
         const montoMinimo = answers.find(a => a.questionId == 1).value
         const plazoMinimo = answers.find((a: TAnswerType) => a.questionId == 2)
@@ -215,12 +262,12 @@ const InvestmentTable: React.FC<TFormResults> = ({answers}) => {
         return disp && riesg && plaz
     }
 
-    let rows = Database;
+    let rows = data?.investmentOptions || [];
     if(isFiltering)
         rows = rows.filter(filter).slice(0,3)
 
     if(rows.length < 3)
-        rows = Database.slice(0,3)
+        rows = rows.slice(0,3)
 
     const HeadElement: React.FC<ITableHeadElementProps> = (props) => {
         return <ThemeTableHeadElement 
@@ -232,14 +279,48 @@ const InvestmentTable: React.FC<TFormResults> = ({answers}) => {
 
     return (
         <div>
+                    <Meta title={'Navibase Investment Options'} description={'Investment Table Options'} />
                     <Section title='Base de Inversiones México'>
                         <div className="flex justify-center flex-col">
                             <div className='w-full mb-5' onClick={() => setFiltering(!isFiltering)}>
                                 <Button>{isFiltering ? 'Ver todas las opciones' : 'Ver menos opciones'}</Button>
                             </div>
+                            <div className="my-4 w-full">
+                                <div className="my-2 text-5xl text-blue-500 font-bold">${numberWithCommas(sliderValue)}</div>
+                                <Range
+                                    step={1000}
+                                    values={sliderValue}
+                                    min={1000}
+                                    max={1000000}
+                                    onChange={(values: any) => setSliderValue(values)}
+                                    renderTrack={({props, children}) => (
+                                        <div {...props}
+                                            style={{
+                                                ...props.style,
+                                                    height: '6px',
+                                                    width: '100%',
+                                                    backgroundColor: '#ccc'
+                                            }}
+                                        >
+                                            {children}
+                                        </div>
+                                    )}
+                                    renderThumb={({props}) => (
+                                        <div 
+                                            {...props}
+                                            className='rounded-md bg-blue-500'
+                                            style={{
+                                                ...props.style,
+                                                height: '24px',
+                                                width: '24px',
+                                            }}
+                                        />
+                                    )}
+                                />
+                            </div>
                             <Table
-                                rowData={rows}
-                                configuration={InvestmentTableConfig({state: filterableColumns, setState: setFilterableColumns})}
+                                rowData={rows.sort((a,b) => Number(a.id) - Number(b.id))}
+                                configuration={InvestmentTableConfig({sliderValue, state: filterableColumns, setState: setFilterableColumns, isAdmin: localStorage.getItem('tasp.capr') == 'true'})}
                                 TableElement={ThemeTableElement}
                                 HeadElement={HeadElement}
                             />
