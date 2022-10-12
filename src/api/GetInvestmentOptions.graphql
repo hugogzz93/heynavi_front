@@ -1,0 +1,17 @@
+query GetInvestmentOptions($query: InvestmentOptionQuery) {
+    investmentOptions(query: $query) {
+      id
+      tipo
+      nombre
+      descripcion
+      rentabilidad
+      riesgo
+      tiempo
+      montoMin
+      recurrencia
+      generales
+      fijaVariable
+      respaldado
+      apertura
+    }
+}

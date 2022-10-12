@@ -10,7 +10,9 @@ const gqlClient = new GraphQLClient(baseUrl)
 
 export const {
     GetQuestions,
-    SaveAnswers
+    SaveAnswers,
+    GetInvestmentOptions,
+    UpdateInvestmentOption,
 } = getSdk(gqlClient)
 
 export const queryClient = new QueryClient({

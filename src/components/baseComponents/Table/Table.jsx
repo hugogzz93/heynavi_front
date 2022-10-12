@@ -103,7 +103,6 @@ const FilterComponents = () => {
 
 const DataFilter = ({rowData, children}) => {
     const {state} = useContext(TableContext)
-    debugger
     const filteredData = state.filterValues.reduce((filteredData, fv) => (
         filteredData.filter(fv.filterFn)
     ), rowData)
@@ -142,8 +141,8 @@ const TableComponent = ({
 
     const TableHead = () => (
         <HeadElement
-            columnNames={configuration.columns.map(col => col.label)}
-            columns={configuration.columns}
+            columnNames={configuration.columns.filter(col => col.display != false).map(col => col.label)}
+            columns={configuration.columns.filter(col => col.display != false )}
         />
     )
 

@@ -31,7 +31,7 @@ export async function getServerSideProps() {
 
 const Form = () => {
     const [formResult, setFormResult] = useState<TFormResults>({answers: []})
-    const { data } = useQuery(['questions'], () => GetQuestions())
+    const { data, isLoading } = useQuery(['questions'], () => GetQuestions())
     const { mutate } = useMutation(() => SaveAnswers({input: formResult.answers}))
 
     useEffect(() => {
@@ -39,10 +39,9 @@ const Form = () => {
             mutate()
     }, [formResult])
 
-
     return (
         <div className="flex flex-col antialiased text-gray-600 justify-between" style={{height: '100vh'}}>
-            <Meta title={AppConfig.title} description={AppConfig.description} />
+            <Meta title={'Navibase Questionnaire'} description={AppConfig.description} />
             <Background color="bg-gray-100">
                 <Section yPadding="py-6">
                   <NavbarTwoColumns logo={<Logo xl />}>
@@ -53,7 +52,9 @@ const Form = () => {
         {
             formResult.answers.length == 0 ? (
                     <div className="text-lg">
-                        <Questionnaire onSubmit={(result: TFormResults) => setFormResult(result)} questions={data.questions}/>
+                        {data && (
+                                <Questionnaire onSubmit={(result: TFormResults) => setFormResult(result)} questions={data.questions}/>
+                        )}
                     </div>
             ) : (
                 <Table {...formResult}/>

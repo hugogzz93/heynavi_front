@@ -90,6 +90,7 @@ export interface ITableColumnConfiguration {
     renderFn?: (any) => any;
     filterable?: boolean;
     filterFn?: (any) => boolean;
+    display?: boolean;
 }
 
 export interface ITableConfiguration {

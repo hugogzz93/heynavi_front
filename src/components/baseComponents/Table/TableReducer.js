@@ -16,7 +16,7 @@ export class TableConfiguration {
 
     columnLabels = () => this.columns.map(c => c.label)
     getFilterConfigById = (id) => this.columns.find(c => c.id == id)
-    rowToArray = (data) => this.columns.reduce((arr, c) => {arr.push(c.renderFn ? () => c.renderFn(data) : c.valueFn(data)); return arr}, [])
+    rowToArray = (data) => this.columns.reduce((arr, c) => {if(c.display == false) return arr; arr.push(c.renderFn ? () => c.renderFn(data) : c.valueFn(data)); return arr}, [])
 }
 
 export class TableStore {

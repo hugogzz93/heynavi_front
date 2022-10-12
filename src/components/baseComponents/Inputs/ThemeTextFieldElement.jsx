@@ -8,7 +8,6 @@ export const ThemeTextFieldElement = ({name = '', onChange, value, label, errors
     // } catch(e) {
     //     debugger
     // }
-    debugger
     return (
         <>
             <div className="theme__form-controller flex flex-col p-5">
