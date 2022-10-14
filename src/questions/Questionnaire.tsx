@@ -115,6 +115,8 @@ const QuestionComponent: React.FC<{question: Question, state: QuestionnaireState
             />
 
             <div className='mt-8'>
+
+            <div className="text-md text-center my-3">Pregunta {state.currentQuestion + 1} de {state.questions.length}</div>
                <button className="float-right inline-block bg-blue-500 p-4 rounded-md text-white" onClick={() => dispatch({type: 'submitQuestion', payload: {questionId: question.id, customValue: sliderValue[0]}})}>
                     Siguiente
                 </button>
@@ -131,6 +133,7 @@ const QuestionComponent: React.FC<{question: Question, state: QuestionnaireState
                     className={`my-1 border border-1 border-gray-300 bg-white rounded-md p-4 cursor-pointer hover:bg-blue-200 duration-300 transition-all ${state.answers.find(a => a.questionId == question.id)?.answerId == opt.id ? 'bg-blue-400 text-white': ''}`}
                   >{opt.text}</div>
             ))}
+            <div className="text-md text-center my-3">Pregunta {state.currentQuestion + 1} de {state.questions.length}</div>
             <div className='mt-8'>
 
         {state.currentQuestion == Object.keys(Questions).length - 1 ? (
