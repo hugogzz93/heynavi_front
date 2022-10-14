@@ -45,21 +45,23 @@ const InvestmentTableConfig = ({sliderValue, state, setState, isAdmin = false}: 
         { 
             label: 'Tipo',
             id: 'tipo',
-			filterable: state['tipo'],
+            display: false,
+			filterable: false,
             valueFn: (d) => d.tipo,
             filterFn: ({filterValue, dataValue}) => { return dataValue.tipo.match(new RegExp(filterValue, 'i'))},
         },
         {
-            label: 'Nombre',
+            label: 'Nombre Inversión',
             id: 'nombre',
-			filterable: state['nombre'],
+			filterable: !state['nombre'],
             valueFn: (d) => d.nombre,
             filterFn: ({filterValue, dataValue}) => {return dataValue.nombre.match(new RegExp(filterValue, 'i'))},
         },
         {
             label: 'Descripción',
             id: 'descripción',
-			filterable: state['descripción'],
+            display: false,
+			filterable: false,
             filterFn: ({filterValue, dataValue}) => dataValue.descripcion.match(new RegExp(filterValue, 'i')),
             renderFn: d => (
                     <div data-tip={d.descripcion}>
@@ -69,43 +71,45 @@ const InvestmentTableConfig = ({sliderValue, state, setState, isAdmin = false}: 
             )
         },
         {
-            label: 'Rentabilidad',
+            label: 'Rentabilidad Anual Bruta',
             id: 'rentabilidad',
-			filterable: state['rentabilidad'],
+			filterable: !state['rentabilidad'],
             filterFn: ({filterValue, dataValue}) => dataValue.rentabilidad.match(new RegExp(filterValue, 'i')),
             valueFn: (d) => d.rentabilidad
         },
         {
             label: 'Riesgo',
             id: 'riesgo',
-			filterable: state['riesgo'],
+			filterable: !state['riesgo'],
             filterFn: ({filterValue, dataValue}) => dataValue.riesgo.match(new RegExp(filterValue, 'i')),
             valueFn: (d) => d.riesgo
         },
         {
             label: 'Tiempo Mínimo',
             id: 'tiempo',
-			filterable: state['tiempo'],
+			filterable: !state['tiempo'],
             filterFn: ({filterValue, dataValue}) => dataValue.tiempo.match(new RegExp(filterValue, 'i')),
             valueFn: (d) => d.tiempo
         },
         {
-            label: 'Monto Mínimo (en pesos)',
+            label: 'Monto Mínimo de Inversión (en MXN)',
             id: 'monto',
-			filterable: state['monto'],
+			filterable: !state['monto'],
             filterFn: ({filterValue, dataValue}) => {try {return Number(dataValue.montoMin) >= Number(filterValue)} catch(e) {return false}},
-            valueFn: (d) => d.montoMin
+            valueFn: (d) => '$' + numberWithCommas(d.montoMin)
         },
         {
             label: 'Tipo de Inversión ',
             id: 'fijaVariable',
-			filterable: state['fijaVariable'],
+			filterable: false,
+            display: false,
             filterFn: ({filterValue, dataValue}) => dataValue.fijaVariable.match(new RegExp(filterValue, 'i')),
             valueFn: (d) => d.fijaVariable
         },
         {
             label: 'Contacto',
             id: 'contacto',
+            display: false,
 			filterable: false,
             renderFn: _ => (
                 <td>
@@ -114,9 +118,9 @@ const InvestmentTableConfig = ({sliderValue, state, setState, isAdmin = false}: 
             )
         },
         {
-            label: 'Interes Anual',
+            label: 'Mi ganancia anual estimada',
             id: 'profit',
-            filterable: state['profit'],
+            filterable: !state['profit'],
             filterFn: ({filterValue, dataValue}) => {
                 try {
                     const num = Number(dataValue.rentabilidad.replace('%', ''))*sliderValue/100 
