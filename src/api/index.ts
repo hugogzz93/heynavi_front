@@ -13,6 +13,8 @@ export const {
     SaveAnswers,
     GetInvestmentOptions,
     UpdateInvestmentOption,
+    CreateInvestmentOption,
+    DeleteInvestmentOption,
 } = getSdk(gqlClient)
 
 export const queryClient = new QueryClient({

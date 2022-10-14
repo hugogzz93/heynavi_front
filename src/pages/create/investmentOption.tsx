@@ -1,8 +1,8 @@
 // import { useState, useEffect } from 'react'
 import { FormComponent, TFormConfiguration } from 'components/baseComponents'
 
-import { dehydrate, useQuery, useMutation } from 'react-query'
-import { queryClient, GetInvestmentOptions, UpdateInvestmentOption, DeleteInvestmentOption} from '../../api'
+import { useMutation } from 'react-query'
+import { CreateInvestmentOption} from '../../api'
 
 // export async function getServerSideProps() {
     // await queryClient.prefetchQuery('investmentOption', () => GetOption())
@@ -10,12 +10,12 @@ import { queryClient, GetInvestmentOptions, UpdateInvestmentOption, DeleteInvest
 
 // }
 
-const FormConfiguration = ({deleteFn}: {deleteFn: () => void}): TFormConfiguration => ({
+const FormConfiguration: TFormConfiguration = {
     actions: [
         {
-            render: () => <div className="flex">
-                <button className='mr-2 py-2 px-4 rounded-md bg-blue-500 text-white text-md'>Submit</button>
-                <button className='py-2 px-4 rounded-md bg-red-500 text-white text-md' onClick={deleteFn}>Delete</button>
+            render: () => 
+            <div className="flex">
+                <button className='py-2 px-4 rounded-md bg-blue-500 text-white text-md'>Submit</button>
             </div>
         }
     ],
@@ -137,37 +137,19 @@ const FormConfiguration = ({deleteFn}: {deleteFn: () => void}): TFormConfigurati
 			},
 
     ]
-});
+};
 
-export async function getServerSideProps({params}: {params: any}) {
-    await queryClient.prefetchQuery("getInvestmentOption", () => GetInvestmentOptions({
-        query: {
-            id: params.id
-        }
-    }))
-
-    return {
-        props: {
-            dehydratedState: dehydrate(queryClient),
-            id: params.id
-        }
-    }
-}
-
-const ViewEditOption = (props: any) => {
-    const {data} = useQuery('getInvestmentOption', () => GetInvestmentOptions({id: props.id}))
-    const {mutate} = useMutation(UpdateInvestmentOption)
-    const {mutate: deleteFn} = useMutation(DeleteInvestmentOption, {onSuccess: () => window.location.href = '/form'})
+const ViewCreateInvestmentOption = () => {
+    const {mutate} = useMutation(CreateInvestmentOption)
 
     return (
         <div className="container mx-auto">
             <div className="border border-1 border-neutral-700">
                 <FormComponent
-                    configuration={FormConfiguration({deleteFn: () => deleteFn({id: props.id})})} 
-                    onSubmit={({id, ...data}) => {
-                        mutate({input: data, id}, {onSuccess: () => window.location.href = '/form'})
+                    configuration={FormConfiguration} 
+                    onSubmit={(data: any) => {
+                        mutate({input: data}, {onSuccess: () => window.location.href = '/form'})
                     }}
-                    data={{defaultValues: data?.investmentOptions[0]}}
                 />
             </div>
         </div>
@@ -175,4 +157,4 @@ const ViewEditOption = (props: any) => {
     )
 }
 
-export default ViewEditOption;
+export default ViewCreateInvestmentOption;

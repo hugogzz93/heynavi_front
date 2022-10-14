@@ -1,0 +1,6 @@
+mutation DeleteInvestmentOption($id: ID!) {
+    deleteInvestmentOption(id: $id) {
+        status
+    }
+}
+
