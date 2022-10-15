@@ -91,9 +91,9 @@ const FilterComponents = () => {
     const filterCount = configuration.columns.filter(f => f.filterable).length
     if(filterCount == 0) return (<span></span>)
     return (
-        <div className="w-full flex flex-wrap mb-5">
+        <div className="w-full flex flex-wrap mb-5 justify-evenly">
             {configuration.columns.filter(f => f.filterable).map(c => 
-                <div className="grow basis-2 mr-3 last-of-type:mr-0" style={{maxWidth: '15em'}} key={c.id}>
+                <div className="mb-3 grow mr-3 last-of-type:mr-0" style={{width: '20em'}} key={c.id}>
                     <FilterComponent key={c.id} columnId={c.id}/>
                 </div>
             )}
