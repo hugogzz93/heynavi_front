@@ -239,7 +239,7 @@ const riesgoValid = ({row, riesgo}: {row: any, riesgo: any}) => {
 }
 
 export async function getServerSideProps({params}: {params: any}) {
-    await queryClient.prefetchQuery("getInvestmentOption", () => GetInvestmentOptions({id: params.id}))
+    await queryClient.prefetchQuery("getInvestmentOption", () => GetInvestmentOptions())
     return {
         props: {
             dehydratedState: dehydrate(queryClient),
