@@ -3,6 +3,7 @@ import { Meta } from '../layout/Meta';
 import ReactTooltip from 'react-tooltip';
 import Link from 'next/link';
 import { Range } from 'react-range'
+import moment from 'moment'
 
 import { dehydrate, useQuery, useMutation } from 'react-query'
 import { queryClient, GetInvestmentOptions } from '../api'
@@ -75,7 +76,12 @@ const InvestmentTableConfig = ({sliderValue, state, setState, isAdmin = false}: 
             id: 'rentabilidad',
 			filterable: !state['rentabilidad'],
             filterFn: ({filterValue, dataValue}) => dataValue.rentabilidad.match(new RegExp(filterValue, 'i')),
-            valueFn: (d) => d.rentabilidad
+            valueFn: (d) => { 
+                debugger
+                if(d.rentabilidad.indexOf('%') > -1)
+                    return Number(d.rentabilidad.replace(/%/g, '')).toFixed(2) + '%'
+                else return d.rentabilidad
+            }
         },
         {
             label: 'Riesgo',
@@ -129,7 +135,7 @@ const InvestmentTableConfig = ({sliderValue, state, setState, isAdmin = false}: 
                     return false
                 }
             },
-            renderFn: d => <div className='text-blue-500'>{'$' + numberWithCommas(Number(d.rentabilidad.replace('%', ''))*sliderValue/100)}</div>
+            renderFn: d => <div className='text-blue-500'>{'$' + numberWithCommas((Number(d.rentabilidad.replace('%', ''))*sliderValue/100).toFixed(2))}</div>
         }
     ]
 })
@@ -176,7 +182,7 @@ const ThemeTableElement: React.FC<ITableElementProps> = ({id, TableHead, TableBo
                     <TableBody/>
                 </tbody>
             </table>
-            <div className="text-sm">Hint: Puedes hacer click en columnas para agregar o quitar filtros.</div>
+            <div className="text-sm">Información actualizada al {moment(new Date()).format('DD/MM/YYYY')}</div>
             <TableFooter/>
         </div>
     )
@@ -253,7 +259,11 @@ const InvestmentTable: React.FC<TFormResults> = ({answers}) => {
     const [isFiltering, setFiltering] = useState(true)
     const [filterableColumns, setFilterableColumns] = useState({})
     const {data, isLoading} = useQuery('getInvestmentOption', () => GetInvestmentOptions())
+    const isAdmin = localStorage.getItem('tasp.capr') == 'true'
     const filter = (row: IDBType) => {
+        if(isAdmin)
+            return true;
+
         const montoMinimo = answers.find(a => a.questionId == 1).value
         const plazoMinimo = answers.find((a: TAnswerType) => a.questionId == 2)
         const disponibilidad = answers.find((a: TAnswerType) => a.questionId == 3)

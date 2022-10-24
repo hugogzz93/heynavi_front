@@ -1,9 +1,10 @@
 import { Meta } from '../layout/Meta';
 import { AppConfig } from '../utils/AppConfig';
-import { Banner } from './Banner';
+import { useRouter } from 'next/router';
 import { Footer } from './Footer';
 import { Hero } from './Hero';
 import { VerticalFeatures } from './VerticalFeatures';
+import { Section } from '../layout/Section'
 // import {
 //   BrowserRouter as Router,
 //   Switch,
@@ -11,13 +12,41 @@ import { VerticalFeatures } from './VerticalFeatures';
 //   Link
 // } from "react-router-dom";
 
-const Base = () => (
-  <div className="antialiased text-gray-600">
+const imgs = [
+'banorte.svg',
+'Briq.svg',
+'CETESDIRECTO.png',
+'GBM+.png',
+'Hey_Banco.svg',
+'hsbc.svg',
+'Logo_de_Actinver.svg',
+'Logo_de_Bitso.svg.png',
+'santander.svg',
+'supertasas.png'
+
+]
+
+const Base = () => {
+    const router = useRouter()
+ return ( <div className="antialiased text-gray-600">
     <Meta title={AppConfig.title} description={AppConfig.description} />
     <Hero />
     <VerticalFeatures />
+    <Section>
+        <div className="text-3xl text-center text-gray-900 font-semibold mb-8">
+            Tenemos alianza con las mejores institucainoes financieras
+            <div className="text-gray-600">y seguimos añadiendo mas opciones.</div>
+        </div>
+        <div className="flex items-center justify-between flex-wrap">
+        {imgs.map(( src: string ) => (
+                    <img style={{height: '3em'}} className='m-8 object-contain' src={`${router.basePath}/logos/${src}`} alt="" />
+        ))}
+        </div>
+        
+    </Section>
     <Footer />
   </div>
-);
+)
+}
 
 export { Base };

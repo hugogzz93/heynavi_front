@@ -81,10 +81,10 @@ const QuestionComponent: React.FC<{question: Question, state: QuestionnaireState
     const [sliderValue, setSliderValue] = useState<any>([5000])
     if(question.questionType === 'slider')
         return (
-            <div className="flex flex-col">
-            <div className="my-2 text-5xl text-blue-500 font-bold">${numberWithCommas(sliderValue)} {sliderValue == 100000 ? 'o más' : ''}</div>
+            <div className="flex flex-col md:mx-0 mx-6">
+            <div className="my-2 text-5xl text-blue-500 font-bold">${numberWithCommas(sliderValue)} {sliderValue == 500000 ? 'o más' : ''}</div>
             <Range
-                step={1000}
+                step={5000}
                 values={sliderValue}
                 min={Number(question.min)}
                 max={Number(question.max)}
@@ -138,7 +138,7 @@ const QuestionComponent: React.FC<{question: Question, state: QuestionnaireState
 
         {state.currentQuestion == Object.keys(Questions).length - 1 ? (
                 <button className="transition-all duration-300 hover:bg-blue-700 ml-4 float-right inline-block bg-blue-500 p-4 rounded-md text-white" onClick={onSubmit}>
-                    Guardar
+                    Finalizar
                 </button>
 
         ): (<div></div>)}
