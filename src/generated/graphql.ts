@@ -1,11 +1,11 @@
-import { GraphQLClient } from 'graphql-request';
-import * as Dom from 'graphql-request/dist/types.dom';
-import gql from 'graphql-tag';
+import { gql } from '@apollo/client';
+import * as Apollo from '@apollo/client';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
 export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
+const defaultOptions = {} as const;
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: string;
@@ -207,6 +207,32 @@ export const CreateInvestmentOptionDocument = gql`
   }
 }
     `;
+export type CreateInvestmentOptionMutationFn = Apollo.MutationFunction<CreateInvestmentOptionMutation, CreateInvestmentOptionMutationVariables>;
+
+/**
+ * __useCreateInvestmentOptionMutation__
+ *
+ * To run a mutation, you first call `useCreateInvestmentOptionMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateInvestmentOptionMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createInvestmentOptionMutation, { data, loading, error }] = useCreateInvestmentOptionMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreateInvestmentOptionMutation(baseOptions?: Apollo.MutationHookOptions<CreateInvestmentOptionMutation, CreateInvestmentOptionMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateInvestmentOptionMutation, CreateInvestmentOptionMutationVariables>(CreateInvestmentOptionDocument, options);
+      }
+export type CreateInvestmentOptionMutationHookResult = ReturnType<typeof useCreateInvestmentOptionMutation>;
+export type CreateInvestmentOptionMutationResult = Apollo.MutationResult<CreateInvestmentOptionMutation>;
+export type CreateInvestmentOptionMutationOptions = Apollo.BaseMutationOptions<CreateInvestmentOptionMutation, CreateInvestmentOptionMutationVariables>;
 export const DeleteInvestmentOptionDocument = gql`
     mutation DeleteInvestmentOption($id: ID!) {
   deleteInvestmentOption(id: $id) {
@@ -214,6 +240,32 @@ export const DeleteInvestmentOptionDocument = gql`
   }
 }
     `;
+export type DeleteInvestmentOptionMutationFn = Apollo.MutationFunction<DeleteInvestmentOptionMutation, DeleteInvestmentOptionMutationVariables>;
+
+/**
+ * __useDeleteInvestmentOptionMutation__
+ *
+ * To run a mutation, you first call `useDeleteInvestmentOptionMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteInvestmentOptionMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteInvestmentOptionMutation, { data, loading, error }] = useDeleteInvestmentOptionMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useDeleteInvestmentOptionMutation(baseOptions?: Apollo.MutationHookOptions<DeleteInvestmentOptionMutation, DeleteInvestmentOptionMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteInvestmentOptionMutation, DeleteInvestmentOptionMutationVariables>(DeleteInvestmentOptionDocument, options);
+      }
+export type DeleteInvestmentOptionMutationHookResult = ReturnType<typeof useDeleteInvestmentOptionMutation>;
+export type DeleteInvestmentOptionMutationResult = Apollo.MutationResult<DeleteInvestmentOptionMutation>;
+export type DeleteInvestmentOptionMutationOptions = Apollo.BaseMutationOptions<DeleteInvestmentOptionMutation, DeleteInvestmentOptionMutationVariables>;
 export const GetInvestmentOptionsDocument = gql`
     query GetInvestmentOptions($query: InvestmentOptionQuery) {
   investmentOptions(query: $query) {
@@ -233,6 +285,34 @@ export const GetInvestmentOptionsDocument = gql`
   }
 }
     `;
+
+/**
+ * __useGetInvestmentOptionsQuery__
+ *
+ * To run a query within a React component, call `useGetInvestmentOptionsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetInvestmentOptionsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetInvestmentOptionsQuery({
+ *   variables: {
+ *      query: // value for 'query'
+ *   },
+ * });
+ */
+export function useGetInvestmentOptionsQuery(baseOptions?: Apollo.QueryHookOptions<GetInvestmentOptionsQuery, GetInvestmentOptionsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetInvestmentOptionsQuery, GetInvestmentOptionsQueryVariables>(GetInvestmentOptionsDocument, options);
+      }
+export function useGetInvestmentOptionsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetInvestmentOptionsQuery, GetInvestmentOptionsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetInvestmentOptionsQuery, GetInvestmentOptionsQueryVariables>(GetInvestmentOptionsDocument, options);
+        }
+export type GetInvestmentOptionsQueryHookResult = ReturnType<typeof useGetInvestmentOptionsQuery>;
+export type GetInvestmentOptionsLazyQueryHookResult = ReturnType<typeof useGetInvestmentOptionsLazyQuery>;
+export type GetInvestmentOptionsQueryResult = Apollo.QueryResult<GetInvestmentOptionsQuery, GetInvestmentOptionsQueryVariables>;
 export const UpdateInvestmentOptionDocument = gql`
     mutation UpdateInvestmentOption($input: InvestmentOptionInput!, $id: ID!) {
   updateInvestmentOption(id: $id, input: $input) {
@@ -240,6 +320,33 @@ export const UpdateInvestmentOptionDocument = gql`
   }
 }
     `;
+export type UpdateInvestmentOptionMutationFn = Apollo.MutationFunction<UpdateInvestmentOptionMutation, UpdateInvestmentOptionMutationVariables>;
+
+/**
+ * __useUpdateInvestmentOptionMutation__
+ *
+ * To run a mutation, you first call `useUpdateInvestmentOptionMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateInvestmentOptionMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateInvestmentOptionMutation, { data, loading, error }] = useUpdateInvestmentOptionMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useUpdateInvestmentOptionMutation(baseOptions?: Apollo.MutationHookOptions<UpdateInvestmentOptionMutation, UpdateInvestmentOptionMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateInvestmentOptionMutation, UpdateInvestmentOptionMutationVariables>(UpdateInvestmentOptionDocument, options);
+      }
+export type UpdateInvestmentOptionMutationHookResult = ReturnType<typeof useUpdateInvestmentOptionMutation>;
+export type UpdateInvestmentOptionMutationResult = Apollo.MutationResult<UpdateInvestmentOptionMutation>;
+export type UpdateInvestmentOptionMutationOptions = Apollo.BaseMutationOptions<UpdateInvestmentOptionMutation, UpdateInvestmentOptionMutationVariables>;
 export const GetQuestionsDocument = gql`
     query GetQuestions {
   questions {
@@ -255,6 +362,33 @@ export const GetQuestionsDocument = gql`
   }
 }
     `;
+
+/**
+ * __useGetQuestionsQuery__
+ *
+ * To run a query within a React component, call `useGetQuestionsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetQuestionsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetQuestionsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetQuestionsQuery(baseOptions?: Apollo.QueryHookOptions<GetQuestionsQuery, GetQuestionsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetQuestionsQuery, GetQuestionsQueryVariables>(GetQuestionsDocument, options);
+      }
+export function useGetQuestionsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetQuestionsQuery, GetQuestionsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetQuestionsQuery, GetQuestionsQueryVariables>(GetQuestionsDocument, options);
+        }
+export type GetQuestionsQueryHookResult = ReturnType<typeof useGetQuestionsQuery>;
+export type GetQuestionsLazyQueryHookResult = ReturnType<typeof useGetQuestionsLazyQuery>;
+export type GetQuestionsQueryResult = Apollo.QueryResult<GetQuestionsQuery, GetQuestionsQueryVariables>;
 export const SaveAnswersDocument = gql`
     mutation SaveAnswers($input: [ClientQuestionAnswerInput!]!) {
   saveAnswer(answers: $input) {
@@ -265,32 +399,29 @@ export const SaveAnswersDocument = gql`
   }
 }
     `;
+export type SaveAnswersMutationFn = Apollo.MutationFunction<SaveAnswersMutation, SaveAnswersMutationVariables>;
 
-export type SdkFunctionWrapper = <T>(action: (requestHeaders?:Record<string, string>) => Promise<T>, operationName: string, operationType?: string) => Promise<T>;
-
-
-const defaultWrapper: SdkFunctionWrapper = (action, _operationName, _operationType) => action();
-
-export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = defaultWrapper) {
-  return {
-    CreateInvestmentOption(variables: CreateInvestmentOptionMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<CreateInvestmentOptionMutation> {
-      return withWrapper((wrappedRequestHeaders) => client.request<CreateInvestmentOptionMutation>(CreateInvestmentOptionDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'CreateInvestmentOption', 'mutation');
-    },
-    DeleteInvestmentOption(variables: DeleteInvestmentOptionMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<DeleteInvestmentOptionMutation> {
-      return withWrapper((wrappedRequestHeaders) => client.request<DeleteInvestmentOptionMutation>(DeleteInvestmentOptionDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'DeleteInvestmentOption', 'mutation');
-    },
-    GetInvestmentOptions(variables?: GetInvestmentOptionsQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetInvestmentOptionsQuery> {
-      return withWrapper((wrappedRequestHeaders) => client.request<GetInvestmentOptionsQuery>(GetInvestmentOptionsDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetInvestmentOptions', 'query');
-    },
-    UpdateInvestmentOption(variables: UpdateInvestmentOptionMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<UpdateInvestmentOptionMutation> {
-      return withWrapper((wrappedRequestHeaders) => client.request<UpdateInvestmentOptionMutation>(UpdateInvestmentOptionDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'UpdateInvestmentOption', 'mutation');
-    },
-    GetQuestions(variables?: GetQuestionsQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetQuestionsQuery> {
-      return withWrapper((wrappedRequestHeaders) => client.request<GetQuestionsQuery>(GetQuestionsDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetQuestions', 'query');
-    },
-    SaveAnswers(variables: SaveAnswersMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<SaveAnswersMutation> {
-      return withWrapper((wrappedRequestHeaders) => client.request<SaveAnswersMutation>(SaveAnswersDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'SaveAnswers', 'mutation');
-    }
-  };
-}
-export type Sdk = ReturnType<typeof getSdk>;
+/**
+ * __useSaveAnswersMutation__
+ *
+ * To run a mutation, you first call `useSaveAnswersMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSaveAnswersMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [saveAnswersMutation, { data, loading, error }] = useSaveAnswersMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useSaveAnswersMutation(baseOptions?: Apollo.MutationHookOptions<SaveAnswersMutation, SaveAnswersMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<SaveAnswersMutation, SaveAnswersMutationVariables>(SaveAnswersDocument, options);
+      }
+export type SaveAnswersMutationHookResult = ReturnType<typeof useSaveAnswersMutation>;
+export type SaveAnswersMutationResult = Apollo.MutationResult<SaveAnswersMutation>;
+export type SaveAnswersMutationOptions = Apollo.BaseMutationOptions<SaveAnswersMutation, SaveAnswersMutationVariables>;
