@@ -13,6 +13,7 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
+  file: any;
 };
 
 export type Answer = {
@@ -50,6 +51,13 @@ export type DeleteInvestmentOptionMutationPayload = {
   status: Scalars['Boolean'];
 };
 
+export type FileLink = {
+  __typename?: 'FileLink';
+  attachmentId?: Maybe<Scalars['ID']>;
+  link?: Maybe<Scalars['String']>;
+  name?: Maybe<Scalars['String']>;
+};
+
 export type InvestmentOption = {
   __typename?: 'InvestmentOption';
   apertura: Scalars['String'];
@@ -57,6 +65,7 @@ export type InvestmentOption = {
   fijaVariable: Scalars['String'];
   generales: Scalars['String'];
   id: Scalars['ID'];
+  image?: Maybe<FileLink>;
   montoMin: Scalars['String'];
   nombre: Scalars['String'];
   recurrencia: Scalars['String'];
@@ -72,6 +81,7 @@ export type InvestmentOptionInput = {
   descripcion?: InputMaybe<Scalars['String']>;
   fijaVariable?: InputMaybe<Scalars['String']>;
   generales?: InputMaybe<Scalars['String']>;
+  image?: InputMaybe<Scalars['file']>;
   montoMin?: InputMaybe<Scalars['String']>;
   nombre?: InputMaybe<Scalars['String']>;
   recurrencia?: InputMaybe<Scalars['String']>;

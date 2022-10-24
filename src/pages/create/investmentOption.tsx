@@ -70,6 +70,9 @@ const FormConfiguration: TFormConfiguration = {
             {
 				id: 'apertura',
             	cols: 6
+			},{
+				id: 'image',
+            	cols: 6
 			},
         ]
 
@@ -134,6 +137,10 @@ const FormConfiguration: TFormConfiguration = {
 				id: 'apertura',
                 label: 'Apertura',
                 type: 'text',
+			},{
+				id: 'image',
+                label: 'logo',
+                type: 'file',
 			},
 
     ]

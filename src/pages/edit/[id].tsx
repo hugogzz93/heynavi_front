@@ -3,6 +3,7 @@ import { FormComponent, TFormConfiguration } from 'components/baseComponents'
 
 import { dehydrate, useQuery, useMutation } from 'react-query'
 import { queryClient, GetInvestmentOptions, UpdateInvestmentOption, DeleteInvestmentOption} from '../../api'
+import { InvestmentOptionInput } from 'generated/graphql'
 
 // export async function getServerSideProps() {
     // await queryClient.prefetchQuery('investmentOption', () => GetOption())
@@ -70,7 +71,10 @@ const FormConfiguration = ({deleteFn}: {deleteFn: () => void}): TFormConfigurati
             {
 				id: 'apertura',
             	cols: 6
-			},
+			},{
+				id: 'image',
+            	cols: 6
+			}
         ]
 
     },
@@ -134,7 +138,11 @@ const FormConfiguration = ({deleteFn}: {deleteFn: () => void}): TFormConfigurati
 				id: 'apertura',
                 label: 'Apertura',
                 type: 'text',
-			},
+			},{
+				id: 'image',
+                label: 'logo',
+                type: 'file',
+			}
 
     ]
 });
@@ -154,19 +162,30 @@ export async function getServerSideProps({params}: {params: any}) {
     }
 }
 
-const ViewEditOption = (props: any) => {
-    const {data} = useQuery('getInvestmentOption', () => GetInvestmentOptions({id: props.id}))
-    const {mutate} = useMutation(UpdateInvestmentOption)
-    const {mutate: deleteFn} = useMutation(DeleteInvestmentOption, {onSuccess: () => window.location.href = '/form'})
+const ViewEditOption = (props: {id: string}) => {
+    const {data} = useQuery('getInvestmentOption', () => GetInvestmentOptions({query: { id: props.id }}))
+    const {mutate} = useMutation(UpdateInvestmentOption, {onSuccess: () => {
+        window.location.href = '/form'
+    }})
+    const {mutate: deleteFn} = useMutation(DeleteInvestmentOption, {onSuccess: () => {
+        window.location.href = '/form'
+    }})
+
+    const handleSubmit = ({id, ...data}: {id: string, data: any}) => {
+        const input: InvestmentOptionInput = {
+            ...(data as InvestmentOptionInput),
+        }
+        if(input.image == '')
+            delete input.image
+        mutate({input, id})
+    }
 
     return (
         <div className="container mx-auto">
             <div className="border border-1 border-neutral-700">
                 <FormComponent
                     configuration={FormConfiguration({deleteFn: () => deleteFn({id: props.id})})} 
-                    onSubmit={({id, ...data}) => {
-                        mutate({input: data, id}, {onSuccess: () => window.location.href = '/form'})
-                    }}
+                    onSubmit={handleSubmit}
                     data={{defaultValues: data?.investmentOptions[0]}}
                 />
             </div>
