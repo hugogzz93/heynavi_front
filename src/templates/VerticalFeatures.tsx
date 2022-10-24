@@ -3,8 +3,8 @@ import { Section } from '../layout/Section';
 
 const VerticalFeatures = () => (
   <Section
-    title="Diversifica tus ahorros"
-    description="Desde fondos en Bancos hasta Criptomonedas, Bienes Raíces y Bolsa, tenemos la opción que más se ajusta a tus necesidades."
+    title="Diversifica tus inversiones"
+    description="En Navi podrás comparar desde fondos en Bancos hasta Criptomonedas, Bienes Raíces y Bolsa, para que elijas la opción que más te conviene."
   >
     <VerticalFeatureRow
       title="Nuevas opciones cada día"
@@ -18,12 +18,6 @@ const VerticalFeatures = () => (
       image="/assets/images/feature2.svg"
       imageAlt="diversifica tus ahorros"
       reverse
-    />
-    <VerticalFeatureRow
-      title="Comparte"
-      description="Entre más personas accedan a la base de datos, más nos ayuda a ofrecer herramientas de inversión de valor"
-      image="/assets/images/feature3.svg"
-      imageAlt="Third feature alt text"
     />
   </Section>
 );

@@ -39,6 +39,11 @@ const Form = () => {
             mutate()
     }, [formResult])
 
+    let isAdmin = false
+    try {
+        isAdmin = localStorage.getItem('tasp.capr') == 'true'
+    }catch {}
+
     return (
         <div className="flex flex-col antialiased text-gray-600 justify-between" style={{height: '100vh'}}>
             <Meta title={'Navibase Questionnaire'} description={AppConfig.description} />
@@ -50,7 +55,7 @@ const Form = () => {
                 </Section>
                 <Section yPadding="py-6">
         {
-            formResult.answers.length == 0 ? (
+            !isAdmin && formResult.answers.length == 0 ? (
                     <div className="text-lg">
                         {data && (
                                 <Questionnaire onSubmit={(result: TFormResults) => setFormResult(result)} questions={data.questions}/>
