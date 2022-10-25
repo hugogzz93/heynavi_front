@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { Range } from 'react-range'
 
 import { dehydrate, useQuery, useMutation } from 'react-query'
-import { queryClient, GetInvestmentOptions } from '../api'
+import { useGetInvestmentOptionsQuery } from '../api'
 import { Table, ITableConfiguration, ITableElementProps, ITableHeadElementProps } from 'components/baseComponents'
 import { IDBType } from 'lib/database'
 import { TFormResults } from 'pages/form'
@@ -238,21 +238,26 @@ const riesgoValid = ({row, riesgo}: {row: any, riesgo: any}) => {
     return value
 }
 
-export async function getServerSideProps({params}: {params: any}) {
-    await queryClient.prefetchQuery("getInvestmentOption", () => GetInvestmentOptions())
-    return {
-        props: {
-            dehydratedState: dehydrate(queryClient),
-        }
-    }
-}
+// export async function getServerSideProps({params}: {params: any}) {
+//     await queryClient.prefetchQuery("getInvestmentOption", () => GetInvestmentOptions())
+//     return {
+//         props: {
+//             dehydratedState: dehydrate(queryClient),
+//         }
+//     }
+// }
 
 
 const InvestmentTable: React.FC<TFormResults> = ({answers}) => {
     const [sliderValue, setSliderValue] = useState<any>([5000])
     const [isFiltering, setFiltering] = useState(true)
     const [filterableColumns, setFilterableColumns] = useState({})
-    const {data, isLoading} = useQuery('getInvestmentOption', () => GetInvestmentOptions())
+    // const {data, isLoading} = useQuery('getInvestmentOption', () => GetInvestmentOptions())
+    const {data, loading} = useGetInvestmentOptionsQuery()
+    if(loading)
+        return <div>Loading</div>
+
+
     const filter = (row: IDBType) => {
         const montoMinimo = answers.find(a => a.questionId == 1).value
         const plazoMinimo = answers.find((a: TAnswerType) => a.questionId == 2)
@@ -266,7 +271,10 @@ const InvestmentTable: React.FC<TFormResults> = ({answers}) => {
         return disp && riesg && plaz
     }
 
-    let rows = data?.investmentOptions || [];
+    let rows = []
+    if(data?.investmentOptions)
+        rows = [...data?.investmentOptions]
+
     if(isFiltering)
         rows = rows.filter(filter).slice(0,3)
 

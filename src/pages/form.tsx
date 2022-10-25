@@ -9,8 +9,8 @@ import { NavbarTwoColumns } from '../navigation/NavbarTwoColumns';
 import { Logo } from '../templates/Logo';
 import { Footer } from '../templates/Footer';
 import Questionnaire from '../questions/Questionnaire'
-import { dehydrate, useQuery, useMutation } from 'react-query'
-import { queryClient, GetQuestions, SaveAnswers } from '../api'
+import { useGetQuestionsQuery } from 'generated/graphql'
+// import { queryClient, GetQuestions, SaveAnswers } from '../api'
 
 import Table from 'components/InvestmentTable'
 import { ClientQuestionAnswerInput } from '../generated/graphql'
@@ -20,24 +20,33 @@ export type TFormResults = {
     answers: Array<ClientQuestionAnswerInput>;
 }
 
-export async function getServerSideProps() {
-    await queryClient.prefetchQuery("questions", () => GetQuestions())
-    return {
-        props: {
-            dehydratedState: dehydrate(queryClient)
-        }
-    }
-}
+// export async function getServerSideProps() {
+//     await queryClient.prefetchQuery("questions", () => GetQuestions())
+//     return {
+//         props: {
+//             dehydratedState: dehydrate(queryClient)
+//         }
+//     }
+// }
 
 const Form = () => {
     const [formResult, setFormResult] = useState<TFormResults>({answers: []})
-    const { data, isLoading } = useQuery(['questions'], () => GetQuestions())
-    const { mutate } = useMutation(() => SaveAnswers({input: formResult.answers}))
-
+    const {data, loading} = useGetQuestionsQuery();
+    // const { data, isLoading } = useQuery(['questions'], () => GetQuestions())
+    // const { mutate } = useMutation(() => SaveAnswers({input: formResult.answers}))
     useEffect(() => {
-        if(formResult.answers.length > 0) 
-            mutate()
+        // if(formResult.answers.length > 0) 
+            // mutate()
     }, [formResult])
+
+    if(loading)
+        return <div>loading</div>
+
+
+    const questions = data?.questions
+
+
+
 
     return (
         <div className="flex flex-col antialiased text-gray-600 justify-between" style={{height: '100vh'}}>
@@ -52,8 +61,8 @@ const Form = () => {
         {
             formResult.answers.length == 0 ? (
                     <div className="text-lg">
-                        {data && (
-                                <Questionnaire onSubmit={(result: TFormResults) => setFormResult(result)} questions={data.questions}/>
+                        {questions && (
+                                <Questionnaire onSubmit={(result: TFormResults) => setFormResult(result)} questions={questions}/>
                         )}
                     </div>
             ) : (

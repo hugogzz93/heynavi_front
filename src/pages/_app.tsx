@@ -1,17 +1,21 @@
 import { AppProps } from 'next/app';
 // import {Hydrate, QueryClientProvider} from 'react-query'
-import { ApolloProvider } from '@apollo/client'
+import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client';
 
 import '../styles/global.css';
-import { queryClient } from '../api'
 
-const MyApp = ({ Component, pageProps }: AppProps) => (
+const MyApp = ({ Component, pageProps }: AppProps) => { 
 
-    <QueryClientProvider client={queryClient}>
-        <Hydrate state={pageProps.dehydratedState}>
-          <Component {...pageProps} />
-        </Hydrate>
-    </QueryClientProvider>
-);
+const client = new ApolloClient({
+    uri: 'http://localhost:3000/graphql',
+    cache: new InMemoryCache(),
+});
+
+    return (
+        <ApolloProvider client={client}>
+            <Component {...pageProps} />
+        </ApolloProvider>
+    )
+};
 
 export default MyApp;

@@ -2,8 +2,9 @@
 import { FormComponent, TFormConfiguration } from 'components/baseComponents'
 
 import { dehydrate, useQuery, useMutation } from 'react-query'
-import { queryClient, GetInvestmentOptions, UpdateInvestmentOption, DeleteInvestmentOption} from '../../api'
-import { InvestmentOptionInput } from 'generated/graphql'
+// import { queryClient, GetInvestmentOptions, UpdateInvestmentOption, DeleteInvestmentOption} from '../../api'
+import { useGetInvestmentOptionsQuery, useUpdateInvestmentOptionMutation, useDeleteInvestmentOptionMutation } from '../../api'
+import { InvestmentOptionInput, InvestmentOptionQuery } from 'generated/graphql'
 
 // export async function getServerSideProps() {
     // await queryClient.prefetchQuery('investmentOption', () => GetOption())
@@ -148,43 +149,49 @@ const FormConfiguration = ({deleteFn}: {deleteFn: () => void}): TFormConfigurati
 });
 
 export async function getServerSideProps({params}: {params: any}) {
-    await queryClient.prefetchQuery("getInvestmentOption", () => GetInvestmentOptions({
-        query: {
-            id: params.id
-        }
-    }))
+    // await queryClient.prefetchQuery("getInvestmentOption", () => GetInvestmentOptions({
+    //     query: {
+    //         id: params.id
+    //     }
+    // }))
 
     return {
         props: {
-            dehydratedState: dehydrate(queryClient),
+            // dehydratedState: dehydrate(queryClient),
             id: params.id
         }
     }
 }
 
 const ViewEditOption = (props: {id: string}) => {
-    const {data} = useQuery('getInvestmentOption', () => GetInvestmentOptions({query: { id: props.id }}))
-    const {mutate} = useMutation(UpdateInvestmentOption, {onSuccess: () => {
-        window.location.href = '/form'
-    }})
-    const {mutate: deleteFn} = useMutation(DeleteInvestmentOption, {onSuccess: () => {
+    const {data, loading} = useGetInvestmentOptionsQuery({variables: {query: {id: props.id}}})
+    const [mutate] = useUpdateInvestmentOptionMutation({
+        onCompleted: () => {
+            window.location.href = '/form'
+        }
+    })
+    const [deleteFn] = useDeleteInvestmentOptionMutation({onCompleted: () => {
         window.location.href = '/form'
     }})
 
-    const handleSubmit = ({id, ...data}: {id: string, data: any}) => {
+    const handleSubmit = ({id, __typename, ...data}: {id: string, data: any}) => {
         const input: InvestmentOptionInput = {
             ...(data as InvestmentOptionInput),
         }
         if(input.image == '')
             delete input.image
-        mutate({input, id})
+        debugger
+        mutate({variables: {input, id}})
     }
+
+    if(loading)
+        return <div>Loading</div>
 
     return (
         <div className="container mx-auto">
             <div className="border border-1 border-neutral-700">
                 <FormComponent
-                    configuration={FormConfiguration({deleteFn: () => deleteFn({id: props.id})})} 
+                    configuration={FormConfiguration({deleteFn: () => deleteFn({variables: {id: props.id}})})} 
                     onSubmit={handleSubmit}
                     data={{defaultValues: data?.investmentOptions[0]}}
                 />
