@@ -48,6 +48,7 @@ const Form = () => {
 
 
     const questions = data?.questions
+    debugger
 
 
 
@@ -66,7 +67,7 @@ const Form = () => {
             !isAdmin && formResult.answers.length == 0 ? (
                     <div className="text-lg">
                         {questions && (
-                                <Questionnaire onSubmit={(result: TFormResults) => setFormResult(result)} questions={questions}/>
+                                <Questionnaire onSubmit={(result: TFormResults) => setFormResult(result)} questions={questions.slice().sort((a,b) => Number(a.order) - Number(b.order) )}/>
                         )}
                     </div>
             ) : (

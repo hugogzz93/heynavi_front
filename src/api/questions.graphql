@@ -3,6 +3,7 @@ query GetQuestions {
         id
         text
         questionType
+        order
         min
         max
         answers {
