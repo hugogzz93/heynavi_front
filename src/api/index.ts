@@ -3,7 +3,7 @@ import { ApolloClient, InMemoryCache, ApolloProvider, gql } from '@apollo/client
 
 const devUrl = "http://localhost:3000/graphql";
 const prodUrl = "https://api.navibase.io/graphql";
-export const baseUrl = prodUrl;
+export const baseUrl = devUrl;
 
 
 // const gqlClient = new GraphQLClient(devUrl)
