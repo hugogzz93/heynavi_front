@@ -180,7 +180,7 @@ const ViewEditOption = (props: {id: string}) => {
         }
         if(input.image == '')
             delete input.image
-        debugger
+
         mutate({variables: {input, id}})
     }
 

@@ -43,6 +43,16 @@ const InvestmentTableConfig = ({sliderValue, state, setState, isAdmin = false}: 
             }
         },
         { 
+            label: 'Logo',
+            id: 'image',
+			filterable: false,
+            renderFn: (d) => {
+                if(d.image?.link)
+                    return <img className='object-contain' src={`${d.image.link}`} alt="" style={{width: '13em'}}/>
+                return <div></div>
+            },
+            filterFn: ({filterValue, dataValue}) => { return dataValue.tipo.match(new RegExp(filterValue, 'i'))},
+        },{ 
             label: 'Tipo',
             id: 'tipo',
             display: false,
@@ -272,6 +282,7 @@ const InvestmentTable: React.FC<TFormResults> = ({answers}) => {
     }
 
     let rows = []
+    debugger
     if(data?.investmentOptions)
         rows = [...data?.investmentOptions]
 

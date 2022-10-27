@@ -13,7 +13,7 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
-  file: any;
+  Upload: any;
 };
 
 export type Answer = {
@@ -81,7 +81,7 @@ export type InvestmentOptionInput = {
   descripcion?: InputMaybe<Scalars['String']>;
   fijaVariable?: InputMaybe<Scalars['String']>;
   generales?: InputMaybe<Scalars['String']>;
-  image?: InputMaybe<Scalars['file']>;
+  image?: InputMaybe<Scalars['Upload']>;
   montoMin?: InputMaybe<Scalars['String']>;
   nombre?: InputMaybe<Scalars['String']>;
   recurrencia?: InputMaybe<Scalars['String']>;
@@ -177,7 +177,7 @@ export type GetInvestmentOptionsQueryVariables = Exact<{
 }>;
 
 
-export type GetInvestmentOptionsQuery = { __typename?: 'Query', investmentOptions: Array<{ __typename?: 'InvestmentOption', id: string, tipo: string, nombre: string, descripcion: string, rentabilidad: string, riesgo: string, tiempo: string, montoMin: string, recurrencia: string, generales: string, fijaVariable: string, respaldado: string, apertura: string }> };
+export type GetInvestmentOptionsQuery = { __typename?: 'Query', investmentOptions: Array<{ __typename?: 'InvestmentOption', id: string, tipo: string, nombre: string, descripcion: string, rentabilidad: string, riesgo: string, tiempo: string, montoMin: string, recurrencia: string, generales: string, fijaVariable: string, respaldado: string, apertura: string, image?: { __typename?: 'FileLink', link?: string | null } | null }> };
 
 export type UpdateInvestmentOptionMutationVariables = Exact<{
   input: InvestmentOptionInput;
@@ -282,6 +282,9 @@ export const GetInvestmentOptionsDocument = gql`
     fijaVariable
     respaldado
     apertura
+    image {
+      link
+    }
   }
 }
     `;

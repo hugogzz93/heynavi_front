@@ -7,11 +7,11 @@ export const baseUrl = devUrl;
 
 
 // const gqlClient = new GraphQLClient(devUrl)
-export const queryClient = new ApolloClient({
-    ssrMode: true,
-    uri: devUrl,
-    cache: new InMemoryCache(),
-})
+// export const queryClient = new ApolloClient({
+//     ssrMode: true,
+//     uri: devUrl,
+//     cache: new InMemoryCache(),
+// })
 
 export {
     useGetQuestionsQuery,
