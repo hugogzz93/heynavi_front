@@ -2,7 +2,7 @@
 import { FormComponent, TFormConfiguration } from 'components/baseComponents'
 
 import { useMutation } from 'react-query'
-import { CreateInvestmentOption} from '../../api'
+import { useCreateInvestmentOptionMutation} from '../../api'
 
 // export async function getServerSideProps() {
     // await queryClient.prefetchQuery('investmentOption', () => GetOption())
@@ -147,7 +147,11 @@ const FormConfiguration: TFormConfiguration = {
 };
 
 const ViewCreateInvestmentOption = () => {
-    const {mutate} = useMutation(CreateInvestmentOption)
+    const [mutate] = useCreateInvestmentOptionMutation({
+        onCompleted: () => {
+            window.location.href = '/form'
+        }
+    })
 
     return (
         <div className="container mx-auto">
@@ -155,7 +159,7 @@ const ViewCreateInvestmentOption = () => {
                 <FormComponent
                     configuration={FormConfiguration} 
                     onSubmit={(data: any) => {
-                        mutate({input: data}, {onSuccess: () => window.location.href = '/form'})
+                        mutate({variables: {input: data}})
                     }}
                 />
             </div>

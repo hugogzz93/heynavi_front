@@ -13,5 +13,8 @@ query GetInvestmentOptions($query: InvestmentOptionQuery) {
       fijaVariable
       respaldado
       apertura
+      image {
+          link
+      }
     }
 }

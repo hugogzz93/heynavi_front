@@ -6,7 +6,7 @@ import { Range } from 'react-range'
 import moment from 'moment'
 
 import { dehydrate, useQuery, useMutation } from 'react-query'
-import { queryClient, GetInvestmentOptions } from '../api'
+import { useGetInvestmentOptionsQuery } from '../api'
 import { Table, ITableConfiguration, ITableElementProps, ITableHeadElementProps } from 'components/baseComponents'
 import { IDBType } from 'lib/database'
 import { TFormResults } from 'pages/form'
@@ -44,6 +44,16 @@ const InvestmentTableConfig = ({sliderValue, state, setState, isAdmin = false}: 
             }
         },
         { 
+            label: 'Logo',
+            id: 'image',
+			filterable: false,
+            renderFn: (d) => {
+                if(d.image?.link)
+                    return <img className='object-contain' src={`${d.image.link}`} alt="" style={{width: '13em'}}/>
+                return <div></div>
+            },
+            filterFn: ({filterValue, dataValue}) => { return dataValue.tipo.match(new RegExp(filterValue, 'i'))},
+        },{ 
             label: 'Tipo',
             id: 'tipo',
             display: false,
@@ -244,22 +254,26 @@ const riesgoValid = ({row, riesgo}: {row: any, riesgo: any}) => {
     return value
 }
 
-export async function getServerSideProps({params}: {params: any}) {
-    await queryClient.prefetchQuery("getInvestmentOption", () => GetInvestmentOptions())
-    return {
-        props: {
-            dehydratedState: dehydrate(queryClient),
-        }
-    }
-}
+// export async function getServerSideProps({params}: {params: any}) {
+//     await queryClient.prefetchQuery("getInvestmentOption", () => GetInvestmentOptions())
+//     return {
+//         props: {
+//             dehydratedState: dehydrate(queryClient),
+//         }
+//     }
+// }
 
 
 const InvestmentTable: React.FC<TFormResults> = ({answers}) => {
     const [sliderValue, setSliderValue] = useState<any>([5000])
     const [isFiltering, setFiltering] = useState(true)
     const [filterableColumns, setFilterableColumns] = useState({})
-    const {data, isLoading} = useQuery('getInvestmentOption', () => GetInvestmentOptions())
     const isAdmin = localStorage.getItem('tasp.capr') == 'true'
+    // const {data, isLoading} = useQuery('getInvestmentOption', () => GetInvestmentOptions())
+    const {data, loading} = useGetInvestmentOptionsQuery()
+    if(loading)
+        return <div>Loading</div>
+
     const filter = (row: IDBType) => {
         if(isAdmin)
             return true;
@@ -276,7 +290,11 @@ const InvestmentTable: React.FC<TFormResults> = ({answers}) => {
         return disp && riesg && plaz
     }
 
-    let rows = data?.investmentOptions || [];
+    let rows = []
+    debugger
+    if(data?.investmentOptions)
+        rows = [...data?.investmentOptions]
+
     if(isFiltering)
         rows = rows.filter(filter).slice(0,3)
 
