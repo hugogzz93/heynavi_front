@@ -184,6 +184,17 @@ const ViewEditOption = (props: {id: string}) => {
         mutate({variables: {input, id}})
     }
 
+
+    let isAdmin = false
+    try {
+        isAdmin = localStorage.getItem('tasp.capr') == 'true'
+    }catch {
+        return <div></div>
+    }
+
+    if(!isAdmin)
+        return <div>404</div>
+
     if(loading)
         return <div>Loading</div>
 
