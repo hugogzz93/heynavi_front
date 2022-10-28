@@ -31,7 +31,6 @@ const Base = () => {
  return ( <div className="antialiased text-gray-600">
     <Meta title={AppConfig.title} description={AppConfig.description} />
     <Hero />
-    <VerticalFeatures />
     <Section>
         <div className="text-3xl text-center text-gray-900 font-semibold mb-8">
             Tenemos las mejores opciones de inversión 
@@ -44,6 +43,7 @@ const Base = () => {
         </div>
         
     </Section>
+    <VerticalFeatures />
     <Footer />
   </div>
 )

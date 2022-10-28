@@ -70,7 +70,7 @@ const QuestionnaireHeading: React.FC= () => {
                 Nuestra base de datos cuenta con más de 100 opciones de inversión.
             </div>
             <div className="text-md">
-                Las próximas preguntas ayudaran a segmentar las que más se ajusten a tu perfil.
+                Las próximas preguntas ayudarán a segmentar las que más se ajusten a tu perfil.
             </div>
         </div>
     )
@@ -129,7 +129,7 @@ const QuestionComponent: React.FC<{question: Question, state: QuestionnaireState
             {question.answers?.map(opt => (
                 <div 
                     key={`${question.id}-${opt.id}`}
-                    onClick={() => dispatch({type: 'submitQuestion', payload: {questionId: question.id, answerId: opt.id}})}
+                    onClick={() => dispatch({type: 'submitQuestion', payload: {questionId: question.id, answerId: opt.id, answerValue: opt.text}})}
                     className={`my-1 border border-1 border-gray-300 bg-white rounded-md p-4 cursor-pointer hover:bg-blue-200 duration-300 transition-all ${state.answers.find(a => a.questionId == question.id)?.answerId == opt.id ? 'bg-blue-400 text-white': ''}`}
                   >{opt.text}</div>
             ))}
