@@ -214,30 +214,30 @@ const extractPlazoMinimoFromOption = (str: string): number => {
 
 const plazoMinimoValid = ({row, plazoMinimo}: {row: any, plazoMinimo: any}) => {
     let value = false
-    if(plazoMinimo.value == 1) 
+    if(plazoMinimo == 1) 
         value = extractPlazoMinimoFromOption(row.tiempo) <= 3
-    else if(plazoMinimo.value == 2)
+    else if(plazoMinimo == 2)
         value = extractPlazoMinimoFromOption(row.tiempo) >= 3 && extractPlazoMinimoFromOption(row.tiempo) <= 6
-    else if(plazoMinimo.value == 3)
+    else if(plazoMinimo == 3)
         value = extractPlazoMinimoFromOption(row.tiempo) >= 12 && extractPlazoMinimoFromOption(row.tiempo) <= 36
-    else if(plazoMinimo.value == 4)
+    else if(plazoMinimo == 4)
         value = extractPlazoMinimoFromOption(row.tiempo) >= 36
-    else if(plazoMinimo.value == 5)
+    else if(plazoMinimo == 5)
         value = true
     return value
 }
 
 const disponibilidadValid = ({row, disponibilidad}: {row: any, disponibilidad: any}) => {
     let value = false
-    if(disponibilidad.value == 1) 
+    if(disponibilidad == 5) 
          value = !!row.recurrencia.match(new RegExp(/Diaria/))
-    else if(disponibilidad.value == 2)
+    else if(disponibilidad == 6)
          value = !!row.recurrencia.match(new RegExp(/\(Semanal|Diaria|No aplica\)/))
-    else if(disponibilidad.value == 3)
+    else if(disponibilidad == 7)
          value = !!row.recurrencia.match(new RegExp(/Mensual/))
-    else if(disponibilidad.value == 4)
+    else if(disponibilidad == 8)
          value = !!row.recurrencia.match(new RegExp(/\(Trimestral|Semestral\)/))
-    else if(disponibilidad.value == 5)
+    else if(disponibilidad == 9)
          value = !!row.recurrencia.match(new RegExp(/\(Anual|Semestral\)/))
 
     return value
@@ -245,11 +245,11 @@ const disponibilidadValid = ({row, disponibilidad}: {row: any, disponibilidad: a
 
 const riesgoValid = ({row, riesgo}: {row: any, riesgo: any}) => {
     let value = false
-    if(riesgo == 1)
+    if(riesgo == 10)
         value = row.riesgo == 'Bajo'
-    else if(riesgo == 2)
+    else if(riesgo == 11)
         value = row.riesgo == 'Moderado' || row.riesgo == 'Bajo'
-    else if(riesgo == 3)
+    else if(riesgo == 12 || riesgo == 13)
         value = row.riesgo == 'Alto'
     return value
 }
@@ -278,10 +278,12 @@ const InvestmentTable: React.FC<TFormResults> = ({answers}) => {
         if(isAdmin)
             return true;
 
-        const montoMinimo = answers.find(a => a.questionId == 1).value
-        const plazoMinimo = answers.find((a: TAnswerType) => a.questionId == 2)
-        const disponibilidad = answers.find((a: TAnswerType) => a.questionId == 3)
-        const riesgo = answers.find((a: TAnswerType) => a.questionId == 4).value
+
+        const montoMinimo = answers.find(a => a.questionId == 1).customValue
+        const plazoMinimo = answers.find((a: TAnswerType) => a.questionId == 2).answerId
+        const disponibilidad = answers.find((a: TAnswerType) => a.questionId == 3).answerId
+        debugger
+        const riesgo = answers.find((a: TAnswerType) => a.questionId == 4).answerId
 
         if(row.montoMin > montoMinimo) return false
         const disp =  disponibilidadValid({row, disponibilidad}) 
