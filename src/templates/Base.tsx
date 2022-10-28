@@ -34,8 +34,8 @@ const Base = () => {
     <VerticalFeatures />
     <Section>
         <div className="text-3xl text-center text-gray-900 font-semibold mb-8">
-            Tenemos alianza con las mejores institucainoes financieras
-            <div className="text-gray-600">y seguimos añadiendo mas opciones.</div>
+            Tenemos las mejores opciones de inversión 
+            <div className="text-gray-600">y seguimos añadiendo más opciones</div>
         </div>
         <div className="flex items-center justify-between flex-wrap">
         {imgs.map(( src: string ) => (
