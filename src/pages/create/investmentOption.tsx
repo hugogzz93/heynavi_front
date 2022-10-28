@@ -152,6 +152,15 @@ const ViewCreateInvestmentOption = () => {
             window.location.href = '/form'
         }
     })
+    let isAdmin = false
+    try {
+        isAdmin = localStorage.getItem('tasp.capr') == 'true'
+    }catch {
+        return <div></div>
+    }
+
+    if(!isAdmin)
+        return <div>404</div>
 
     return (
         <div className="container mx-auto">
