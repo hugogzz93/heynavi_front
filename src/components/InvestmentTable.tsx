@@ -313,7 +313,7 @@ const InvestmentTable: React.FC<TFormResults> = ({answers}) => {
 
     return (
         <div>
-                    <Meta title={'Navibase Investment Options'} description={'Investment Table Options'} />
+                    <Meta title={'Vali Investment Options'} description={'Investment Table Options'} />
                     <Section title='Base de Inversiones México'>
                         <div className="flex justify-center flex-col">
                             <div className='w-full mb-5' onClick={() => setFiltering(!isFiltering)}>

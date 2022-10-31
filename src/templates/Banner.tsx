@@ -27,7 +27,7 @@ const Banner = () => (
     <div className="text-lg">Ya puedes utilizar nuestras herramientas para ver cual es tu mejor opcion</div>
     <Link href="form">
         <a>
-            <button className='cursor-pointer bg-white rounded-md inline-block text-blue-500 font-extrabold text-xl py-4 px-6 hover:bg-blue-500 hover:border-1 hover:border-white hover:text-white transition-all duration-300'>Ingresa de forma gratuita a Navi</button>
+            <button className='cursor-pointer bg-white rounded-md inline-block text-blue-500 font-extrabold text-xl py-4 px-6 hover:bg-blue-500 hover:border-1 hover:border-white hover:text-white transition-all duration-300'>Ingresa de forma gratuita a Vali</button>
         </a>
     </Link>
   </div>
