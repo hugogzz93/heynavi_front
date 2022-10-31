@@ -4,7 +4,7 @@ import { Section } from '../layout/Section';
 const VerticalFeatures = () => (
   <Section
     title="Diversifica tus inversiones"
-    description="En Navi podrás comparar desde fondos en Bancos hasta Criptomonedas, Bienes Raíces y Bolsa, para que elijas la opción que más te conviene."
+    description="En Vali podrás comparar desde fondos en Bancos hasta Criptomonedas, Bienes Raíces y Bolsa, para que elijas la opción que más te conviene."
   >
     <VerticalFeatureRow
       title="Nuevas opciones cada día"

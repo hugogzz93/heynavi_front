@@ -55,7 +55,7 @@ const Form = () => {
 
     return (
         <div className="flex flex-col antialiased text-gray-600 justify-between" style={{height: '100vh'}}>
-            <Meta title={'Navibase Questionnaire'} description={AppConfig.description} />
+            <Meta title={'Vali Questionnaire'} description={AppConfig.description} />
             <Background color="bg-gray-100">
                 <Section yPadding="py-6">
                   <NavbarTwoColumns logo={<Logo xl />}>

@@ -1,6 +1,6 @@
 export const AppConfig = {
-  site_name: 'Navi',
-  title: 'Navi',
+  site_name: 'Vali',
+  title: 'Vali',
   description: 'Description',
   locale: 'en',
 };
