@@ -5,6 +5,10 @@ import { Footer } from './Footer';
 import { Hero } from './Hero';
 import { VerticalFeatures } from './VerticalFeatures';
 import { Section } from '../layout/Section'
+import { Button } from '../button/Button'
+
+import { NavbarTwoColumns } from '../navigation/NavbarTwoColumns';
+import { Logo } from './Logo';
 // import {
 //   BrowserRouter as Router,
 //   Switch,
@@ -30,6 +34,12 @@ const Base = () => {
     const router = useRouter()
  return ( <div className="antialiased text-gray-600">
     <Meta title={AppConfig.title} description={AppConfig.description} />
+  <NavbarTwoColumns logo={<Logo xl white/>}>
+    <div>Inicio</div>
+    <div>Como Funciona</div>
+    <div>Por que Vali?</div>
+     <Button transparent>Iniciar Sesion</Button>
+  </NavbarTwoColumns>
     <Hero />
     <Section>
         <div className="text-3xl text-center text-gray-900 font-semibold mb-8">
