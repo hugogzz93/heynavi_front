@@ -7,13 +7,12 @@ import { baseUrl } from 'api'
 import '../styles/global.css';
 
 const MyApp = ({ Component, pageProps }: AppProps) => { 
-
-const client = new ApolloClient({
-    cache: new InMemoryCache(),
-    link: createUploadLink({
-        uri: baseUrl
-    })
-});
+    const client = new ApolloClient({
+        cache: new InMemoryCache(),
+        link: createUploadLink({
+            uri: baseUrl
+        })
+    });
 
     return (
         <ApolloProvider client={client}>
