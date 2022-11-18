@@ -7,6 +7,7 @@ type IButtonProps = {
   primary?: boolean;
   shadow?: boolean;
   transparent?: boolean;
+  reverseHover?: boolean;
 };
 
 const Button = (props: IButtonProps) => {
@@ -18,9 +19,9 @@ const Button = (props: IButtonProps) => {
     'bg-purple-500 text-white hover:bg-white hover:text-purple-500 transition-all duration-3': props.primary,
     'bg-transparent': props.transparent,
     'border border-2 border-purple-500 hover:bg-white text-purple-500': !props.primary,
-    'shadowed': props.shadow
+    'shadowed': props.shadow,
+    'reverse__hover': props.reverseHover
   });
-    debugger
 
   return (
     <div className={props.classes ? props.classes : btnClass}>
@@ -56,6 +57,11 @@ const Button = (props: IButtonProps) => {
 
           .btn-primary:hover {
             @apply bg-primary-600;
+          }
+
+          .reverse__hover:hover {
+            @apply bg-purple-500 text-white transition-all;
+
           }
         `}
       </style>

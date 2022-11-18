@@ -8,18 +8,18 @@ import { Section } from '../layout/Section';
 const Hero = () => (
     <div id='hero' className='mb-4'>
         <div id="hero-background" ></div>
-        <div className="container mx-auto flex flex-col md:flex-row items-center relative">
+        <div className="container mx-auto flex flex-col md:flex-row items-center relative  text-center md:text-left">
             <div className="grow text-white font-light">
-                <div className="text-5xl">
+                <div className="text-5xl pt-16">
                     Invertir es fácil cuando puedes comparar
                 </div>
-                <div className="text-xl my-4">
+                <div className="text-2xl my-16 md:w-2/3">
                    Descubre y analiza las mejores opciones para invertir en México
                 </div>
             <Button primary xl shadow>Haz la prueba Gratis</Button>
             </div>
-            <div className='grow-0 w-1/2'>
-                <img src="/assets/images/feature.svg" alt="" />
+            <div className='grow-0 md:w-1/2 pt-8'>
+                <img className='hero__img' src="/assets/images/Img01.svg" alt="" />
             </div>
         </div>
         

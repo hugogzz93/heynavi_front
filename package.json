@@ -26,6 +26,8 @@
     "clsx": "^1.2.1",
     "graphql-request": "^5.0.0",
     "graphql-tag": "^2.12.6",
+    "gsap": "^3.11.3",
+    "jwt-decode": "^3.1.2",
     "moment": "^2.29.4",
     "next": "^12.0.9",
     "next-seo": "^4.29.0",

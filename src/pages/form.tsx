@@ -3,7 +3,6 @@ import { useState, useEffect } from 'react'
 
 import { Meta } from '../layout/Meta';
 import { AppConfig } from '../utils/AppConfig';
-import { Background } from '../background/Background';
 import { Section } from '../layout/Section';
 import { NavbarTwoColumns } from '../navigation/NavbarTwoColumns';
 import { Logo } from '../templates/Logo';
@@ -13,7 +12,7 @@ import { useGetQuestionsQuery } from 'generated/graphql'
 // import { queryClient, GetQuestions, SaveAnswers } from '../api'
 
 import Table from 'components/InvestmentTable'
-import { ClientQuestionAnswerInput } from '../generated/graphql'
+import { ClientQuestionAnswerInput, Question } from '../generated/graphql'
 
 
 export type TFormResults = {
@@ -48,34 +47,35 @@ const Form = () => {
 
 
     const questions = data?.questions
-    debugger
 
 
 
 
     return (
-        <div className="flex flex-col antialiased text-gray-600 justify-between" style={{height: '100vh'}}>
+        <div className="flex flex-col antialiased text-gray-600 justify-between bg-purple-100 pt-32" style={{height: '100vh'}}>
             <Meta title={'Vali Questionnaire'} description={AppConfig.description} />
-            <Background color="bg-gray-100">
-                <Section yPadding="py-6">
-                  <NavbarTwoColumns logo={<Logo xl />}>
+                  <NavbarTwoColumns 
+                    active
+                    logo={() => <Logo />}
+                    links={() => <div></div>}
+                >
                     <div></div>
                   </NavbarTwoColumns>
-                </Section>
-                <Section yPadding="py-6">
-        {
-            !isAdmin && formResult.answers.length == 0 ? (
-                    <div className="text-lg">
-                        {questions && (
-                                <Questionnaire onSubmit={(result: TFormResults) => setFormResult(result)} questions={questions.slice().sort((a,b) => Number(a.order) - Number(b.order) )}/>
-                        )}
-                    </div>
-            ) : (
-                <Table {...formResult}/>
-            )
-        }
-                </Section>
-            </Background>
+                <div className="flex items-center justify-center">
+                        <div className="rounded-md shadow-md p-8 bg-white m-auto">
+                            {
+                                !isAdmin && formResult.answers.length == 0 ? (
+                                        <div className="text-lg">
+                                            {questions && (
+                                                    <Questionnaire onSubmit={(result: TFormResults) => setFormResult(result)} questions={questions.slice().sort((a,b) => Number(a.order) - Number(b.order) ) as Array<Question>}/>
+                                            )}
+                                        </div>
+                                ) : (
+                                    <Table {...formResult}/>
+                                )
+                            }
+                        </div>
+                </div>
             <Footer/>
         </div>
     )
