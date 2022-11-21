@@ -13,6 +13,7 @@ const useAuth = (props: IAuthHookProps) => {
 
     const handleCredentialResponse = (response: any) => {
         const user = jwtDecode(response.credential);
+        console.log(response.credential)
         setUser(user)
     }
 

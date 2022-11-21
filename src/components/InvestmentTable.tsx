@@ -7,7 +7,7 @@ import moment from 'moment'
 
 import { dehydrate, useQuery, useMutation } from 'react-query'
 import { useGetInvestmentOptionsQuery } from '../api'
-import { Table, ITableConfiguration, ITableElementProps, ITableHeadElementProps } from 'components/baseComponents'
+import { Table, ITableConfiguration, ITableElementProps, ITableHeadElementProps, ThemeSelectElement } from 'components/baseComponents'
 import { IDBType } from 'lib/database'
 import { TFormResults } from 'pages/form'
 import { Button } from 'button/Button'
@@ -44,7 +44,7 @@ const InvestmentTableConfig = ({sliderValue, state, setState, isAdmin = false}: 
             }
         },
         { 
-            label: 'Logo',
+            label: 'Empresa',
             id: 'image',
 			filterable: false,
             renderFn: (d) => {
@@ -64,6 +64,7 @@ const InvestmentTableConfig = ({sliderValue, state, setState, isAdmin = false}: 
         {
             label: 'Nombre Inversión',
             id: 'nombre',
+            display: false,
 			filterable: !state['nombre'],
             valueFn: (d) => d.nombre,
             filterFn: ({filterValue, dataValue}) => {return dataValue.nombre.match(new RegExp(filterValue, 'i'))},
@@ -82,12 +83,11 @@ const InvestmentTableConfig = ({sliderValue, state, setState, isAdmin = false}: 
             )
         },
         {
-            label: 'Rentabilidad Anual Bruta',
+            label: 'Retorno Anual Promedio',
             id: 'rentabilidad',
 			filterable: !state['rentabilidad'],
             filterFn: ({filterValue, dataValue}) => dataValue.rentabilidad.match(new RegExp(filterValue, 'i')),
             valueFn: (d) => { 
-                debugger
                 if(d.rentabilidad.indexOf('%') > -1)
                     return Number(d.rentabilidad.replace(/%/g, '')).toFixed(2) + '%'
                 else return d.rentabilidad
@@ -96,6 +96,7 @@ const InvestmentTableConfig = ({sliderValue, state, setState, isAdmin = false}: 
         {
             label: 'Riesgo',
             id: 'riesgo',
+            display: false,
 			filterable: !state['riesgo'],
             filterFn: ({filterValue, dataValue}) => dataValue.riesgo.match(new RegExp(filterValue, 'i')),
             valueFn: (d) => d.riesgo
@@ -103,6 +104,7 @@ const InvestmentTableConfig = ({sliderValue, state, setState, isAdmin = false}: 
         {
             label: 'Tiempo Mínimo',
             id: 'tiempo',
+            display: false,
 			filterable: !state['tiempo'],
             filterFn: ({filterValue, dataValue}) => dataValue.tiempo.match(new RegExp(filterValue, 'i')),
             valueFn: (d) => d.tiempo
@@ -110,6 +112,7 @@ const InvestmentTableConfig = ({sliderValue, state, setState, isAdmin = false}: 
         {
             label: 'Monto Mínimo de Inversión (en MXN)',
             id: 'monto',
+            display: false,
 			filterable: !state['monto'],
             filterFn: ({filterValue, dataValue}) => {try {return Number(dataValue.montoMin) >= Number(filterValue)} catch(e) {return false}},
             valueFn: (d) => '$' + numberWithCommas(d.montoMin)
@@ -117,6 +120,7 @@ const InvestmentTableConfig = ({sliderValue, state, setState, isAdmin = false}: 
         {
             label: 'Tipo de Inversión ',
             id: 'fijaVariable',
+            display: false,
 			filterable: false,
             display: false,
             filterFn: ({filterValue, dataValue}) => dataValue.fijaVariable.match(new RegExp(filterValue, 'i')),
@@ -134,7 +138,7 @@ const InvestmentTableConfig = ({sliderValue, state, setState, isAdmin = false}: 
             )
         },
         {
-            label: 'Mi ganancia anual estimada',
+            label: 'Ganancia anual estimada',
             id: 'profit',
             filterable: !state['profit'],
             filterFn: ({filterValue, dataValue}) => {
@@ -146,37 +150,46 @@ const InvestmentTableConfig = ({sliderValue, state, setState, isAdmin = false}: 
                 }
             },
             renderFn: d => <div className='text-blue-500'>{'$' + numberWithCommas((Number(d.rentabilidad.replace('%', ''))*sliderValue/100).toFixed(2))}</div>
+        },{
+            label: '',
+            id: 'profit',
+            renderFn: _ => (
+                <Button reverseHover>Ver más</Button>
+            )
         }
     ]
 })
 
 
 const ThemeTableHeadElement: React.FC<ITableHeadElementProps & {state: any, setState: (arg0: any) => void}> = ({columns, columnNames, state, setState}) => {
+    debugger
     return (
-        <tr className='bg-gray-200 font-bold'>
-            {columnNames.map((name: string, idx: number) => {
-                if(name != 'Descripción' && name != 'Contacto') 
-                    return (
-
-                        <td key={name} onClick={() => setState(columns[idx].id)}>
-                            <div data-tip={`${state[columns[idx].id] ? 'Quitar' : 'Agregar'} Filtro de ${name}`}>
-                                    <div className="flex items-center">
-                                        {name}
-                                        <span className="material-symbols-outlined"> search </span>
-                                    </div>
-                                <ReactTooltip/>
-                            </div>
-                        </td>
-                    )
-                return (
-                    <td key={name}> 
+        <>
+            <tr>
+                <td colSpan={columnNames.length - 2}></td>
+                <td colSpan={2}>
+                    <ThemeSelectElement
+                        name='sortOption' 
+                        label='Ordenar Por'
+                        value={state.sortValue}
+                        options={columnNames.filter((name: string) => name != '').map((name: string) => ({value: name, label: name}))}
+                        onChange={(sortValue: any) => {
+                            setState({...state, sortValue})
+                        }}
+                    />
+                    
+                </td>
+            </tr>
+            <tr className='bg-white font-bold text-lg font-center'>
+                {columnNames.map((name: string, idx: number) => {
+                    return <td key={name}> 
                         <div className="flex items-center">
                             {name}
                         </div>
                     </td>
-                )
-            })}
-        </tr>
+                })}
+            </tr>
+        </>
     )
 }
 
@@ -268,6 +281,7 @@ const InvestmentTable: React.FC<TFormResults> = ({answers}) => {
     const [sliderValue, setSliderValue] = useState<any>([5000])
     const [isFiltering, setFiltering] = useState(true)
     const [filterableColumns, setFilterableColumns] = useState({})
+    const [state, setState] = useState({})
     const isAdmin = localStorage.getItem('tasp.capr') == 'true'
     // const {data, isLoading} = useQuery('getInvestmentOption', () => GetInvestmentOptions())
     const {data, loading} = useGetInvestmentOptionsQuery()
@@ -282,7 +296,6 @@ const InvestmentTable: React.FC<TFormResults> = ({answers}) => {
         const montoMinimo = answers.find(a => a.questionId == 1).customValue
         const plazoMinimo = answers.find((a: TAnswerType) => a.questionId == 2).answerId
         const disponibilidad = answers.find((a: TAnswerType) => a.questionId == 3).answerId
-        debugger
         const riesgo = answers.find((a: TAnswerType) => a.questionId == 4).answerId
 
         if(row.montoMin > montoMinimo) return false
@@ -293,7 +306,6 @@ const InvestmentTable: React.FC<TFormResults> = ({answers}) => {
     }
 
     let rows = []
-    debugger
     if(data?.investmentOptions)
         rows = [...data?.investmentOptions]
 
@@ -306,8 +318,8 @@ const InvestmentTable: React.FC<TFormResults> = ({answers}) => {
     const HeadElement: React.FC<ITableHeadElementProps> = (props) => {
         return <ThemeTableHeadElement 
                 {...props}
-                state={filterableColumns}
-                setState={(columnId: string) => {setFilterableColumns({...filterableColumns, [columnId]: !filterableColumns[columnId]})}}
+                state={state}
+                setState={setState}
             />
     }
 
@@ -353,7 +365,16 @@ const InvestmentTable: React.FC<TFormResults> = ({answers}) => {
                                 />
                             </div>
                             <Table
-                                rowData={rows.sort((a,b) => Number(a.id) - Number(b.id))}
+                                rowData={rows.sort((a,b) => {
+                                    debugger
+                                    if(state?.sortValue) {
+                                        debugger
+                                        return 0;
+
+                                    } else {
+                                        return Number(a.id) - Number(b.id);
+                                    }
+                                })}
                                 configuration={InvestmentTableConfig({sliderValue, state: filterableColumns, setState: setFilterableColumns, isAdmin: localStorage.getItem('tasp.capr') == 'true'})}
                                 TableElement={ThemeTableElement}
                                 HeadElement={HeadElement}

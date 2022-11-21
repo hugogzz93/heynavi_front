@@ -38,6 +38,7 @@ table.content__table {
     margin: 25px 0;
     font-size: 0.9em;
     overflow: hidden;
+    width: 100%;
 
 }
 

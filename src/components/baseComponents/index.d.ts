@@ -76,11 +76,15 @@ interface IFormProps extends IFormComponentProps {
 export interface IInputProps {
     name: string,
     label: string,
-    type: string,
     onChange: (any) => unknown,
     errors: any,
+    type?: string,
     readOnly?: boolean,
     disabled?: boolean,
+}
+
+export interface ISelectInputProps extends IInputProps {
+    options: Array<TSelectOption>
 }
 
 export interface ITableColumnConfiguration {
@@ -144,5 +148,6 @@ declare module 'baseComponents' {
     export const Form: React.FC<IFormProps>;
     export const FormConfiguration: typeof CFormConfiguration;
     export const Table: React.FC<ITableProps>;
+    export const ThemeSelectElement: React.FC<ISelectInputProps>;
 }
 
