@@ -78,11 +78,7 @@ const QuestionnaireHeading: React.FC= () => {
 
 
 const getThumbCoordinates = () => {
-    const elem = document.querySelector('.slider__thumb')
-    if(elem)
-        return elem.getBoundingClientRect()
-    else
-        return {
+    const def = {
             top: 0,
             y: 0,
             x: 0,
@@ -92,6 +88,13 @@ const getThumbCoordinates = () => {
             width: 0,
             height: 0,
         }
+    if(typeof window == 'undefined')
+        return def;
+    const elem = document.querySelector('.slider__thumb')
+    if(elem)
+        return elem.getBoundingClientRect()
+    else
+        return def
 }
 
 const QuestionCount: React.FC<{state: QuestionnaireState}> = ({state}) => {

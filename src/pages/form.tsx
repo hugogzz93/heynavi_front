@@ -8,29 +8,34 @@ import { NavbarTwoColumns } from '../navigation/NavbarTwoColumns';
 import { Logo } from '../templates/Logo';
 import { Footer } from '../templates/Footer';
 import Questionnaire from '../questions/Questionnaire'
-import { useGetQuestionsQuery } from 'generated/graphql'
+import { useGetQuestionsQuery, GetQuestionsDocument } from 'generated/graphql'
+import { client } from 'pages/_app'
 // import { queryClient, GetQuestions, SaveAnswers } from '../api'
 
 import Table from 'components/InvestmentTable'
-import { ClientQuestionAnswerInput, Question } from '../generated/graphql'
+import { ClientQuestionAnswerInput, Question, InvestmentOption } from '../generated/graphql'
 
 
 export type TFormResults = {
     answers: Array<ClientQuestionAnswerInput>;
+    investmentOptions?: Array<InvestmentOption>
 }
 
-// export async function getServerSideProps() {
-//     await queryClient.prefetchQuery("questions", () => GetQuestions())
-//     return {
-//         props: {
-//             dehydratedState: dehydrate(queryClient)
-//         }
-//     }
-// }
+export async function getServerSideProps() {
+    const res = await client.query({query: GetQuestionsDocument})
+    return {
+        props: {
+            questions: res.data.questions
+        }
+    }
+}
 
-const Form = () => {
+
+
+const Form = (props: {questions: Array<Question>}) => {
+    debugger
     const [formResult, setFormResult] = useState<TFormResults>({answers: []})
-    const {data, loading} = useGetQuestionsQuery();
+    // const {data, loading} = useGetQuestionsQuery();
     // const { data, isLoading } = useQuery(['questions'], () => GetQuestions())
     // const { mutate } = useMutation(() => SaveAnswers({input: formResult.answers}))
     useEffect(() => {
@@ -42,14 +47,6 @@ const Form = () => {
     try {
         isAdmin = localStorage.getItem('tasp.capr') == 'true'
     }catch {}
-    if(loading)
-        return <div>loading</div>
-
-
-    const questions = data?.questions
-
-
-
 
     return (
         <div className="flex flex-col antialiased text-gray-600 justify-between bg-purple-100 pt-32" style={{height: '100vh'}}>
@@ -66,9 +63,7 @@ const Form = () => {
                             {
                                 !isAdmin && formResult.answers.length == 0 ? (
                                         <div className="text-lg">
-                                            {questions && (
-                                                    <Questionnaire onSubmit={(result: TFormResults) => setFormResult(result)} questions={questions.slice().sort((a,b) => Number(a.order) - Number(b.order) ) as Array<Question>}/>
-                                            )}
+                                            <Questionnaire onSubmit={(result: TFormResults) => setFormResult(result)} questions={props.questions.slice().sort((a,b) => Number(a.order) - Number(b.order) ) as Array<Question>}/>
                                         </div>
                                 ) : (
                                     <Table {...formResult}/>
