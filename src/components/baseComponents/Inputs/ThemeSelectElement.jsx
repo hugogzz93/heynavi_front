@@ -21,7 +21,7 @@ export const ThemeSelectElement = ({options,
 
     return (
         <>
-            <div className="theme__form-controller flex flex-col" 
+            <div className="theme__form-controller flex flex-col w-full" 
             style={{minHeight: '2.5em'}} onFocus={() => setIsActive(true)} onBlur={() => setIsActive(false)}>
                 <Select 
                     value={value}

@@ -13,6 +13,7 @@ import { TFormResults } from 'pages/form'
 import { Button } from 'button/Button'
 import { Section } from 'layout/Section'
 import { TAnswerType } from 'questions/Questionnaire'
+import { InvestmentOption } from 'generated/graphql'
 
 const numberWithCommas = (x: number): String => (
     x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
@@ -122,7 +123,6 @@ const InvestmentTableConfig = ({sliderValue, state, setState, isAdmin = false}: 
             id: 'fijaVariable',
             display: false,
 			filterable: false,
-            display: false,
             filterFn: ({filterValue, dataValue}) => dataValue.fijaVariable.match(new RegExp(filterValue, 'i')),
             valueFn: (d) => d.fijaVariable
         },
@@ -162,28 +162,12 @@ const InvestmentTableConfig = ({sliderValue, state, setState, isAdmin = false}: 
 
 
 const ThemeTableHeadElement: React.FC<ITableHeadElementProps & {state: any, setState: (arg0: any) => void}> = ({columns, columnNames, state, setState}) => {
-    debugger
     return (
         <>
-            <tr>
-                <td colSpan={columnNames.length - 2}></td>
-                <td colSpan={2}>
-                    <ThemeSelectElement
-                        name='sortOption' 
-                        label='Ordenar Por'
-                        value={state.sortValue}
-                        options={columnNames.filter((name: string) => name != '').map((name: string) => ({value: name, label: name}))}
-                        onChange={(sortValue: any) => {
-                            setState({...state, sortValue})
-                        }}
-                    />
-                    
-                </td>
-            </tr>
-            <tr className='bg-white font-bold text-lg font-center'>
-                {columnNames.map((name: string, idx: number) => {
+            <tr className='bg-white font-bold text-lg font-center border-b-1 border-b border-slate-300'>
+                {columnNames.map((name: string) => {
                     return <td key={name}> 
-                        <div className="flex items-center">
+                        <div className="flex items-center text-sm text-center">
                             {name}
                         </div>
                     </td>
@@ -196,8 +180,7 @@ const ThemeTableHeadElement: React.FC<ITableHeadElementProps & {state: any, setS
 const ThemeTableElement: React.FC<ITableElementProps> = ({id, TableHead, TableBody, FilterComponents, TableFooter}) => {
     return (
         <div className="w-full bg-transparent" id={id}>
-            <FilterComponents/>
-            <table className='content__table shadow-lg rounded-md'>
+            <table className='content__table'>
                 <thead>
                     <TableHead/>
                 </thead>
@@ -205,7 +188,6 @@ const ThemeTableElement: React.FC<ITableElementProps> = ({id, TableHead, TableBo
                     <TableBody/>
                 </tbody>
             </table>
-            <div className="text-sm">Información actualizada al {moment(new Date()).format('DD/MM/YYYY')}</div>
             <TableFooter/>
         </div>
     )
@@ -277,11 +259,82 @@ const riesgoValid = ({row, riesgo}: {row: any, riesgo: any}) => {
 // }
 
 
+const InvestmentRange = ({value, onChange}: {value: number, onChange: (arg0: number) => unknown}) => {
+
+
+    const getThumbCoordinates = () => {
+        const def = {
+                top: 0,
+                y: 0,
+                x: 0,
+                left: 0,
+                bottom: 0,
+                right: 0,
+                width: 0,
+                height: 0,
+            }
+        if(typeof window == 'undefined')
+            return def;
+        const elem = document.querySelector('.slider__thumb')
+        if(elem)
+            return elem.getBoundingClientRect()
+        else
+            return def
+    }
+
+    const [thumbCoordinates, setThumbCoordinates] = useState<any>(getThumbCoordinates())
+    return (
+            <div className="w-full">
+                <div className={` my-2 text-lg text-purple-500 font-bold absolute`}
+                style={{
+                    top: thumbCoordinates.top - thumbCoordinates.height - 5,
+                    left: thumbCoordinates.left,
+                    transform: `translateX(${value == 0 ? '0%' : value == 500000 ? '-75%' : '-25%'})`
+                }}
+                    >${numberWithCommas(value)} {value == 500000 ? 'o más' : ''}</div>
+                <Range
+                    step={5000}
+                    values={[value]}
+                    min={0}
+                    max={500000}
+                    onChange={(values: any) => {
+                        onChange(values)
+                        setThumbCoordinates(getThumbCoordinates)
+                    }}
+                    renderTrack={({props, children}) => (
+                        <div {...props}
+                            style={{
+                                ...props.style,
+                                    height: '6px',
+                                    width: '100%',
+                                    backgroundColor: '#ccc'
+                            }}
+                        >
+                            {children}
+                        </div>
+                    )}
+                    renderThumb={({props}) => (
+                        <div 
+                            {...props}
+                            className='slider__thumb rounded-md bg-purple-500'
+                            style={{
+                                ...props.style,
+                                height: '28px',
+                                width: '28px',
+                            }}
+                        />
+                    )}
+                />
+        </div>
+    )
+}
+
+
 const InvestmentTable: React.FC<TFormResults> = ({answers}) => {
     const [sliderValue, setSliderValue] = useState<any>([5000])
     const [isFiltering, setFiltering] = useState(true)
     const [filterableColumns, setFilterableColumns] = useState({})
-    const [state, setState] = useState({})
+    const [state, setState] = useState({sortValue: null})
     const isAdmin = localStorage.getItem('tasp.capr') == 'true'
     // const {data, isLoading} = useQuery('getInvestmentOption', () => GetInvestmentOptions())
     const {data, loading} = useGetInvestmentOptionsQuery()
@@ -305,7 +358,7 @@ const InvestmentTable: React.FC<TFormResults> = ({answers}) => {
         return disp && riesg && plaz
     }
 
-    let rows = []
+    let rows: InvestmentOption[] = []
     if(data?.investmentOptions)
         rows = [...data?.investmentOptions]
 
@@ -323,6 +376,9 @@ const InvestmentTable: React.FC<TFormResults> = ({answers}) => {
             />
     }
 
+    const tableConfiguration = InvestmentTableConfig({sliderValue, state: filterableColumns, setState: setFilterableColumns, isAdmin: localStorage.getItem('tasp.capr') == 'true'});
+    const columnNames: string[] = tableConfiguration.columns.filter(t => t.display !== false).map(t => t.label)
+
     return (
         <div>
                     <Meta title={'Vali Investment Options'} description={'Investment Table Options'} />
@@ -331,39 +387,23 @@ const InvestmentTable: React.FC<TFormResults> = ({answers}) => {
                             <div className='w-full mb-5' onClick={() => setFiltering(!isFiltering)}>
                                 <Button>{isFiltering ? 'Ver todas las opciones' : 'Ver menos opciones'}</Button>
                             </div>
-                            <div className="my-4 w-full">
-                                <div className="my-2 text-5xl text-blue-500 font-bold">${numberWithCommas(sliderValue)}</div>
-                                <Range
-                                    step={1000}
-                                    values={sliderValue}
-                                    min={1000}
-                                    max={1000000}
-                                    onChange={(values: any) => setSliderValue(values)}
-                                    renderTrack={({props, children}) => (
-                                        <div {...props}
-                                            style={{
-                                                ...props.style,
-                                                    height: '6px',
-                                                    width: '100%',
-                                                    backgroundColor: '#ccc'
-                                            }}
-                                        >
-                                            {children}
-                                        </div>
-                                    )}
-                                    renderThumb={({props}) => (
-                                        <div 
-                                            {...props}
-                                            className='rounded-md bg-blue-500'
-                                            style={{
-                                                ...props.style,
-                                                height: '24px',
-                                                width: '24px',
-                                            }}
-                                        />
-                                    )}
+                        <div className="bg-white rounded-md py-4">
+                        <div className="flex w-full justify-between">
+                            <div></div>
+                            <div className='px-4 basis-1/2 flex items-center'>
+                                <ThemeSelectElement
+                                    name='sortOption' 
+                                    label='Ordenar Por'
+                                    value={state.sortValue}
+                                    options={columnNames.filter((name: string) => name != '').map((name: string) => ({value: name, label: name}))}
+                                    onChange={(sortValue: any) => {
+                                        setState({...state, sortValue})
+                                    }}
                                 />
+                                <span className="text-purple-500 material-symbols-outlined text-4xl" style={{transform: 'translateY(-15%)'}}> edit_square </span>
                             </div>
+                        </div>
+
                             <Table
                                 rowData={rows.sort((a,b) => {
                                     debugger
@@ -375,10 +415,11 @@ const InvestmentTable: React.FC<TFormResults> = ({answers}) => {
                                         return Number(a.id) - Number(b.id);
                                     }
                                 })}
-                                configuration={InvestmentTableConfig({sliderValue, state: filterableColumns, setState: setFilterableColumns, isAdmin: localStorage.getItem('tasp.capr') == 'true'})}
+                                configuration={tableConfiguration}
                                 TableElement={ThemeTableElement}
                                 HeadElement={HeadElement}
                             />
+                        </div>
                         </div>
                     </Section>
         </div>

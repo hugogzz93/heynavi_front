@@ -51,16 +51,24 @@ table.content__table thead tr {
 }
 
 .content__table tbody tr {
-    border-bottom: 1px solid #dddddd;
+    /* border-bottom: 1px solid #dddddd; */
 }
 
-.content__table tbody tr:nth-of-type(even) {
-    background-color: #f3f3f3;
+.content__table tbody td:first-of-type, .content__table thead td:first-of-type {
+    padding-left: 2em;
 }
 
-.content__table tbody tr:last-of-type {
-    border-bottom: 2px solid var(--color);
+.content__table tbody td:last-of-type, .content__table thead td:last-of-type {
+    padding-right: 2em;
 }
+
+/* .content__table tbody tr:nth-of-type(even) { */
+/* /1*     background-color: #f3f3f3; *1/ */
+/* } */
+
+/* .content__table tbody tr:last-of-type { */
+/*     /1* border-bottom: 2px solid var(--color); *1/ */
+/* } */
 
 
 /* ------------------ */

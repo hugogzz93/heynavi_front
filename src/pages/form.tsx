@@ -35,14 +35,6 @@ export async function getServerSideProps() {
 const Form = (props: {questions: Array<Question>}) => {
     debugger
     const [formResult, setFormResult] = useState<TFormResults>({answers: []})
-    // const {data, loading} = useGetQuestionsQuery();
-    // const { data, isLoading } = useQuery(['questions'], () => GetQuestions())
-    // const { mutate } = useMutation(() => SaveAnswers({input: formResult.answers}))
-    useEffect(() => {
-        // if(formResult.answers.length > 0) 
-            // mutate()
-    }, [formResult])
-
     let isAdmin = false
     try {
         isAdmin = localStorage.getItem('tasp.capr') == 'true'
@@ -58,19 +50,19 @@ const Form = (props: {questions: Array<Question>}) => {
                 >
                     <div></div>
                   </NavbarTwoColumns>
-                <div className="flex items-center justify-center">
-                        <div className="rounded-md shadow-md p-8 bg-white m-auto">
                             {
                                 !isAdmin && formResult.answers.length == 0 ? (
-                                        <div className="text-lg">
-                                            <Questionnaire onSubmit={(result: TFormResults) => setFormResult(result)} questions={props.questions.slice().sort((a,b) => Number(a.order) - Number(b.order) ) as Array<Question>}/>
+                                    <div className="flex items-center justify-center">
+                                        <div className="rounded-md shadow-md p-8 bg-white m-auto">
+                                            <div className="text-lg">
+                                                <Questionnaire onSubmit={(result: TFormResults) => setFormResult(result)} questions={props.questions.slice().sort((a,b) => Number(a.order) - Number(b.order) ) as Array<Question>}/>
+                                            </div>
                                         </div>
+                                    </div>
                                 ) : (
                                     <Table {...formResult}/>
                                 )
                             }
-                        </div>
-                </div>
             <Footer/>
         </div>
     )
