@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useState, useReducer, useEffect } from 'react'
+import { gsap } from 'gsap'
 import { Meta } from '../layout/Meta';
 import ReactTooltip from 'react-tooltip';
 import Link from 'next/link';
@@ -7,7 +8,7 @@ import moment from 'moment'
 
 import { dehydrate, useQuery, useMutation } from 'react-query'
 import { useGetInvestmentOptionsQuery } from '../api'
-import { Table, ITableConfiguration, ITableElementProps, ITableHeadElementProps, ThemeSelectElement } from 'components/baseComponents'
+import { Table, ITableConfiguration, ITableElementProps, ITableHeadElementProps, ThemeSelectElement, ThemeCheckboxElement } from 'components/baseComponents'
 import { IDBType } from 'lib/database'
 import { TFormResults } from 'pages/form'
 import { Button } from 'button/Button'
@@ -21,7 +22,7 @@ const numberWithCommas = (x: number): String => (
 
 
 
-const InvestmentTableConfig = ({sliderValue, state, setState, isAdmin = false}: {sliderValue: number, isAdmin: boolean, state: {[key: string]: boolean}, setState: (arg0: any) => any}): ITableConfiguration => ({
+const InvestmentTableConfig = ({sliderValue, state, isAdmin = false}: {sliderValue: number, isAdmin: boolean, state: TInvestmentTableState}): ITableConfiguration => ({
     header: {
         id: 'list-investment-options',
         idColumn: 'nombre',
@@ -50,8 +51,8 @@ const InvestmentTableConfig = ({sliderValue, state, setState, isAdmin = false}: 
 			filterable: false,
             renderFn: (d) => {
                 if(d.image?.link)
-                    return <img className='object-contain' src={`${d.image.link}`} alt="" style={{width: '13em'}}/>
-                return <div></div>
+                    return <img className='object-contain' src={`${d.image.link}`} alt={d.nombre} style={{width: '13em'}}/>
+                return <div>{d.nombre}</div>
             },
             filterFn: ({filterValue, dataValue}) => { return dataValue.tipo.match(new RegExp(filterValue, 'i'))},
         },{ 
@@ -84,14 +85,12 @@ const InvestmentTableConfig = ({sliderValue, state, setState, isAdmin = false}: 
             )
         },
         {
-            label: 'Retorno Anual Promedio',
+            label: 'Retorno anual promedio',
             id: 'rentabilidad',
 			filterable: !state['rentabilidad'],
             filterFn: ({filterValue, dataValue}) => dataValue.rentabilidad.match(new RegExp(filterValue, 'i')),
             valueFn: (d) => { 
-                if(d.rentabilidad.indexOf('%') > -1)
-                    return Number(d.rentabilidad.replace(/%/g, '')).toFixed(2) + '%'
-                else return d.rentabilidad
+                return rentabilidadToNumber(d.rentabilidad) + '%'
             }
         },
         {
@@ -143,13 +142,13 @@ const InvestmentTableConfig = ({sliderValue, state, setState, isAdmin = false}: 
             filterable: !state['profit'],
             filterFn: ({filterValue, dataValue}) => {
                 try {
-                    const num = Number(dataValue.rentabilidad.replace('%', ''))*sliderValue/100 
+                    const num = Number(getGananciaAnual(dataValue.rentabilidad, sliderValue))
                     return num >= Number(filterValue)
                 } catch(e) {
                     return false
                 }
             },
-            renderFn: d => <div className='text-blue-500'>{'$' + numberWithCommas((Number(d.rentabilidad.replace('%', ''))*sliderValue/100).toFixed(2))}</div>
+            renderFn: d => <div className='text-blue-500'>{'$' + numberWithCommas(getGananciaAnual(d.rentabilidad, sliderValue).toFixed(2))}</div>
         },{
             label: '',
             id: 'profit',
@@ -161,7 +160,12 @@ const InvestmentTableConfig = ({sliderValue, state, setState, isAdmin = false}: 
 })
 
 
-const ThemeTableHeadElement: React.FC<ITableHeadElementProps & {state: any, setState: (arg0: any) => void}> = ({columns, columnNames, state, setState}) => {
+const getGananciaAnual =  (rentabilidad: string, investment: number) => (
+    Number(rentabilidadToNumber(rentabilidad)) * investment/100
+
+)
+
+const ThemeTableHeadElement: React.FC<ITableHeadElementProps> = ({columnNames}) => {
     return (
         <>
             <tr className='bg-white font-bold text-lg font-center border-b-1 border-b border-slate-300'>
@@ -238,6 +242,12 @@ const disponibilidadValid = ({row, disponibilidad}: {row: any, disponibilidad: a
     return value
 }
 
+const rentabilidadToNumber = (r: string) => {
+        if(r.indexOf('%') > -1)
+            return Number(r.replace(/%/g, '')).toFixed(2)
+        else return r
+}
+
 const riesgoValid = ({row, riesgo}: {row: any, riesgo: any}) => {
     let value = false
     if(riesgo == 10)
@@ -262,36 +272,8 @@ const riesgoValid = ({row, riesgo}: {row: any, riesgo: any}) => {
 const InvestmentRange = ({value, onChange}: {value: number, onChange: (arg0: number) => unknown}) => {
 
 
-    const getThumbCoordinates = () => {
-        const def = {
-                top: 0,
-                y: 0,
-                x: 0,
-                left: 0,
-                bottom: 0,
-                right: 0,
-                width: 0,
-                height: 0,
-            }
-        if(typeof window == 'undefined')
-            return def;
-        const elem = document.querySelector('.slider__thumb')
-        if(elem)
-            return elem.getBoundingClientRect()
-        else
-            return def
-    }
-
-    const [thumbCoordinates, setThumbCoordinates] = useState<any>(getThumbCoordinates())
     return (
             <div className="w-full">
-                <div className={` my-2 text-lg text-purple-500 font-bold absolute`}
-                style={{
-                    top: thumbCoordinates.top - thumbCoordinates.height - 5,
-                    left: thumbCoordinates.left,
-                    transform: `translateX(${value == 0 ? '0%' : value == 500000 ? '-75%' : '-25%'})`
-                }}
-                    >${numberWithCommas(value)} {value == 500000 ? 'o más' : ''}</div>
                 <Range
                     step={5000}
                     values={[value]}
@@ -299,7 +281,6 @@ const InvestmentRange = ({value, onChange}: {value: number, onChange: (arg0: num
                     max={500000}
                     onChange={(values: any) => {
                         onChange(values)
-                        setThumbCoordinates(getThumbCoordinates)
                     }}
                     renderTrack={({props, children}) => (
                         <div {...props}
@@ -314,112 +295,280 @@ const InvestmentRange = ({value, onChange}: {value: number, onChange: (arg0: num
                         </div>
                     )}
                     renderThumb={({props}) => (
-                        <div 
+                        <div
                             {...props}
-                            className='slider__thumb rounded-md bg-purple-500'
-                            style={{
-                                ...props.style,
-                                height: '28px',
-                                width: '28px',
-                            }}
-                        />
+                            style={{...props.style}}
+                        >
+                            <div className={` my-2 text-lg text-purple-500 font-bold absolute top-0`}
+                                style={{top: '-120%', transform: 'translateX(-50%)', left: '50%', textAlign: 'center', minWidth: '9em'}}
+                                >${numberWithCommas(value)} {value == 500000 ? 'o más' : ''}</div>
+                            <div 
+                                className='slider__thumb rounded-md bg-purple-500'
+                                style={{
+                                    height: '28px',
+                                    width: '28px',
+                                }}
+                            />
+                        </div>
                     )}
                 />
         </div>
     )
 }
 
+const InvestmentTableHeader = ({rows, state, dispatch}: {dispatch: DispatchType, rows: InvestmentOption[], state: TInvestmentTableState}) => {
+    const filterableColumns = InvestmentTableConfig({sliderValue: state.sliderValue, state, isAdmin: false}).columns.filter(c => c.filterable !== false)
+    const availableInvestmentTypes = Object.keys(rows.reduce((acc: any, curr:  InvestmentOption) => {
+        if(!acc[curr.tipo])
+            acc[curr.tipo] = true;
+        return acc;
+    }, {}))
 
-const InvestmentTable: React.FC<TFormResults> = ({answers}) => {
-    const [sliderValue, setSliderValue] = useState<any>([5000])
-    const [isFiltering, setFiltering] = useState(true)
-    const [filterableColumns, setFilterableColumns] = useState({})
-    const [state, setState] = useState({sortValue: null})
+    useEffect(() => {
+
+        if(state.filterBarVisibility)
+            gsap.to('#investment-table-header > .toggle-section', {opacity: 1, maxHeight: '100vh', overflowY: 'visible', duration: 0.3})
+        else
+            gsap.to('#investment-table-header > .toggle-section', {opacity: 0, maxHeight: '0', overflowY: 'hidden', duration: 0.1})
+    }, [state.filterBarVisibility])
+
+    return (
+        <div id='investment-table-header' className={` 
+            bg-white rounded-md p-4 w-full flex-col flex my-4 
+            duration-300 transition-all 
+            ${state.filterBarVisibility ? 'active' : ''}`}>
+            <div className="flex justify-between items-center w-full">
+                <div className="text-lg font-bold text-slate-900">
+                    Quiero Invertir: ${numberWithCommas(state.sliderValue)} MXN
+                </div>
+                <button className='bg-purple-500 text-white flex items-center rounded-md py-2 px-4'
+                    onClick={() => dispatch({type: "setFilterBarVisibility", payload: !state.filterBarVisibility})}
+                >
+                    Filtros <span className="material-symbols-outlined text-white ">filter_alt</span>
+                </button>
+            </div>
+            <div className={` toggle-section flex box-border items-center ${state.filterBarVisibility ? 'active' : ''}` }>
+                <div className="text-md w-1/3">¿Cuanto dinero te gustaría inverir?</div>
+                <div className="w-2/3">
+                    <InvestmentRange value={state.sliderValue} onChange={(v: number) => dispatch({type: "setSliderValue", payload: v})}/>
+                </div>
+            </div>
+            <div className={` toggle-section items-center box-border grid grid-cols-12 gap-4 w-full ${state.filterBarVisibility ? 'active' : ''}`}>
+                {filterableColumns.map(f => {
+                    return (
+                        <div className="col-span-12 md:col-span-4">
+                            <ThemeSelectElement key={f.id} 
+                                label={f.label.length > 20 ? `${f.label.substring(0, 20)}...` : f.label}
+                                name={f.id}
+                                value={state.activeFilters.find(opt => opt.label == f.label)}
+                                options={[]}
+                                onChange={(e) => {
+                                    dispatch({type: "setFilterValue", payload: {
+                                        label: f.id,
+                                        value: e
+                                    }})
+                                }}
+                            />
+                        </div>
+                    )
+
+                })}
+            </div>
+
+            <div className={` toggle-section box-border grid grid-cols-12 gap-4 w-full ${state.filterBarVisibility ? 'active' : ''}`}>
+                <div className="text-md col-span-12 text-left">Seleccionar por tipo:</div>
+                {availableInvestmentTypes.map(name => {
+                    return (
+                        <div className="col-span-12 md:col-span-4">
+                            <ThemeCheckboxElement
+                                value={state.investmentTypeFilters[name]}
+                                onChange={(e) => dispatch({type: "setInvestmentTypeFilter", payload: {name, value: e.checked} })}
+                                name={name.replaceAll(' ', '_')}
+                                label={name}
+                            />
+                        </div>
+                    )
+
+                })}
+            </div>
+        </div>
+    )
+
+}
+
+type ReducerType = (prevState: TInvestmentTableState, action: TActionType) => TInvestmentTableState;
+type DispatchType = (arg0: TActionType) => unknown;
+
+type TInvestmentTableState = {
+    sortValue: string;
+    investmentOptions: InvestmentOption[];
+    isFiltering: boolean;
+    filterBarVisibility: boolean;
+    sliderValue: number;
+    activeFilters: {
+        label: string;
+        value: any;
+    }[];
+    investmentTypeFilters: {
+        [key: string]: boolean
+    };
+    filterableColumns: {[key: string]: string};
+}
+
+const InitialInvestmentTableState = {
+    sortValue: '',
+    filterBarVisibility: false,
+    investmentOptions: [],
+    isFiltering: false,
+    sliderValue: 5000,
+    activeFilters: [],
+    filterableColumns: {},
+    investmentTypeFilters: {}
+}
+
+type TActionType = {
+    type: string;
+    payload: any;
+}
+
+const reducer: ReducerType = (state, action) => {
+    switch(action.type) {
+        case "setSortOption": {
+            return {
+                ...state,
+                sortValue: action.payload
+            }
+        }
+        case "setFilterBarVisibility": {
+            return {
+                ...state,
+                filterBarVisibility: action.payload
+            }
+        }
+        case "setSliderValue": {
+            return {
+                ...state,
+                sliderValue: action.payload
+            }
+        }
+
+        case "setFiltersActive": {
+            return {
+                ...state,
+                isFiltering: action.payload
+            }
+        }
+        case "setFilterValue": {
+            return {
+                ...state,
+                activeFilters: {
+                    ...state.activeFilters,
+                    [action.payload.id]: action.payload.value
+                }
+            }
+        }
+        case "setInvestmentTypeFilter": {
+            return {
+                ...state,
+                investmentTypeFilters: {
+                    ...state.investmentTypeFilters,
+                    [action.payload.name]: action.payload.value
+                }
+            }
+        }
+        default:
+            return state;
+    }
+
+}
+
+const InvestmentTable: React.FC<TFormResults> = () => {
+    const [state, dispatch] = useReducer<ReducerType>(reducer, InitialInvestmentTableState)
     const isAdmin = localStorage.getItem('tasp.capr') == 'true'
-    // const {data, isLoading} = useQuery('getInvestmentOption', () => GetInvestmentOptions())
     const {data, loading} = useGetInvestmentOptionsQuery()
     if(loading)
         return <div>Loading</div>
 
-    const filter = (row: IDBType) => {
-        if(isAdmin)
+    const filter = (): boolean => {
+        // if(isAdmin)
             return true;
 
 
-        const montoMinimo = answers.find(a => a.questionId == 1).customValue
-        const plazoMinimo = answers.find((a: TAnswerType) => a.questionId == 2).answerId
-        const disponibilidad = answers.find((a: TAnswerType) => a.questionId == 3).answerId
-        const riesgo = answers.find((a: TAnswerType) => a.questionId == 4).answerId
+        // const montoMinimo = answers.find(a => a.questionId == 1).customValue
+        // const plazoMinimo = answers.find((a: TAnswerType) => a.questionId == 2).answerId
+        // const disponibilidad = answers.find((a: TAnswerType) => a.questionId == 3).answerId
+        // const riesgo = answers.find((a: TAnswerType) => a.questionId == 4).answerId
 
-        if(row.montoMin > montoMinimo) return false
-        const disp =  disponibilidadValid({row, disponibilidad}) 
-        const riesg = riesgoValid({row, riesgo}) 
-        const plaz = plazoMinimoValid({row, plazoMinimo})
-        return disp && riesg && plaz
+        // if(row.montoMin > montoMinimo) return false
+        // const disp =  disponibilidadValid({row, disponibilidad}) 
+        // const riesg = riesgoValid({row, riesgo}) 
+        // const plaz = plazoMinimoValid({row, plazoMinimo})
+        // return disp && riesg && plaz
     }
 
     let rows: InvestmentOption[] = []
     if(data?.investmentOptions)
         rows = [...data?.investmentOptions]
 
-    if(isFiltering)
+    if(state.isFiltering)
         rows = rows.filter(filter).slice(0,3)
 
     if(rows.length < 3)
         rows = rows.slice(0,3)
 
-    const HeadElement: React.FC<ITableHeadElementProps> = (props) => {
-        return <ThemeTableHeadElement 
-                {...props}
-                state={state}
-                setState={setState}
-            />
-    }
-
-    const tableConfiguration = InvestmentTableConfig({sliderValue, state: filterableColumns, setState: setFilterableColumns, isAdmin: localStorage.getItem('tasp.capr') == 'true'});
+    const tableConfiguration = InvestmentTableConfig({sliderValue: state.sliderValue, state,  isAdmin: localStorage.getItem('tasp.capr') == 'true'});
     const columnNames: string[] = tableConfiguration.columns.filter(t => t.display !== false).map(t => t.label)
 
     return (
         <div>
                     <Meta title={'Vali Investment Options'} description={'Investment Table Options'} />
                     <Section title='Base de Inversiones México'>
+                        <InvestmentTableHeader 
+                            rows={rows}
+                            state={state} 
+                            dispatch={dispatch}
+                        />
                         <div className="flex justify-center flex-col">
-                            <div className='w-full mb-5' onClick={() => setFiltering(!isFiltering)}>
-                                <Button>{isFiltering ? 'Ver todas las opciones' : 'Ver menos opciones'}</Button>
+                            <div className="bg-white rounded-md py-4">
+                            <div className="flex w-full justify-between grid grid-cols-12 gap-4">
+                                <div className='hidden md:col-span-6 md:block'></div>
+                                <div className='px-4 col-span-12 md:col-span-6 flex items-center'>
+                                    <ThemeSelectElement
+                                        name='sortOption' 
+                                        label='Ordenar Por'
+                                        value={state.sortValue}
+                                        options={columnNames.filter((name: string) => name != '').map((name: string) => ({value: name, label: name}))}
+                                        onChange={(sortValue: any) => {
+                                            dispatch({type: "setSortOption", payload: sortValue.value as string})
+                                        }}
+                                    />
+                                    <span className="ml-4 text-purple-500 material-symbols-outlined text-4xl" style={{transform: 'translateY(-10%)'}}> edit_square </span>
+                                </div>
                             </div>
-                        <div className="bg-white rounded-md py-4">
-                        <div className="flex w-full justify-between">
-                            <div></div>
-                            <div className='px-4 basis-1/2 flex items-center'>
-                                <ThemeSelectElement
-                                    name='sortOption' 
-                                    label='Ordenar Por'
-                                    value={state.sortValue}
-                                    options={columnNames.filter((name: string) => name != '').map((name: string) => ({value: name, label: name}))}
-                                    onChange={(sortValue: any) => {
-                                        setState({...state, sortValue})
-                                    }}
+
+                                <Table
+                                    rowData={rows.sort((a,b) => {
+                                        if(state?.sortValue) {
+                                            switch(state.sortValue) {
+                                                case "Empresa":
+                                                    return a.nombre.localeCompare(b.nombre);
+                                                case "Retorno anual promedio":
+                                                    return Number(rentabilidadToNumber(b.rentabilidad)) - Number(rentabilidadToNumber(a.rentabilidad));
+                                                case "Ganancia anual estimada": 
+                                                    return getGananciaAnual(b.rentabilidad, state.sliderValue) - getGananciaAnual(a.rentabilidad, state.sliderValue)
+                                                default: 
+                                                    return a.nombre.localeCompare(b.nombre);
+                                            }
+
+                                        } else {
+                                            return Number(a.id) - Number(b.id);
+                                        }
+                                    })}
+                                    configuration={tableConfiguration}
+                                    TableElement={ThemeTableElement}
+                                    HeadElement={ThemeTableHeadElement}
                                 />
-                                <span className="text-purple-500 material-symbols-outlined text-4xl" style={{transform: 'translateY(-15%)'}}> edit_square </span>
                             </div>
-                        </div>
-
-                            <Table
-                                rowData={rows.sort((a,b) => {
-                                    debugger
-                                    if(state?.sortValue) {
-                                        debugger
-                                        return 0;
-
-                                    } else {
-                                        return Number(a.id) - Number(b.id);
-                                    }
-                                })}
-                                configuration={tableConfiguration}
-                                TableElement={ThemeTableElement}
-                                HeadElement={HeadElement}
-                            />
-                        </div>
                         </div>
                     </Section>
         </div>

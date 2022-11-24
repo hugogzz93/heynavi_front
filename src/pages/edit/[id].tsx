@@ -199,8 +199,8 @@ const ViewEditOption = (props: {id: string}) => {
         return <div>Loading</div>
 
     return (
-        <div className="container mx-auto">
-            <div className="border border-1 border-neutral-700">
+        <div className="container mx-auto p-8">
+            <div className="shadow-md bg-white rounded-md">
                 <FormComponent
                     configuration={FormConfiguration({deleteFn: () => deleteFn({variables: {id: props.id}})})} 
                     onSubmit={handleSubmit}

@@ -30,6 +30,9 @@
   'opsz' 48
 }
 
+body {
+    @apply bg-purple-100;
+}
 
 
 table.content__table {
@@ -39,6 +42,20 @@ table.content__table {
     font-size: 0.9em;
     overflow: hidden;
     width: 100%;
+
+}
+
+.toggle-section.active {
+    padding-right: 1em;
+    padding-left: 1em;
+    margin-top: 2em;
+}
+
+.toggle-section {
+    transition: all 0.1s;
+    padding-right: 0em;
+    padding-left: 0em;
+    margin-top: 0em;
 
 }
 

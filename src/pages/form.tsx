@@ -33,7 +33,6 @@ export async function getServerSideProps() {
 
 
 const Form = (props: {questions: Array<Question>}) => {
-    debugger
     const [formResult, setFormResult] = useState<TFormResults>({answers: []})
     let isAdmin = false
     try {

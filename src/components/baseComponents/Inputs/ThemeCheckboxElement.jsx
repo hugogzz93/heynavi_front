@@ -1,8 +1,17 @@
 import React from 'react'
 import resolvePath from 'object-resolve-path'
 
+const getErrors = (errors, name) => {
+    try {
+        const hasErrors = !!resolvePath(errors, name)
+        return hasErrors;
+    } catch(e) {
+        return false
+    }
+}
+
 export const ThemeCheckboxElement = ({name = '', onChange, value, label, errors = {}, readOnly, disabled}) => {
-    const hasErrors = !!resolvePath(errors, name)
+    const hasErrors = getErrors(errors, name)
     return (
         <div className="flex items-center space-x-3" style={{minHeight: '2.5em'}}>
         <input
@@ -17,8 +26,8 @@ export const ThemeCheckboxElement = ({name = '', onChange, value, label, errors 
 
         {label && (
           <div className="flex flex-col">
-            <h1 className={`${hasErrors ? 'text-red-500' : 'text-gray-700' } font-medium leading-none`}>{label}</h1>
-                {resolvePath(errors, name) && (
+            <div className={`${hasErrors ? 'text-red-500' : 'text-slate-500' } text-md font-medium leading-none`}>{label}</div>
+                {hasErrors && (
                     <p className="text-xs text-red-500 mt-2 leading-4">{resolvePath(errors, name).message || resolvePath(errors, name).type}</p>
                 )}
           </div>

@@ -77,7 +77,8 @@ export interface IInputProps {
     name: string,
     label: string,
     onChange: (any) => unknown,
-    errors: any,
+    value: any,
+    errors?: any,
     type?: string,
     readOnly?: boolean,
     disabled?: boolean,
@@ -114,10 +115,10 @@ export interface ITableConfiguration {
 export interface ITableProps {
     configuration: ITableConfiguration;
     rowData: Array<any>;
-    RowElement: ReactElement;
-    HeadElement: ReactElement;
-    TableElement: ReactElement;
-    FooterElement: ReactElement;
+    RowElement?: ReactElement;
+    HeadElement?: ReactElement;
+    TableElement?: ReactElement;
+    FooterElement?: ReactElement;
 }
 
 export interface ITableElementProps {
@@ -151,3 +152,6 @@ declare module 'baseComponents' {
     export const ThemeSelectElement: React.FC<ISelectInputProps>;
 }
 
+declare const Table: React.FC<ITableProps>;
+declare const ThemeSelectElement: React.FC<ISelectInputProps>;
+declare const ThemeCheckboxElement: React.FC<IInputProps>;
