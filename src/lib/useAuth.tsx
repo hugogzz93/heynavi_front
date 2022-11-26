@@ -17,6 +17,7 @@ const useAuth = (props: IAuthHookProps) => {
         const user = jwtDecode(response.credential);
         console.log(response.credential)
         localStorage.setItem(S_KEY, JSON.stringify(user))
+        debugger
         setUser(user)
     }
 
@@ -32,7 +33,6 @@ const useAuth = (props: IAuthHookProps) => {
                 return 
             } 
         }catch(e) {
-            debugger
             console.error(e)
         }
 
@@ -53,6 +53,7 @@ const useAuth = (props: IAuthHookProps) => {
         google.accounts.id.disableAutoSelect();
         localStorage.removeItem(S_KEY)
         setUser(null)
+        window.location.href = '/'
     }};
 
 

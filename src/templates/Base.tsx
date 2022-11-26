@@ -59,7 +59,7 @@ const setActiveNavbar = (active: boolean) => {
 
 const Base = () => {
     const router = useRouter()
-    const user = useAuth({targetId: "google__signin" })
+    const {user, logOut} = useAuth({targetId: "google__signin" })
     console.log("user", user)
 
     useEffect(() => {
@@ -104,6 +104,9 @@ const Base = () => {
      <NavbarTwoColumns logo={() => {
           return ( <Logo/>)
      }}
+
+    user={user}
+    logOut={logOut}
      links={() => {
          return (
               <div className='flex items-center text-gray-800 font-medium'>

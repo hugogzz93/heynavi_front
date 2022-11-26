@@ -7,11 +7,12 @@ type INavbarProps = {
   logo: ReactElement;
   links: ReactElement;
   children: ReactNode;
+  user: any,
+  logOut: () => unknown;
   active?: boolean;
 };
 
 const NavbarTwoColumns = (props: INavbarProps) => {
-    const {user, logOut} = useAuth({targetId: 'google__signin'});
 
     return (
         <>
@@ -28,18 +29,18 @@ const NavbarTwoColumns = (props: INavbarProps) => {
                     </nav>
 
 
-        {user && <div id='g_account' className='g_id_signout flex items-center cursor-pointer' data-tip='Log Out' onClick={user ? logOut : () => {}}>
+        {props.user && <div id='g_account' className='g_id_signout flex items-center cursor-pointer' data-tip='Log Out' onClick={props.user ? props.logOut : () => {}}>
                         <div className="rounded-full overflow-hidden w-12 border border-1 border-white mr-4">
                             <picture>
-                                <img src={user?.picture} alt=""/>
+                                <img src={props.user?.picture} alt=""/>
                             </picture>
                         </div>
-                        <div className="text-xl text-slate-900 font-bold">{user?.name}</div>
-                        {user && <ReactTooltip/>}
+                        <div className="text-xl text-slate-900 font-bold">{props.user?.name}</div>
+                        {props.user && <ReactTooltip/>}
         
                     </div>}
 
-        {!user && <div id='google__signin'></div>}
+        {!props.user && <div id='google__signin'></div>}
 
                     <style jsx>
                       {`
