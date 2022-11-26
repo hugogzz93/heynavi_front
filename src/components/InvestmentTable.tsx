@@ -111,7 +111,7 @@ const InvestmentTableConfig = ({sliderValue, state, isAdmin = false}: {sliderVal
         },
         {
             label: 'Monto Mínimo de Inversión (en MXN)',
-            id: 'monto',
+            id: 'montoMin',
             display: false,
 			filterable: !state['monto'],
             filterFn: ({filterValue, dataValue}) => {try {return Number(dataValue.montoMin) >= Number(filterValue)} catch(e) {return false}},
@@ -139,7 +139,7 @@ const InvestmentTableConfig = ({sliderValue, state, isAdmin = false}: {sliderVal
         {
             label: 'Ganancia anual estimada',
             id: 'profit',
-            filterable: !state['profit'],
+            filterable: false,
             filterFn: ({filterValue, dataValue}) => {
                 try {
                     const num = Number(getGananciaAnual(dataValue.rentabilidad, sliderValue))
@@ -151,7 +151,8 @@ const InvestmentTableConfig = ({sliderValue, state, isAdmin = false}: {sliderVal
             renderFn: d => <div className='text-blue-500'>{'$' + numberWithCommas(getGananciaAnual(d.rentabilidad, sliderValue).toFixed(2))}</div>
         },{
             label: '',
-            id: 'profit',
+            id: 'viewMore',
+            filterable: false,
             renderFn: _ => (
                 <Button reverseHover>Ver más</Button>
             )
@@ -201,29 +202,34 @@ const ThemeTableElement: React.FC<ITableElementProps> = ({id, TableHead, TableBo
 const extractPlazoMinimoFromOption = (str: string): number => {
     try {
         const amount = Number(str.match(new RegExp(/\d\.*\d*/))?.[0]);
-        const isYears = !!str.match(new RegExp(/años/))
+        const isDays = !!str.match(new RegExp(/dia/))
+        const isMonths = !!str.match(new RegExp(/mes/))
+        const isYears = !!str.match(new RegExp(/año/))
         if(isNaN(amount))
-            return 999
-        return amount * (isYears ? 12 : 1)
+            return 99999
+
+        debugger
+        return amount * (isYears ? 12*30 : isMonths ? 30 : 1)
     } catch {
-        return 999;
+        return 99999;
     }
 }
 
 
 const plazoMinimoValid = ({row, plazoMinimo}: {row: any, plazoMinimo: any}) => {
-    let value = false
-    if(plazoMinimo == 1) 
-        value = extractPlazoMinimoFromOption(row.tiempo) <= 3
-    else if(plazoMinimo == 2)
-        value = extractPlazoMinimoFromOption(row.tiempo) >= 3 && extractPlazoMinimoFromOption(row.tiempo) <= 6
-    else if(plazoMinimo == 3)
-        value = extractPlazoMinimoFromOption(row.tiempo) >= 12 && extractPlazoMinimoFromOption(row.tiempo) <= 36
-    else if(plazoMinimo == 4)
-        value = extractPlazoMinimoFromOption(row.tiempo) >= 36
-    else if(plazoMinimo == 5)
-        value = true
-    return value
+    return extractPlazoMinimoFromOption(row.tiempo) > extractPlazoMinimoFromOption(plazoMinimo)
+    // let value = false
+    // if(plazoMinimo == 1) 
+    //     value = extractPlazoMinimoFromOption(row.tiempo) <= 3
+    // else if(plazoMinimo == 2)
+    //     value = extractPlazoMinimoFromOption(row.tiempo) >= 3 && extractPlazoMinimoFromOption(row.tiempo) <= 6
+    // else if(plazoMinimo == 3)
+    //     value = extractPlazoMinimoFromOption(row.tiempo) >= 12 && extractPlazoMinimoFromOption(row.tiempo) <= 36
+    // else if(plazoMinimo == 4)
+    //     value = extractPlazoMinimoFromOption(row.tiempo) >= 36
+    // else if(plazoMinimo == 5)
+    //     value = true
+    // return value
 }
 
 const disponibilidadValid = ({row, disponibilidad}: {row: any, disponibilidad: any}) => {
@@ -242,21 +248,49 @@ const disponibilidadValid = ({row, disponibilidad}: {row: any, disponibilidad: a
     return value
 }
 
-const rentabilidadToNumber = (r: string) => {
+const rentabilidadToNumber = (r: string): number => {
         if(r.indexOf('%') > -1)
-            return Number(r.replace(/%/g, '')).toFixed(2)
-        else return r
+            return Number(r.replace(/%/g, ''))
+        else return Number(r)
+}
+
+const riesgoToNumber = (riesgo: string) => {
+    switch(riesgo) {
+        case "Muy Bajo":
+            return 0;
+        case "Bajo":
+            return 1;
+        case "Moderado":
+            return 2;
+        case "Alto":
+            return 3
+        case "Muy Alto":
+            return 4
+        default:
+            throw "Invalid Riesgo"
+    }
+}
+
+const sorters = (type: string) => {
+    switch(type) {
+        case "nombre":
+            return (a: string, b: string) => a.localeCompare(b)
+        case "riesgo":
+            return (a: string, b: string) => riesgoToNumber(a) - riesgoToNumber(b)
+        case "tiempo": 
+            return (a: string, b: string) => extractPlazoMinimoFromOption(a) - extractPlazoMinimoFromOption(b)
+        case "montoMin":
+            return (a: string, b: string) => Number(a) - Number(b)
+        case "rentabilidad":
+            return (a: string, b: string) => rentabilidadToNumber(a) - rentabilidadToNumber(b)
+        default:
+            throw "Invalid Sorter key " + type
+
+    }
 }
 
 const riesgoValid = ({row, riesgo}: {row: any, riesgo: any}) => {
-    let value = false
-    if(riesgo == 10)
-        value = row.riesgo == 'Bajo'
-    else if(riesgo == 11)
-        value = row.riesgo == 'Moderado' || row.riesgo == 'Bajo'
-    else if(riesgo == 12 || riesgo == 13)
-        value = row.riesgo == 'Alto'
-    return value
+    return riesgoToNumber(row.riesgo) == riesgoToNumber(riesgo)
 }
 
 // export async function getServerSideProps({params}: {params: any}) {
@@ -318,11 +352,23 @@ const InvestmentRange = ({value, onChange}: {value: number, onChange: (arg0: num
 
 const InvestmentTableHeader = ({rows, state, dispatch}: {dispatch: DispatchType, rows: InvestmentOption[], state: TInvestmentTableState}) => {
     const filterableColumns = InvestmentTableConfig({sliderValue: state.sliderValue, state, isAdmin: false}).columns.filter(c => c.filterable !== false)
-    const availableInvestmentTypes = Object.keys(rows.reduce((acc: any, curr:  InvestmentOption) => {
-        if(!acc[curr.tipo])
-            acc[curr.tipo] = true;
+    // const availableInvestmentTypes = Object.keys(rows.reduce((acc: any, curr:  InvestmentOption) => {
+    //     if(!acc[curr.tipo])
+    //         acc[curr.tipo] = true;
+    //     return acc;
+    // }, {}))
+
+    const valuesPerColumn = rows.reduce((acc: {[key: string]: Set<string>} , curr: InvestmentOption) => {
+        Object.keys(curr).forEach((key: string) => {
+            if(["__typename", "id"].includes(key)) {}
+            else {
+                if(!acc[key])
+                    acc[key] = new Set<string>()
+                acc[key].add(curr[key])
+            }
+        })
         return acc;
-    }, {}))
+    }, {} as {[key: string]: Set<string>})
 
     useEffect(() => {
 
@@ -355,34 +401,39 @@ const InvestmentTableHeader = ({rows, state, dispatch}: {dispatch: DispatchType,
             </div>
             <div className={` toggle-section items-center box-border grid grid-cols-12 gap-4 w-full ${state.filterBarVisibility ? 'active' : ''}`}>
                 {filterableColumns.map(f => {
+                    try {
                     return (
                         <div className="col-span-12 md:col-span-4">
                             <ThemeSelectElement key={f.id} 
                                 label={f.label.length > 20 ? `${f.label.substring(0, 20)}...` : f.label}
                                 name={f.id}
-                                value={state.activeFilters.find(opt => opt.label == f.label)}
-                                options={[]}
+                                value={state.activeFilters[f.id] || null}
+                                options={Array.from(valuesPerColumn[f.id]).sort(sorters(f.id)).map(t => ({label: t, value: t}))}
                                 onChange={(e) => {
                                     dispatch({type: "setFilterValue", payload: {
-                                        label: f.id,
+                                        id: f.id,
                                         value: e
                                     }})
                                 }}
                             />
                         </div>
                     )
+                    } catch(e) {
+                        debugger
+                        return <div></div>
+                    }
 
                 })}
             </div>
 
             <div className={` toggle-section box-border grid grid-cols-12 gap-4 w-full ${state.filterBarVisibility ? 'active' : ''}`}>
                 <div className="text-md col-span-12 text-left">Seleccionar por tipo:</div>
-                {availableInvestmentTypes.map(name => {
+                {Array.from(valuesPerColumn.tipo).map((name: string) => {
                     return (
                         <div className="col-span-12 md:col-span-4">
                             <ThemeCheckboxElement
                                 value={state.investmentTypeFilters[name]}
-                                onChange={(e) => dispatch({type: "setInvestmentTypeFilter", payload: {name, value: e.checked} })}
+                                onChange={(e) => dispatch({type: "setInvestmentTypeFilter", payload: {name, value: e.target.checked} })}
                                 name={name.replaceAll(' ', '_')}
                                 label={name}
                             />
@@ -409,9 +460,7 @@ type TInvestmentTableState = {
         label: string;
         value: any;
     }[];
-    investmentTypeFilters: {
-        [key: string]: boolean
-    };
+    investmentTypeFilters: string[];
     filterableColumns: {[key: string]: string};
 }
 
@@ -423,7 +472,7 @@ const InitialInvestmentTableState = {
     sliderValue: 5000,
     activeFilters: [],
     filterableColumns: {},
-    investmentTypeFilters: {}
+    investmentTypeFilters: []
 }
 
 type TActionType = {
@@ -459,59 +508,89 @@ const reducer: ReducerType = (state, action) => {
             }
         }
         case "setFilterValue": {
-            return {
-                ...state,
-                activeFilters: {
-                    ...state.activeFilters,
-                    [action.payload.id]: action.payload.value
+            if(action.payload.value)
+                return {
+                    ...state,
+                    activeFilters: {
+                        ...state.activeFilters,
+                        [action.payload.id]: action.payload.value
+                    }
                 }
+            else {
+                let newState = {...state}
+                delete newState[action.payload.id]
+                return newState
+
             }
         }
         case "setInvestmentTypeFilter": {
             return {
                 ...state,
-                investmentTypeFilters: {
-                    ...state.investmentTypeFilters,
-                    [action.payload.name]: action.payload.value
-                }
+                investmentTypeFilters: action.payload.value ? [...state.investmentTypeFilters, action.payload.name] : state.investmentTypeFilters.filter(t => t != action.payload.name)
             }
         }
         default:
             return state;
     }
+}
 
+const filter = (state: TInvestmentTableState) => (row: InvestmentOption): boolean => {
+    try {
+        if(state.investmentTypeFilters.some(t => t != row.tipo )) {
+            return false
+        }
+
+        if(state.activeFilters['nombre'] && state.activeFilters['nombre'].value != row.nombre)
+            return false
+        if(state.activeFilters['rentabilidad']) {
+            if(Number(rentabilidadToNumber(state.activeFilters['rentabilidad'].value)) > Number(rentabilidadToNumber(row.rentabilidad)))
+                return false
+        }
+        if(state.activeFilters['riesgo'] && !riesgoValid({ row, riesgo: state.activeFilters['riesgo'].value})) {
+            return false
+        }
+        if(state.activeFilters['tiempo'] && !plazoMinimoValid({row, plazoMinimo: state.activeFilters['tiempo'].value}))
+            return false
+        if(state.activeFilters['montoMin'] && Number(state.activeFilters['montoMin'].value) > Number(row.montoMin))
+            return false
+
+
+        return true;
+    }
+    catch(e) {
+        console.log(e)
+        return false;
+    }
 }
 
 const InvestmentTable: React.FC<TFormResults> = () => {
     const [state, dispatch] = useReducer<ReducerType>(reducer, InitialInvestmentTableState)
-    const isAdmin = localStorage.getItem('tasp.capr') == 'true'
     const {data, loading} = useGetInvestmentOptionsQuery()
     if(loading)
         return <div>Loading</div>
 
-    const filter = (): boolean => {
-        // if(isAdmin)
-            return true;
+    // const filter = (): boolean => {
+    //         return true;
 
 
-        // const montoMinimo = answers.find(a => a.questionId == 1).customValue
-        // const plazoMinimo = answers.find((a: TAnswerType) => a.questionId == 2).answerId
-        // const disponibilidad = answers.find((a: TAnswerType) => a.questionId == 3).answerId
-        // const riesgo = answers.find((a: TAnswerType) => a.questionId == 4).answerId
+    //     // const montoMinimo = answers.find(a => a.questionId == 1).customValue
+    //     // const plazoMinimo = answers.find((a: TAnswerType) => a.questionId == 2).answerId
+    //     // const disponibilidad = answers.find((a: TAnswerType) => a.questionId == 3).answerId
+    //     // const riesgo = answers.find((a: TAnswerType) => a.questionId == 4).answerId
 
-        // if(row.montoMin > montoMinimo) return false
-        // const disp =  disponibilidadValid({row, disponibilidad}) 
-        // const riesg = riesgoValid({row, riesgo}) 
-        // const plaz = plazoMinimoValid({row, plazoMinimo})
-        // return disp && riesg && plaz
-    }
+    //     // if(row.montoMin > montoMinimo) return false
+    //     // const disp =  disponibilidadValid({row, disponibilidad}) 
+    //     // const riesg = riesgoValid({row, riesgo}) 
+    //     // const plaz = plazoMinimoValid({row, plazoMinimo})
+    //     // return disp && riesg && plaz
+    // }
 
-    let rows: InvestmentOption[] = []
-    if(data?.investmentOptions)
-        rows = [...data?.investmentOptions]
+    let rows: InvestmentOption[] = data?.investmentOptions || []
+    // if(data?.investmentOptions)
+    //     rows = [...data?.investmentOptions]
 
-    if(state.isFiltering)
-        rows = rows.filter(filter).slice(0,3)
+    // if(state.isFiltering)
+    //     rows = rows.filter(filter).slice(0,3)
 
     if(rows.length < 3)
         rows = rows.slice(0,3)
@@ -547,7 +626,7 @@ const InvestmentTable: React.FC<TFormResults> = () => {
                             </div>
 
                                 <Table
-                                    rowData={rows.sort((a,b) => {
+                                    rowData={rows.filter(filter(state)).sort((a,b) => {
                                         if(state?.sortValue) {
                                             switch(state.sortValue) {
                                                 case "Empresa":
@@ -573,7 +652,6 @@ const InvestmentTable: React.FC<TFormResults> = () => {
                     </Section>
         </div>
     )
-
 }
 
 export default InvestmentTable;
