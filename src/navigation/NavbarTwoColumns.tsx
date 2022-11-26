@@ -1,6 +1,7 @@
 import { ReactNode, useEffect } from 'react';
+import ReactTooltip from 'react-tooltip';
+import { useAuth } from 'lib/useAuth'
 
-import Link from 'next/link';
 
 type INavbarProps = {
   logo: ReactElement;
@@ -10,6 +11,8 @@ type INavbarProps = {
 };
 
 const NavbarTwoColumns = (props: INavbarProps) => {
+    const {user, logOut} = useAuth({targetId: 'google__signin'});
+
     return (
         <>
             <div id='nav' className={` hidden md:block w-full fixed top-0 left-1/2 ${props.active ? 'active' : ''}`}>
@@ -23,6 +26,20 @@ const NavbarTwoColumns = (props: INavbarProps) => {
                         {props.children}
                       </ul>
                     </nav>
+
+
+        {user && <div id='g_account' className='g_id_signout flex items-center cursor-pointer' data-tip='Log Out' onClick={user ? logOut : () => {}}>
+                        <div className="rounded-full overflow-hidden w-12 border border-1 border-white mr-4">
+                            <picture>
+                                <img src={user?.picture} alt=""/>
+                            </picture>
+                        </div>
+                        <div className="text-xl text-slate-900 font-bold">{user?.name}</div>
+                        {user && <ReactTooltip/>}
+        
+                    </div>}
+
+        {!user && <div id='google__signin'></div>}
 
                     <style jsx>
                       {`

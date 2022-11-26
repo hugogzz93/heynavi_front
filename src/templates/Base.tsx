@@ -59,7 +59,7 @@ const setActiveNavbar = (active: boolean) => {
 
 const Base = () => {
     const router = useRouter()
-    const user = useAuth({targetId: "google__sign" })
+    const user = useAuth({targetId: "google__signin" })
     console.log("user", user)
 
     useEffect(() => {
@@ -114,8 +114,6 @@ const Base = () => {
          )
      }}
   >
-     <div id="google__sign-in">
-     </div>
   </NavbarTwoColumns>
     <Hero />
     <Section>

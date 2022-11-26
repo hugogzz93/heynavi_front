@@ -208,7 +208,6 @@ const extractPlazoMinimoFromOption = (str: string): number => {
         if(isNaN(amount))
             return 99999
 
-        debugger
         return amount * (isYears ? 12*30 : isMonths ? 30 : 1)
     } catch {
         return 99999;
@@ -419,7 +418,6 @@ const InvestmentTableHeader = ({rows, state, dispatch}: {dispatch: DispatchType,
                         </div>
                     )
                     } catch(e) {
-                        debugger
                         return <div></div>
                     }
 
