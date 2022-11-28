@@ -16,7 +16,7 @@ import { Section } from 'layout/Section'
 import { TAnswerType } from 'questions/Questionnaire'
 import { InvestmentOption } from 'generated/graphql'
 
-const numberWithCommas = (x: number): String => (
+export const numberWithCommas = (x: number): String => (
     x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
 )
 
@@ -153,8 +153,12 @@ const InvestmentTableConfig = ({sliderValue, state, isAdmin = false}: {sliderVal
             label: '',
             id: 'viewMore',
             filterable: false,
-            renderFn: _ => (
-                <Button reverseHover>Ver más</Button>
+            renderFn: d => (
+                <Link href={`/view/${d.id}`} passHref>
+                <button>
+                    <Button reverseHover>Ver más</Button>
+                </button>
+                </Link>
             )
         }
     ]
@@ -182,9 +186,9 @@ const ThemeTableHeadElement: React.FC<ITableHeadElementProps> = ({columnNames}) 
     )
 }
 
-const ThemeTableElement: React.FC<ITableElementProps> = ({id, TableHead, TableBody, FilterComponents, TableFooter}) => {
+const ThemeTableElement: React.FC<ITableElementProps> = ({id, TableHead, TableBody, TableFooter}) => {
     return (
-        <div className="w-full bg-transparent" id={id}>
+        <div className="max-w-full bg-transparent overflowX-scroll" id={id}>
             <table className='content__table'>
                 <thead>
                     <TableHead/>
@@ -202,7 +206,7 @@ const ThemeTableElement: React.FC<ITableElementProps> = ({id, TableHead, TableBo
 const extractPlazoMinimoFromOption = (str: string): number => {
     try {
         const amount = Number(str.match(new RegExp(/\d\.*\d*/))?.[0]);
-        const isDays = !!str.match(new RegExp(/dia/))
+        // const isDays = !!str.match(new RegExp(/dia/))
         const isMonths = !!str.match(new RegExp(/mes/))
         const isYears = !!str.match(new RegExp(/año/))
         if(isNaN(amount))
@@ -247,13 +251,13 @@ const disponibilidadValid = ({row, disponibilidad}: {row: any, disponibilidad: a
     return value
 }
 
-const rentabilidadToNumber = (r: string): number => {
+export const rentabilidadToNumber = (r: string): number => {
         if(r.indexOf('%') > -1)
             return Number(r.replace(/%/g, ''))
         else return Number(r)
 }
 
-const riesgoToNumber = (riesgo: string) => {
+export const riesgoToNumber = (riesgo: string) => {
     switch(riesgo) {
         case "Muy Bajo":
             return 0;
@@ -426,7 +430,7 @@ const InvestmentTableHeader = ({rows, state, dispatch}: {dispatch: DispatchType,
 
             <div className={` toggle-section box-border grid grid-cols-12 gap-4 w-full ${state.filterBarVisibility ? 'active' : ''}`}>
                 <div className="text-md col-span-12 text-left">Seleccionar por tipo:</div>
-                {Array.from(valuesPerColumn.tipo).map((name: string) => {
+                {Array.from(valuesPerColumn?.tipo || []).map((name: string) => {
                     return (
                         <div className="col-span-12 md:col-span-4">
                             <ThemeCheckboxElement
@@ -567,28 +571,8 @@ const InvestmentTable: React.FC<TFormResults> = () => {
     if(loading)
         return <div>Loading</div>
 
-    // const filter = (): boolean => {
-    //         return true;
-
-
-    //     // const montoMinimo = answers.find(a => a.questionId == 1).customValue
-    //     // const plazoMinimo = answers.find((a: TAnswerType) => a.questionId == 2).answerId
-    //     // const disponibilidad = answers.find((a: TAnswerType) => a.questionId == 3).answerId
-    //     // const riesgo = answers.find((a: TAnswerType) => a.questionId == 4).answerId
-
-    //     // if(row.montoMin > montoMinimo) return false
-    //     // const disp =  disponibilidadValid({row, disponibilidad}) 
-    //     // const riesg = riesgoValid({row, riesgo}) 
-    //     // const plaz = plazoMinimoValid({row, plazoMinimo})
-    //     // return disp && riesg && plaz
-    // }
 
     let rows: InvestmentOption[] = data?.investmentOptions || []
-    // if(data?.investmentOptions)
-    //     rows = [...data?.investmentOptions]
-
-    // if(state.isFiltering)
-    //     rows = rows.filter(filter).slice(0,3)
 
     if(rows.length < 3)
         rows = rows.slice(0,3)
@@ -597,16 +581,16 @@ const InvestmentTable: React.FC<TFormResults> = () => {
     const columnNames: string[] = tableConfiguration.columns.filter(t => t.display !== false).map(t => t.label)
 
     return (
-        <div>
+        <div className='container mx-auto'>
                     <Meta title={'Vali Investment Options'} description={'Investment Table Options'} />
-                    <Section title='Base de Inversiones México'>
+                    <Section>
                         <InvestmentTableHeader 
                             rows={rows}
                             state={state} 
                             dispatch={dispatch}
                         />
                         <div className="flex justify-center flex-col">
-                            <div className="bg-white rounded-md py-4">
+                            <div className="bg-white rounded-md py-4 overflow-x-hidden">
                             <div className="flex w-full justify-between grid grid-cols-12 gap-4">
                                 <div className='hidden md:col-span-6 md:block'></div>
                                 <div className='px-4 col-span-12 md:col-span-6 flex items-center'>
@@ -622,29 +606,30 @@ const InvestmentTable: React.FC<TFormResults> = () => {
                                     <span className="ml-4 text-purple-500 material-symbols-outlined text-4xl" style={{transform: 'translateY(-10%)'}}> edit_square </span>
                                 </div>
                             </div>
+                            <div className="w-full overflow-x-scroll md:overflow-visible">
+                                    <Table
+                                        rowData={rows.filter(filter(state)).sort((a,b) => {
+                                            if(state?.sortValue) {
+                                                switch(state.sortValue) {
+                                                    case "Empresa":
+                                                        return a.nombre.localeCompare(b.nombre);
+                                                    case "Retorno anual promedio":
+                                                        return Number(rentabilidadToNumber(b.rentabilidad)) - Number(rentabilidadToNumber(a.rentabilidad));
+                                                    case "Ganancia anual estimada": 
+                                                        return getGananciaAnual(b.rentabilidad, state.sliderValue) - getGananciaAnual(a.rentabilidad, state.sliderValue)
+                                                    default: 
+                                                        return a.nombre.localeCompare(b.nombre);
+                                                }
 
-                                <Table
-                                    rowData={rows.filter(filter(state)).sort((a,b) => {
-                                        if(state?.sortValue) {
-                                            switch(state.sortValue) {
-                                                case "Empresa":
-                                                    return a.nombre.localeCompare(b.nombre);
-                                                case "Retorno anual promedio":
-                                                    return Number(rentabilidadToNumber(b.rentabilidad)) - Number(rentabilidadToNumber(a.rentabilidad));
-                                                case "Ganancia anual estimada": 
-                                                    return getGananciaAnual(b.rentabilidad, state.sliderValue) - getGananciaAnual(a.rentabilidad, state.sliderValue)
-                                                default: 
-                                                    return a.nombre.localeCompare(b.nombre);
+                                            } else {
+                                                return Number(a.id) - Number(b.id);
                                             }
-
-                                        } else {
-                                            return Number(a.id) - Number(b.id);
-                                        }
-                                    })}
-                                    configuration={tableConfiguration}
-                                    TableElement={ThemeTableElement}
-                                    HeadElement={ThemeTableHeadElement}
-                                />
+                                        })}
+                                        configuration={tableConfiguration}
+                                        TableElement={ThemeTableElement}
+                                        HeadElement={ThemeTableHeadElement}
+                                    />
+        </div>
                             </div>
                         </div>
                     </Section>

@@ -31,7 +31,7 @@
 }
 
 body {
-    @apply bg-purple-100;
+    background: white;
 }
 
 
@@ -326,4 +326,9 @@ clip-path: polygon(100% 0%, 0% 0% , 0% 82.00%, 1% 81.99%, 2% 81.97%, 3% 81.94%, 
 
 .carousel__body {
     border: 1px solid green;
+}
+
+table.c__table td, table.c__table th {
+    padding: 1em;
+
 }

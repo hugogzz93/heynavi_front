@@ -145,7 +145,7 @@ const Base = () => {
 
     <section id='porque' className='border border-1 border-green-500 py-32 flex flex-col overflow-x-visible py-32' style={{backgroundColor: '#5F3FC73A'}}>
         <div className="text-3xl text-center font-bold text-slate-800 mb-12">¿Por qué elegir Vali?</div>
-        <div className="flex overflow-x-hidden border border-1 border-red-500 container mx-auto">
+        <div className="flex overflow-x-hidden container mx-auto justify-evenly">
             <TestimonialBox src='/assets/images/registrate.svg' title='Nombre de usuario' body='Entre más personas accedan a la base de datos, más nos ayuda a ofrecer herramientas de inversión de valor.' starCount={3}/>
             <TestimonialBox focused={true} src='/assets/images/registrate.svg' title='Nombre de usuario' body='Entre más personas accedan a la base de datos, más nos ayuda a ofrecer herramientas de inversión de valor.' starCount={5}/>
             <TestimonialBox src='/assets/images/registrate.svg' title='Nombre de usuario' body='Entre más personas accedan a la base de datos, más nos ayuda a ofrecer herramientas de inversión de valor.' starCount={5}/>

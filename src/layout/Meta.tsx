@@ -31,7 +31,6 @@ const Meta = (props: IMetaProps) => {
             key='google-icons'
         />
 
-        <script src="https://accounts.google.com/gsi/client" async defer></script>
         <link
           rel="icon"
           href={`${router.basePath}/logo_navio.png`}

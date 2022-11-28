@@ -3,6 +3,7 @@ query GetInvestmentOptions($query: InvestmentOptionQuery) {
       id
       tipo
       nombre
+      nombreEmpresa
       descripcion
       rentabilidad
       riesgo

@@ -34,6 +34,10 @@ const FormConfiguration = ({deleteFn}: {deleteFn: () => void}): TFormConfigurati
             	cols: 3
 			},
             {
+				id: 'nombreEmpresa',
+            	cols: 3
+			},
+            {
 				id: 'descripcion',
             	cols: 6
 			},
@@ -88,6 +92,11 @@ const FormConfiguration = ({deleteFn}: {deleteFn: () => void}): TFormConfigurati
             {
 				id: 'nombre',
                 label: 'Nombre',
+                type: 'text',
+			},
+            {
+				id: 'nombreEmpresa',
+                label: 'Nombre Empresa',
                 type: 'text',
 			},
             {
@@ -178,7 +187,7 @@ const ViewEditOption = (props: {id: string}) => {
         const input: InvestmentOptionInput = {
             ...(data as InvestmentOptionInput),
         }
-        if(input.image == '')
+        if(input.image == '' || !input.image || input.image.hasOwnProperty('__typename'))
             delete input.image
 
         mutate({variables: {input, id}})

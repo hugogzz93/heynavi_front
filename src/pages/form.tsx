@@ -43,6 +43,7 @@ const Form = (props: {questions: Array<Question>}) => {
 
     return (
         <div className="flex flex-col antialiased text-gray-600 justify-between bg-purple-100 pt-32" style={{height: '100vh'}}>
+            <div className="fixed top-0 left-0 w-screen h-screen bg-purple-100" style={{zIndex: '-1'}}></div>
             <Meta title={'Vali Questionnaire'} description={AppConfig.description} />
                   <NavbarTwoColumns 
                     user={user}

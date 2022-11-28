@@ -68,6 +68,7 @@ export type InvestmentOption = {
   image?: Maybe<FileLink>;
   montoMin: Scalars['String'];
   nombre: Scalars['String'];
+  nombreEmpresa?: Maybe<Scalars['String']>;
   recurrencia: Scalars['String'];
   rentabilidad: Scalars['String'];
   respaldado: Scalars['String'];
@@ -84,6 +85,7 @@ export type InvestmentOptionInput = {
   image?: InputMaybe<Scalars['Upload']>;
   montoMin?: InputMaybe<Scalars['String']>;
   nombre?: InputMaybe<Scalars['String']>;
+  nombreEmpresa?: InputMaybe<Scalars['String']>;
   recurrencia?: InputMaybe<Scalars['String']>;
   rentabilidad?: InputMaybe<Scalars['String']>;
   respaldado?: InputMaybe<Scalars['String']>;
@@ -178,7 +180,7 @@ export type GetInvestmentOptionsQueryVariables = Exact<{
 }>;
 
 
-export type GetInvestmentOptionsQuery = { __typename?: 'Query', investmentOptions: Array<{ __typename?: 'InvestmentOption', id: string, tipo: string, nombre: string, descripcion: string, rentabilidad: string, riesgo: string, tiempo: string, montoMin: string, recurrencia: string, generales: string, fijaVariable: string, respaldado: string, apertura: string, image?: { __typename?: 'FileLink', link?: string | null } | null }> };
+export type GetInvestmentOptionsQuery = { __typename?: 'Query', investmentOptions: Array<{ __typename?: 'InvestmentOption', id: string, tipo: string, nombre: string, nombreEmpresa?: string | null, descripcion: string, rentabilidad: string, riesgo: string, tiempo: string, montoMin: string, recurrencia: string, generales: string, fijaVariable: string, respaldado: string, apertura: string, image?: { __typename?: 'FileLink', link?: string | null } | null }> };
 
 export type UpdateInvestmentOptionMutationVariables = Exact<{
   input: InvestmentOptionInput;
@@ -273,6 +275,7 @@ export const GetInvestmentOptionsDocument = gql`
     id
     tipo
     nombre
+    nombreEmpresa
     descripcion
     rentabilidad
     riesgo

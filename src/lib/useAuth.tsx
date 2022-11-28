@@ -6,6 +6,13 @@ type IAuthHookProps = {
     targetId?: string,
 }
 
+const isExpired = (timestamp: number): boolean => {
+    if(!timestamp)
+        return false
+    const expirationDate = new Date(timestamp * 1000)
+    return new Date() < expirationDate;
+}
+
 
 const useAuth = (props: IAuthHookProps) => {
     const S_KEY = 'gid'
@@ -17,7 +24,6 @@ const useAuth = (props: IAuthHookProps) => {
         const user = jwtDecode(response.credential);
         console.log(response.credential)
         localStorage.setItem(S_KEY, JSON.stringify(user))
-        debugger
         setUser(user)
     }
 
@@ -26,11 +32,12 @@ const useAuth = (props: IAuthHookProps) => {
         /* global google */
         const jwt = localStorage.getItem(S_KEY)
         try {
-            debugger
             if(!user && jwt) {
                 let user = JSON.parse(jwt)
-                setUser(user)
-                return 
+                if(!isExpired(user.exp)) {
+                    setUser(user)
+                    return 
+                }
             } 
         }catch(e) {
             console.error(e)

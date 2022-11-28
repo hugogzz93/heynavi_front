@@ -16,7 +16,11 @@ const Hero = () => (
                 <div className="text-2xl my-16 md:w-2/3">
                    Descubre y analiza las mejores opciones para invertir en México
                 </div>
-            <Button primary xl shadow>Haz la prueba Gratis</Button>
+                <Link href='/form' passHref>
+                    <button>
+                        <Button primary xl shadow>Har la prueba Gratis</Button>
+                    </button>
+                </Link>
             </div>
             <div className='grow-0 md:w-1/2 pt-8'>
                 <img className='hero__img' src="/assets/images/Img01.svg" alt="" />
