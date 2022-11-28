@@ -1,18 +1,18 @@
 import { ReactNode, useEffect } from 'react';
 import ReactTooltip from 'react-tooltip';
-import { useAuth } from 'lib/useAuth'
+import { useSession, signIn, signOut } from 'next-auth/react'
+import GoogleSignInButton from 'components/GoogleSignInButton'
 
 
 type INavbarProps = {
   logo: ReactElement;
   links: ReactElement;
   children: ReactNode;
-  user: any,
-  logOut: () => unknown;
   active?: boolean;
 };
 
 const NavbarTwoColumns = (props: INavbarProps) => {
+    const { data: session } = useSession();
 
     return (
         <>
@@ -29,20 +29,21 @@ const NavbarTwoColumns = (props: INavbarProps) => {
                     </nav>
 
 
-        {props.user && <div id='g_account' className='g_id_signout flex items-center cursor-pointer' data-tip='Log Out' onClick={props.user ? props.logOut : () => {}}>
+        {session?.user && <div id='g_account' className='g_id_signout flex items-center cursor-pointer' data-tip='Log Out' onClick={signOut}>
                         <div className="rounded-full overflow-hidden w-14 border border-purple-500 mr-4 " style={{borderWidth: '4px'}}>
                             <div className="rounded-full border border-white overflow-hidden" style={{borderWidth: '2px'}}>
                                     <picture>
-                                        <img src={props.user?.picture} alt=""/>
+                                        <img src={session.user.image} alt=""/>
                                     </picture>
                             </div>
                         </div>
                         <div className="text-xl text-slate-900 font-bold">{props.user?.name}</div>
-                        {props.user && <ReactTooltip/>}
-        
+                        <ReactTooltip/>
                     </div>}
 
-        {!props.user && <div id='google__signin'></div>}
+        {!session?.user && (
+              <GoogleSignInButton tiny/>
+        )}
 
                     <style jsx>
                       {`

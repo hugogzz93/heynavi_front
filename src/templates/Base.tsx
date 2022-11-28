@@ -11,7 +11,6 @@ import { ScrollToPlugin } from "gsap/dist/ScrollToPlugin";
 
 
 import { NavbarTwoColumns } from '../navigation/NavbarTwoColumns';
-import { useAuth } from 'lib/useAuth'
 import { ImageCard } from '../components/ImageCard'
 import { TestimonialBox } from '../components/TestimonialBox'
 import { Logo } from './Logo';
@@ -59,8 +58,6 @@ const setActiveNavbar = (active: boolean) => {
 
 const Base = () => {
     const router = useRouter()
-    const {user, logOut} = useAuth({targetId: "google__signin" })
-    console.log("user", user)
 
     useEffect(() => {
         gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
@@ -105,8 +102,6 @@ const Base = () => {
           return ( <Logo/>)
      }}
 
-    user={user}
-    logOut={logOut}
      links={() => {
          return (
               <div className='flex items-center text-gray-800 font-medium'>

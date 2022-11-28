@@ -14,7 +14,6 @@ import { client } from 'pages/_app'
 
 import Table from 'components/InvestmentTable'
 import { ClientQuestionAnswerInput, Question, InvestmentOption } from '../generated/graphql'
-import { useAuth } from 'lib/useAuth';
 
 
 export type TFormResults = {
@@ -34,7 +33,6 @@ export async function getServerSideProps() {
 
 
 const Form = (props: {questions: Array<Question>}) => {
-    const {user, logOut} = useAuth({targetId: "google__signin" })
     const [formResult, setFormResult] = useState<TFormResults>({answers: []})
     let isAdmin = false
     try {
@@ -46,8 +44,6 @@ const Form = (props: {questions: Array<Question>}) => {
             <div className="fixed top-0 left-0 w-screen h-screen bg-purple-100" style={{zIndex: '-1'}}></div>
             <Meta title={'Vali Questionnaire'} description={AppConfig.description} />
                   <NavbarTwoColumns 
-                    user={user}
-                    logOut={logOut}
                     active
                     logo={() => <Logo />}
                     links={() => <div></div>}

@@ -1,9 +1,9 @@
 import Link from "next/link"
+import { useSession } from 'next-auth/react'
 
 import { Meta } from 'layout/Meta'
 import { AppConfig } from 'utils/AppConfig';
 import { NavbarTwoColumns } from 'navigation/NavbarTwoColumns';
-import { useAuth } from 'lib/useAuth'
 import { Logo } from '../../templates/Logo';
 import { Footer} from 'templates/Footer';
 import { useGetInvestmentOptionsQuery } from "api"
@@ -61,7 +61,8 @@ const InvestmentOptionCard: React.FC<{investmentOption: InvestmentOption}> = ({i
 
 const ViewInvestmentOption = (props: {id: string}) => {
     const {data, loading} = useGetInvestmentOptionsQuery()
-    const {user, logOut} = useAuth({targetId: "google__signin" })
+    const { data: session } = useSession({required: true});
+
     if(loading)
         return (
             <div className="container mx-auto">
@@ -77,8 +78,6 @@ const ViewInvestmentOption = (props: {id: string}) => {
         <div className="flex flex-col antialiased h-screen justify-between">
         <Meta title={`Vali - ${investmentOption.nombre}`} description={AppConfig.description} />
           <NavbarTwoColumns 
-            user={user}
-            logOut={logOut}
             active
             logo={() => <Logo />}
             links={() => <div></div>}
@@ -93,9 +92,11 @@ const ViewInvestmentOption = (props: {id: string}) => {
                     <picture className=''>
                         <img className="object-contain w-full w-96 h-96" src={`${investmentOption?.image?.link}`} alt={investmentOption.nombre} />
                     </picture>
-                    <button className="shadow-md bg-purple-500 text-white px-6 py-4 w-96 rounded-xl hidden md:inline-block">
-                        Recibir asesoria gratuita
-                    </button>
+                    <Link href='https://api.whatsapp.com/send/?phone=5218132647979&text=Hola%2C+me+podr%C3%ADan+apoyar+a+resolver+mis+dudas%3F&type=phone_number&app_absent=0' passHref>
+                        <button className="shadow-md bg-purple-500 text-white px-6 py-4 w-96 rounded-xl hidden md:inline-block">
+                            Recibir asesoria gratuita
+                        </button>
+                    </Link>
                 </div>
 
                 <div className="flex flex-col w-full md:w-2/4 pt-24 items-center md:items-start">
