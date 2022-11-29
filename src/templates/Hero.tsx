@@ -10,15 +10,15 @@ const Hero = () => (
         <div id="hero-background" ></div>
         <div className="container mx-auto flex flex-col md:flex-row items-center relative  text-center md:text-left">
             <div className="grow text-white font-light">
-                <div className="text-5xl pt-16" style={{fontWeight: '400'}}>
-                    Invertir es fácil cuando puedes comparar
-                </div>
+                <p className="pt-16 md:text-6xl font-medium" >
+                    Invertir es fácil cuando <br/> puedes comparar
+                </p>
                 <div className="text-2xl my-16 md:w-2/3">
-                   Descubre y analiza las mejores opciones para invertir en México
+                    Descubre y analiza las mejores opciones para invertir en México - <span className='font-bold'>gratis</span>
                 </div>
                 <Link href='/form' passHref>
                     <button>
-                        <Button primary xl shadow>Haz la prueba Gratis</Button>
+                        <Button primary xl shadow>Buscar ahora</Button>
                     </button>
                 </Link>
             </div>

@@ -68,10 +68,10 @@ const QuestionnaireHeading: React.FC= () => {
     return (
         <div className="flex flex-col mb-8">
             <div className="text-2xl font-bold mb-8">
-                Nuestra base de datos cuenta con más de 100 opciones de inversión.
+                Veamos qué tipo de inversionista eres
             </div>
             <div className="text-md">
-                Las próximas preguntas ayudarán a segmentar las que más se ajusten a tu perfil.
+                Las siguientes preguntas nos ayudarán a mostrarte las opciones que más se ajusten a tu perfil.
             </div>
         </div>
     )
@@ -123,7 +123,7 @@ const QuestionCount: React.FC<{state: QuestionnaireState}> = ({state}) => {
     )
 }
 
-const QuestionComponent: React.FC<{question: Question, state: QuestionnaireState, dispatch: any, onSubmit: (arg0: any) => void}> = ({question, dispatch, onSubmit, state}) => {
+const QuestionComponent: React.FC<{question: Question, state: QuestionnaireState, dispatch: any, onSubmit: () => void}> = ({question, dispatch, onSubmit, state}) => {
     const [sliderValue, setSliderValue] = useState<number>(0)
     const [thumbCoordinates, setThumbCoordinates] = useState<any>(getThumbCoordinates())
     if(question.questionType === 'slider') {
@@ -141,14 +141,18 @@ const QuestionComponent: React.FC<{question: Question, state: QuestionnaireState
         )
     }
 
-    const isQuestionAnswered = !!state.answers.find(a => a.questionId == question.id)
-
     return (
         <div className="flex flex-row flex-wrap">
             {question.answers?.map(opt => (
                 <div 
                     key={`${question.id}-${opt.id}`}
-                    onClick={() => dispatch({type: 'submitQuestion', payload: {questionId: question.id, answerId: opt.id, answerValue: opt.text}})}
+                    onClick={() => {
+                        dispatch({type: 'submitQuestion', payload: {questionId: question.id, answerId: opt.id, answerValue: opt.text}})
+                        if(state.currentQuestion == Object.keys(Questions).length - 1) {
+                            debugger
+                            onSubmit()
+                        }
+                    }}
                     style={{flexBasis: '48%', margin: '1%'}}
                     className={`my-1 border border-1 border-gray-300  rounded-md p-4 cursor-pointer hover:bg-purple-300 hover:text-white duration-300 transition-all ${state.answers.find(a => a.questionId == question.id)?.answerId == opt.id ? ' bg-purple-500 text-white': 'bg-white'}`}
                   >{opt.text}</div>
@@ -157,14 +161,6 @@ const QuestionComponent: React.FC<{question: Question, state: QuestionnaireState
                 <button className="w-full md:w-fit float-right inline-block bg-gray-200 mb-4 md:mb-0 p-4 rounded-md text-slate-800 hover:text-white hover:bg-purple-500 duration-300 transition-all" onClick={() => dispatch({type: 'prevQuestion'})}>
                     Regresar
                 </button>
-                {state.currentQuestion == Object.keys(Questions).length - 1 ? (
-                    <button 
-                    style={{opacity: isQuestionAnswered ? '1' : '0.5'}}
-                    className="transition-all w-full md:w-fit duration-300 hover:bg-purple-700 float-right inline-block bg-purple-500 p-4 rounded-md text-white" onClick={(e) => {isQuestionAnswered && onSubmit(e)}}>
-                        Finalizar
-                    </button>
-
-                ): (<></>)}
                 {state.answers.find(a => a.questionId == question.id) && (state.currentQuestion != Object.keys(Questions).length - 1) &&(
                         <button className="w-full md:w-fit cursor-pointer md:ml-2 float-right inline-block p-4 rounded-md  text-white bg-purple-500 duration-300 transition-all" onClick={() => dispatch({type: 'nextQuestion'})}>
                             Siguiente
@@ -183,7 +179,7 @@ const QuestionnaireForm: React.FC<{question: Question, state: QuestionnaireState
     return (
         <div className="border-1 border-gray-300 rounded-md flex flex-col">
             <QuestionCount state={state}/>
-            <div className="text-2xl mb-4 my-20 max-w-4xl">{question.text}</div>
+            <div className="text-2xl my-6 mb:my-20 max-w-4xl">{question.text}</div>
             <QuestionComponent question={question} dispatch={dispatch} onSubmit={onSubmit} state={state}/>
         </div>
     )
