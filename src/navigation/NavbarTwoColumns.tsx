@@ -35,22 +35,6 @@ const NavbarTwoColumns = (props: INavbarProps) => {
                     </nav>
 
 
-        {session?.user && <div id='g_account' className='g_id_signout flex items-center cursor-pointer' data-tip='Log Out' onClick={signOut}>
-                        <div className="rounded-full overflow-hidden w-14 border border-purple-500 mr-4 " style={{borderWidth: '4px'}}>
-                            <div className="rounded-full border border-white overflow-hidden" style={{borderWidth: '2px'}}>
-                                    <picture>
-                                        <img src={session.user.image} alt=""/>
-                                    </picture>
-                            </div>
-                        </div>
-                        <div className="text-xl text-slate-900 font-bold">{props.user?.name}</div>
-                        <ReactTooltip/>
-                    </div>}
-
-        {!session?.user && (
-              <GoogleSignInButton tiny/>
-        )}
-
                     <style jsx>
                       {`
                         .navbar :global(li:not(:first-child)) {
@@ -74,22 +58,6 @@ const NavbarTwoColumns = (props: INavbarProps) => {
                             {props.logo()}
                         </div>
                     </Link>
-
-        {session?.user && <div id='g_account' className='g_id_signout flex items-center cursor-pointer' data-tip='Log Out' onClick={signOut}>
-                        <div className="rounded-full overflow-hidden w-14 border border-purple-500 mr-4 " style={{borderWidth: '4px'}}>
-                            <div className="rounded-full border border-white overflow-hidden" style={{borderWidth: '2px'}}>
-                                    <picture>
-                                        <img src={session.user.image} alt=""/>
-                                    </picture>
-                            </div>
-                        </div>
-                        <div className="text-xl text-slate-900 font-bold">{props.user?.name}</div>
-                        <ReactTooltip/>
-                    </div>}
-
-        {!session?.user && (
-              <GoogleSignInButton tiny/>
-        )}
 
                     <style jsx>
                       {`

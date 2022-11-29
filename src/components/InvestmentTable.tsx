@@ -644,7 +644,8 @@ const filter = (state: TInvestmentTableState) => (row: InvestmentOption): boolea
 const InvestmentTable: React.FC<TFormResults> = ({answers}) => {
     const [state, dispatch] = useReducer<ReducerType>(reducer, InitialInvestmentTableState({answers}))
     const {data, loading} = useGetInvestmentOptionsQuery()
-    const { data: session } = useSession()
+    // const { data: session } = useSession()
+    const session = {user: true}
     if(loading)
         return <div>Loading</div>
 
