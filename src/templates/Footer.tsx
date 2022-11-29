@@ -12,7 +12,9 @@ const Footer = () => (
         <div className='mt-8 md:my-0 text-center'>
             <div className="text-white">
                 <div className="text-sm">Terminos y condiciones</div>
-                <div className="text-sm">Aviso de privacidad</div>
+                <Link href='/privacypolicy' passHref>
+                    <div className="text-sm">Aviso de privacidad</div>
+                </Link>
             </div>
         </div>
 

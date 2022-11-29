@@ -61,7 +61,7 @@ const InvestmentOptionCard: React.FC<{investmentOption: InvestmentOption}> = ({i
 
 const ViewInvestmentOption = (props: {id: string}) => {
     const {data, loading} = useGetInvestmentOptionsQuery()
-    const { data: session } = useSession({required: true});
+    // const { data: session } = useSession({required: true});
 
     if(loading)
         return (
