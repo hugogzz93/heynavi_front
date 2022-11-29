@@ -319,11 +319,42 @@ clip-path: polygon(100% 0%, 0% 0% , 0% 82.00%, 1% 81.99%, 2% 81.97%, 3% 81.94%, 
 
 .carousel__wrapper {
     overflow-x: hidden;
-    border: 1px solid red;
+    width: 90vw;
 }
 
-.carousel__body {
-    border: 1px solid green;
+@media (max-width: 699px) {
+    .testimonial__box {
+        min-width: 70vw;
+    }
+
+    .carousel__body {
+        overflow-x: scroll;
+    }
+    img.carousel__item {
+        /* margin: 2em; */
+        /* height: 2em; */
+    }
+}
+
+@media  (min-width: 700px) {
+
+    .carousel__body.mov {
+        width: 90vw;
+        position: absolute;
+        left: 5%;
+        /* transform: translateX(-50%) */
+    }
+
+    .carousel__body::-webkit-scrollbar {
+      /* display: none; */
+    }
+
+    /* Hide scrollbar for IE, Edge and Firefox */
+    .carousel__body {
+      /* -ms-overflow-style: none;  /1* IE and Edge *1/ */
+      /* scrollbar-width: none;  /1* Firefox *1/ */
+    }
+
 }
 
 table.c__table td, table.c__table th {

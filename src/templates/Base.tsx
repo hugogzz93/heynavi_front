@@ -8,6 +8,7 @@ import { Button } from '../button/Button'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/dist/ScrollTrigger'
 import { ScrollToPlugin } from "gsap/dist/ScrollToPlugin";
+import Link from 'next/link';
 
 
 import { NavbarTwoColumns } from '../navigation/NavbarTwoColumns';
@@ -120,9 +121,9 @@ const Base = () => {
             <div className="text-gray-600">y seguimos añadiendo más opciones</div>
         </div>
         <div className="carousel__wrapper">
-            <div className="carousel__body flex flex-nowrap items-center">
+            <div className="carousel__body mov flex flex-nowrap items-center overflow-x-scroll">
                 {imgs.map(( src: string ) => (
-                            <img key={src} style={{opacity: 0.5, filter: 'grayscale(100%)'}} className='carousel__item h-8 md:h-12 my-3 md:m-8 object-contain' src={`${router.basePath}/logos/${src}`} alt="" />
+                            <img key={src} style={{opacity: 0.5, filter: 'grayscale(100%)'}} className='carousel__item mx-4 h-8 md:h-12 my-3 md:m-8 object-contain' src={`${router.basePath}/logos/${src}`} alt="" />
                 ))}
              </div>
         </div>
@@ -140,10 +141,12 @@ const Base = () => {
 
     <section id='porque' className='border border-1 border-green-500 py-32 flex flex-col overflow-x-visible py-32' style={{backgroundColor: '#5F3FC73A'}}>
         <div className="text-3xl text-center font-bold text-slate-800 mb-12">¿Por qué elegir Vali?</div>
-        <div className="flex overflow-x-hidden container mx-auto justify-evenly">
-            <TestimonialBox src='/assets/images/registrate.svg' title='Nombre de usuario' body='Entre más personas accedan a la base de datos, más nos ayuda a ofrecer herramientas de inversión de valor.' starCount={3}/>
-            <TestimonialBox focused={true} src='/assets/images/registrate.svg' title='Nombre de usuario' body='Entre más personas accedan a la base de datos, más nos ayuda a ofrecer herramientas de inversión de valor.' starCount={5}/>
-            <TestimonialBox src='/assets/images/registrate.svg' title='Nombre de usuario' body='Entre más personas accedan a la base de datos, más nos ayuda a ofrecer herramientas de inversión de valor.' starCount={5}/>
+        <div className="overflow-x-hidden md:overflow-x-visible">
+            <div className="carousel__body md:static flex flex-nowrap items-center md:justify-center">
+                <TestimonialBox src='/assets/images/registrate.svg' title='Nombre de usuario' body='Entre más personas accedan a la base de datos, más nos ayuda a ofrecer herramientas de inversión de valor.' starCount={3}/>
+                <TestimonialBox focused={true} src='/assets/images/registrate.svg' title='Nombre de usuario' body='Entre más personas accedan a la base de datos, más nos ayuda a ofrecer herramientas de inversión de valor.' starCount={5}/>
+                <TestimonialBox src='/assets/images/registrate.svg' title='Nombre de usuario' body='Entre más personas accedan a la base de datos, más nos ayuda a ofrecer herramientas de inversión de valor.' starCount={5}/>
+             </div>
         </div>
     </section>
 
@@ -157,7 +160,11 @@ const Base = () => {
                 Tenemos las mejores opciones de inversión.
             </div>
 
-            <Button transparent reverseHover>Haz la prueba Gratis</Button>
+            <Link href='/form' passHref>
+                 <button>
+                   <Button transparent reverseHover>Haz la prueba Gratis</Button>
+                 </button>
+             </Link>
              </div>
          </div>
 

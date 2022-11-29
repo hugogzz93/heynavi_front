@@ -21,7 +21,9 @@ const TestimonialBox = (props: ITestimonialBoxProps) => {
         <div 
         style={{boxShadow: '0 10px 35px #888F', fontSize: props.focused ? '18px' : '14px', transform: props.focused ? 'scale(1.15)' : 'scale(1)', zIndex: props.focused ? '1' : '0'}}
         className={` 
-            flex mx-8 my-8 text-white flex-col rounded-2xl items-center p-4 py-6 text-center bg-purple-500 border border-2 border-white 
+            testimonial__box
+            flex mx-8 my-8 text-white flex-col rounded-2xl items-center 
+            p-4 py-6 text-center bg-purple-500 border border-2 border-white 
             w-96
         `}>
             <div className='flex items-left mb-12'>

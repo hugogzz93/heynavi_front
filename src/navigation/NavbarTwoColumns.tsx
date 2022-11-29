@@ -3,6 +3,7 @@ import { ReactNode, useEffect } from 'react';
 import ReactTooltip from 'react-tooltip';
 import { useSession, signIn, signOut } from 'next-auth/react'
 import GoogleSignInButton from 'components/GoogleSignInButton'
+import Consent from 'components/consent'
 
 
 type INavbarProps = {

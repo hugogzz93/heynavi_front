@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 
 
+import { gsap } from 'gsap'
 import { Meta } from '../layout/Meta';
 import { AppConfig } from '../utils/AppConfig';
 import { Section } from '../layout/Section';
@@ -38,6 +39,10 @@ const Form = (props: {questions: Array<Question>}) => {
     try {
         isAdmin = localStorage.getItem('tasp.capr') == 'true'
     }catch {}
+
+    useEffect(() => {
+        gsap.globalTimeline.clear();
+    }, [])
 
     return (
         <div className="flex flex-col antialiased text-gray-600 justify-between bg-purple-100 pt-32" style={{height: '100vh'}}>
