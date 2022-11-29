@@ -78,6 +78,7 @@ const Base = () => {
 
         ScrollTrigger.create({
             trigger: '#hero',
+            start: 'top center',
             onEnter: () => setActiveLink('#hero-link'),
             onEnterBack: () => setActiveLink('#hero-link')
         })
@@ -85,6 +86,7 @@ const Base = () => {
 
         ScrollTrigger.create({
             trigger: '#como-funciona',
+            start: 'top center',
             onEnter: () => setActiveLink('#como-link'),
             onEnterBack: () => setActiveLink('#como-link')
         })
@@ -92,6 +94,7 @@ const Base = () => {
 
         ScrollTrigger.create({
             trigger: '#porque',
+            start: 'top center',
             onEnter: () => setActiveLink('#porque-link'),
             onEnterBack: () => setActiveLink('#porque-link')
         })
@@ -107,8 +110,8 @@ const Base = () => {
          return (
               <div className='flex items-center text-gray-800 font-medium'>
                 <div className='nav__link text-md mx-4' id='hero-link' onClick={() => scrollTo(gsap, '#hero')} style={{marginLeft: '10em'}}>Inicio</div>
-                <div className='nav__link text-md mx-4' id='como-link' onClick={() => scrollTo(gsap, '#como-funciona')}>¿Como Funciona</div>
-                <div className='nav__link text-md mx-4' id='porque-link' onClick={() => scrollTo(gsap, '#porque')}>¿Por que Vali?</div>
+                <div className='nav__link text-md mx-4' id='como-link' onClick={() => scrollTo(gsap, '#como-funciona')}>¿Cómo funciona?</div>
+                <div className='nav__link text-md mx-4' id='porque-link' onClick={() => scrollTo(gsap, '#porque')}>¿Por qué Vali?</div>
               </div>
          )
      }}
@@ -116,10 +119,6 @@ const Base = () => {
   </NavbarTwoColumns>
     <Hero />
     <Section>
-        <div className="navtrigger text-3xl text-center text-gray-900 font-semibold mb-8">
-            Tenemos las mejores opciones de inversión 
-            <div className="text-gray-600">y seguimos añadiendo más opciones</div>
-        </div>
         <div className="carousel__wrapper">
             <div className="carousel__body mov flex flex-nowrap items-center overflow-x-scroll">
                 {imgs.map(( src: string ) => (
@@ -131,16 +130,16 @@ const Base = () => {
     </Section>
 
     <section id='como-funciona' className='flex flex-col container mx-auto py-40 md:px-20'>
-        <div className="text-3xl text-center font-bold" style={{marginBottom: '5em'}}>¿Como Funciona?</div>
+        <div className="text-3xl text-center font-bold" style={{marginBottom: '2em'}}>¿Como Funciona?</div>
          <div className='flex justify-between flex-col md:flex-row px-10'>
-            <ImageCard src='/assets/images/registrate.svg' title='Registrate' body='Crea una cuenta para comenzar a utilizar la plataforma'/>
+            <ImageCard src='/assets/images/registrate.svg' title='Ingresa' body='Cuéntanos sobre ti para mostrarte opciones a tu medida'/>
             <ImageCard src='/assets/images/personaliza.svg' title='Personaliza y explora' body='Configura la plataforma para que se ajuste mejor a tus necesidades.'/>
             <ImageCard src='/assets/images/Asesorate.svg' title='Asesorate e Invierte' body='Obtén asesoria gratuita e invierte en las opciones que mejor te convengan.'/>
          </div>
      </section>
 
-    <section id='porque' className='border border-1 border-green-500 py-32 flex flex-col overflow-x-visible py-32' style={{backgroundColor: '#5F3FC73A'}}>
-        <div className="text-3xl text-center font-bold text-slate-800 mb-12">¿Por qué elegir Vali?</div>
+    <section id='porque' className='py-32 flex flex-col overflow-x-visible py-32' style={{backgroundColor: '#5F3FC73A'}}>
+        <div className="text-3xl text-center font-bold text-slate-800 mb-12">¿Por qué usar Vali?</div>
         <div className="overflow-x-hidden md:overflow-x-visible">
             <div className="carousel__body md:static flex flex-nowrap items-center md:justify-center">
                 <TestimonialBox src='/assets/images/registrate.svg' title='Nombre de usuario' body='Entre más personas accedan a la base de datos, más nos ayuda a ofrecer herramientas de inversión de valor.' starCount={3}/>
@@ -162,7 +161,7 @@ const Base = () => {
 
             <Link href='/form' passHref>
                  <button>
-                   <Button transparent reverseHover>Haz la prueba Gratis</Button>
+                   <Button transparent reverseHover>Buscar ahora</Button>
                  </button>
              </Link>
              </div>

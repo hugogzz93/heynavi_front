@@ -240,7 +240,10 @@ const ThemeTableHeadElement: React.FC<ITableHeadElementProps> = ({columnNames}) 
 }
 
 const ThemeFooterElement: React.FC<any> = ({state: {pagination, rowData}, dispatch}) => {
-    const {data: session} = useSession()
+    // const {data: session} = useSession()
+    const session = {
+        user: true
+    }
     const first = pagination.length * pagination.page
     const last = pagination.length * (pagination.page + 1)
 
@@ -436,7 +439,10 @@ const InvestmentTableHeader = ({rows, state, dispatch}: {dispatch: DispatchType,
     //     return acc;
     // }, {}))
 
-    const {data: session } = useSession()
+    // const {data: session } = useSession()
+    const session = {
+        user: true
+    }
     const valuesPerColumn = rows.reduce((acc: {[key: string]: Set<string>} , curr: InvestmentOption) => {
         Object.keys(curr).forEach((key: string) => {
             if(["__typename", "id"].includes(key)) {}
@@ -459,7 +465,7 @@ const InvestmentTableHeader = ({rows, state, dispatch}: {dispatch: DispatchType,
 
     return (
         <div id='investment-table-header' className={` 
-            bg-white rounded-md p-4 w-full flex-col flex my-4 
+            bg-white rounded-md p-4 w-full flex-col flex mb-4 
             duration-300 transition-all 
             ${state.filterBarVisibility ? 'active' : ''}`}>
             <div className="flex justify-between items-center w-full">
@@ -679,7 +685,7 @@ const InvestmentTable: React.FC<TFormResults> = ({answers}) => {
     return (
         <div className='container mx-auto'>
                     <Meta title={'Vali Investment Options'} description={'Investment Table Options'} />
-                    <Section>
+                    <div className='container mx-auto max-w-screen-lg px-3'>
                         <InvestmentTableHeader 
                             rows={rows}
                             state={state} 
@@ -694,7 +700,7 @@ const InvestmentTable: React.FC<TFormResults> = ({answers}) => {
                                             name='sortOption' 
                                             label='Ordenar Por'
                                             value={state.sortValue}
-                                            options={columnNames.filter((name: string) => name != '').map((name: string) => ({value: name, label: name}))}
+                                            options={columnNames.filter((name: string) => name != '' && name != 'Ganancia anual estimada').map((name: string) => ({value: name, label: name}))}
                                             onChange={(sortValue: any) => {
                                                 session?.user ? dispatch({type: "setSortOption", payload: sortValue.value as string})
                                                 : signIn('google')
@@ -722,7 +728,7 @@ const InvestmentTable: React.FC<TFormResults> = ({answers}) => {
                                 </div>
                             </div>
                         </div>
-                    </Section>
+                    </div>
         </div>
     )
 }

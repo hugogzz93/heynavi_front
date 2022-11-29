@@ -36,13 +36,34 @@ export async function getServerSideProps() {
 const Form = (props: {questions: Array<Question>}) => {
     const [formResult, setFormResult] = useState<TFormResults>({answers: []})
     let isAdmin = false
+    let formAnswers: any;
+
+    const submitForm = (result: TFormResults) => {
+        localStorage.setItem('formAnswers', JSON.stringify(result))
+        setFormResult(result)
+    }
+
+    try {
+        isAdmin = localStorage.getItem('tasp.capr') == 'true'
+        formAnswers = localStorage.getItem('formAnswers')
+
+    }catch {}
+
+
     try {
         isAdmin = localStorage.getItem('tasp.capr') == 'true'
     }catch {}
 
     useEffect(() => {
-        gsap.globalTimeline.clear();
+        try {
+            if(formAnswers)
+                setFormResult(JSON.parse(formAnswers))
+        } catch(e) {
+
+        }
     }, [])
+
+    debugger
 
     return (
         <div className="flex flex-col antialiased text-gray-600 justify-between bg-purple-100 pt-32" style={{height: '100vh'}}>
@@ -56,11 +77,11 @@ const Form = (props: {questions: Array<Question>}) => {
                     <div></div>
                   </NavbarTwoColumns>
                             {
-                                !isAdmin && formResult.answers.length == 0 ? (
+                                (!isAdmin && formResult.answers.length == 0 && !formAnswers)? (
                                     <div className="flex items-center justify-center">
                                         <div className="rounded-md shadow-md p-8 bg-white m-auto">
                                             <div className="text-lg">
-                                                <Questionnaire onSubmit={(result: TFormResults) => setFormResult(result)} questions={props.questions.slice().sort((a,b) => Number(a.order) - Number(b.order) ) as Array<Question>}/>
+                                                <Questionnaire onSubmit={(result: TFormResults) => submitForm(result)} questions={props.questions.slice().sort((a,b) => Number(a.order) - Number(b.order) ) as Array<Question>}/>
                                             </div>
                                         </div>
                                     </div>

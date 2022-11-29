@@ -86,15 +86,19 @@ const ViewInvestmentOption = (props: {id: string}) => {
           </NavbarTwoColumns>
         <div className="fixed top-0 left-0 w-screen h-screen bg-white" style={{zIndex: '-1'}}></div>
 
-        <div className="container mx-auto w-full px-4 mb-8 md:px-0 flex flex-col md:flex-row justify-between">
+        <div className="container mx-auto w-full px-4 mb-8 md:px-0 flex flex-col md:flex-row justify-between pt-24">
 
                 <div className="w-full md:w-1/3 flex flex-col items-center justify-center">
-                    <picture className=''>
+
+                    <Link href='/form'>
+                        <span className="material-symbols-outlined text-blue-500 text-left w-full cursor-pointer"> arrow_back </span>
+                    </Link>
+                    <picture className='min-w-96 min-h-96 border border-1 border-slate-300 m-2'>
                         <img className="object-contain w-full w-96 h-96" src={`${investmentOption?.image?.link}`} alt={investmentOption.nombre} />
                     </picture>
                     <Link href='https://api.whatsapp.com/send/?phone=5218132647979&text=Hola%2C+me+podr%C3%ADan+apoyar+a+resolver+mis+dudas%3F&type=phone_number&app_absent=0' passHref>
                         <button className="shadow-md bg-purple-500 text-white px-6 py-4 w-96 rounded-xl hidden md:inline-block">
-                            Recibir asesoria gratuita
+                            Conocer más
                         </button>
                     </Link>
                 </div>
@@ -112,12 +116,12 @@ const ViewInvestmentOption = (props: {id: string}) => {
                         </thead>
                         <tbody className='bg-slate-50'>
                             <tr>
-                                <td><div className="font-bold">Tipo de garantía:</div></td>
-                                <td>{investmentOption.generales}</td>
+                                <td><div className="font-bold">Tiempo mínimo</div></td>
+                                <td>{investmentOption.tiempo}</td>
                             </tr>
                             <tr>
                                 <td><div className="font-bold">Requisitos: </div></td>
-                                <td>Lorem</td>
+                                <td>{investmentOption.generales}</td>
                             </tr>
                         </tbody>
                     </table>

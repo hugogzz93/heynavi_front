@@ -11,7 +11,7 @@ const Footer = () => (
         <Logo textless white/>
         <div className='mt-8 md:my-0 text-center'>
             <div className="text-white">
-                <div className="text-sm">Terminos y condiciones</div>
+                <div className="text-sm">Términos y condiciones</div>
                 <Link href='/privacypolicy' passHref>
                     <div className="text-sm">Aviso de privacidad</div>
                 </Link>
@@ -26,7 +26,7 @@ const Footer = () => (
         </div>
 
         <div className='flex items-center'>
-            <img className='footer__img' src='/assets/images/instagram.svg'/>
+            <img className='footer__img' style={{transform: 'scale(1.3)'}}src='/assets/images/instagram.svg'/>
             <img className='footer__img' src='/assets/images/facebook.svg'/>
             <img className='footer__img' src='/assets/images/linkedin.svg'/>
         </div>
