@@ -32,6 +32,10 @@ const FormConfiguration: TFormConfiguration = {
             	cols: 3
 			},
             {
+				id: 'nombreEmpresa',
+            	cols: 3
+			},
+            {
 				id: 'descripcion',
             	cols: 6
 			},
@@ -86,6 +90,11 @@ const FormConfiguration: TFormConfiguration = {
             {
 				id: 'nombre',
                 label: 'Nombre',
+                type: 'text',
+			},
+            {
+				id: 'nombreEmpresa',
+                label: 'Nombre Empresa',
                 type: 'text',
 			},
             {

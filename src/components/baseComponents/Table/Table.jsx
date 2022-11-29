@@ -46,7 +46,7 @@ const ThemeRowElement = ({cells}) => {
     return (
         <tr>
             {cells.map((Cell, idx) => (
-                <td key={idx} className={"py-2 px-5"}>
+                <td key={idx} className={"bg-white py-2 px-5 text-center"}>
                     { typeof(Cell) == 'function' ? <Cell/> : Cell}
                 </td>
             ))

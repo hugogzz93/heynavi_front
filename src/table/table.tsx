@@ -128,7 +128,6 @@ const Table: React.FC<TFormResults> = ({answers}) => {
 
     return (
         <div>
-                    <Section title='Base de Inversiones México'>
                         <div className="flex justify-center flex-col">
                             <div className='w-full' onClick={() => setFiltering(!isFiltering)}>
                                 <Button>{isFiltering ? 'Ver todas las opciones' : 'Ver opciones filtradas'}</Button>
@@ -154,7 +153,6 @@ const Table: React.FC<TFormResults> = ({answers}) => {
                                 </tbody>
                             </table>
                         </div>
-                    </Section>
         </div>
     )
 

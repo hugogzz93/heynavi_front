@@ -4,21 +4,24 @@ import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client';
 import { createUploadLink } from 'apollo-upload-client'
 import { baseUrl } from 'api'
 
+import { SessionProvider } from 'next-auth/react'
 import '../styles/global.css';
 
-const MyApp = ({ Component, pageProps }: AppProps) => { 
-
-const client = new ApolloClient({
+export const client = new ApolloClient({
     cache: new InMemoryCache(),
     link: createUploadLink({
         uri: baseUrl
     })
 });
 
+const MyApp = ({ Component, pageProps, session }: AppProps) => { 
+
     return (
-        <ApolloProvider client={client}>
-            <Component {...pageProps} />
-        </ApolloProvider>
+        <SessionProvider session={session}>
+            <ApolloProvider client={client}>
+                <Component {...pageProps} />
+            </ApolloProvider>
+        </SessionProvider>
     )
 };
 

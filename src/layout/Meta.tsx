@@ -30,6 +30,7 @@ const Meta = (props: IMetaProps) => {
             href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
             key='google-icons'
         />
+
         <link
           rel="icon"
           href={`${router.basePath}/logo_navio.png`}
