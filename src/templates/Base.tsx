@@ -133,8 +133,8 @@ const Base = () => {
         <div className="text-3xl text-center font-bold" style={{marginBottom: '5em'}}>¿Como Funciona?</div>
          <div className='flex justify-between flex-col md:flex-row px-10'>
             <ImageCard src='/assets/images/registrate.svg' title='Registrate' body='Crea una cuenta para comenzar a utilizar la plataforma'/>
-            <ImageCard src='/assets/images/personaliza.svg' title='Registrate' body='Crea una cuenta para comenzar a utilizar la plataforma'/>
-            <ImageCard src='/assets/images/Asesorate.svg' title='Registrate' body='Crea una cuenta para comenzar a utilizar la plataforma'/>
+            <ImageCard src='/assets/images/personaliza.svg' title='Personaliza y explora' body='Configura la plataforma para que se ajuste mejor a tus necesidades.'/>
+            <ImageCard src='/assets/images/Asesorate.svg' title='Asesorate e Invierte' body='Obtén asesoria gratuita e invierte en las opciones que mejor te convengan.'/>
          </div>
      </section>
 

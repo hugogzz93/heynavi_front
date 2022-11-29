@@ -4,13 +4,16 @@ import { Meta } from '../layout/Meta';
 import ReactTooltip from 'react-tooltip';
 import Link from 'next/link';
 import { Range } from 'react-range'
+import { signIn, useSession } from 'next-auth/react'
+import { Session } from 'next-auth'
 import moment from 'moment'
+
 
 import { dehydrate, useQuery, useMutation } from 'react-query'
 import { useGetInvestmentOptionsQuery } from '../api'
-import { Table, ITableConfiguration, ITableElementProps, ITableHeadElementProps, ThemeSelectElement, ThemeCheckboxElement } from 'components/baseComponents'
+import { ACTIONS, Table, ITableConfiguration, ITableElementProps, ITableHeadElementProps, ThemeSelectElement, ThemeCheckboxElement } from 'components/baseComponents'
 import { IDBType } from 'lib/database'
-import { TFormResults } from 'pages/form'
+import { TFormResults, ClientQuestionAnswerInput } from 'pages/form'
 import { Button } from 'button/Button'
 import { Section } from 'layout/Section'
 import { TAnswerType } from 'questions/Questionnaire'
@@ -22,7 +25,7 @@ export const numberWithCommas = (x: number): String => (
 
 
 
-const InvestmentTableConfig = ({sliderValue, state, isAdmin = false}: {sliderValue: number, isAdmin: boolean, state: TInvestmentTableState}): ITableConfiguration => ({
+const InvestmentTableConfig = ({signIn, session, sliderValue, state, isAdmin = false}: {signIn: (arg0: string) => unknown, session: Session,  sliderValue: number, isAdmin: boolean, state: TInvestmentTableState}): ITableConfiguration => ({
     header: {
         id: 'list-investment-options',
         idColumn: 'nombre',
@@ -153,16 +156,66 @@ const InvestmentTableConfig = ({sliderValue, state, isAdmin = false}: {sliderVal
             label: '',
             id: 'viewMore',
             filterable: false,
-            renderFn: d => (
-                <Link href={`/view/${d.id}`} passHref>
-                <button>
-                    <Button reverseHover>Ver más</Button>
-                </button>
-                </Link>
-            )
+            renderFn: d => {
+
+                if(session?.user) {
+                    return (
+                    <Link href={`/view/${d.id}`} passHref>
+                        <button>
+                            <Button reverseHover>Ver más</Button>
+                        </button>
+                    </Link>
+                    )
+                    
+                } else 
+                    return (
+                        <button onClick={() => signIn('google')}>
+                            <Button reverseHover>Ver más</Button>
+                        </button>
+
+                    )
+
+            }
         }
     ]
 })
+
+
+
+const InvestmentOptionCard: React.FC<{investmentOption: InvestmentOption, investmentValue: number}> = ({investmentOption, investmentValue}) => {
+
+    return (
+        <div className="bg-white border border-1 border-slate-300 rounded-md p-8 flex flex-col">
+            <picture>
+                <img className="object-contain w-40 mx-auto  h-20" src={`${investmentOption?.image?.link}`} alt={investmentOption.nombre} />
+            </picture>
+
+            <div className="flex items-center justify-between w-full">
+                <div className="font-bold text-lg">Retorno Anual Promedio</div>
+                { rentabilidadToNumber(investmentOption.rentabilidad) + '%'}
+            </div>
+
+            <div className="flex items-center justify-between w-full my-4">
+                <div className="font-bold text-lg">Ganancia anual estimada</div>
+                {'$' + numberWithCommas(getGananciaAnual(investmentOption.rentabilidad, investmentValue))}
+            </div>
+
+            <div className="flex items-center justify-between w-full mb-4">
+                <div className="font-bold text-lg">Riesgo</div>
+                {investmentOption.riesgo}
+            </div>
+
+
+            <Link href={`/view/${investmentOption.id}`}>
+                <div className="text-xl text-center button border border-2 border-purple-500 text-purple-500 bg-white px-6 py-2 rounded-xl">
+                    Ver más
+                </div>
+            </Link>
+        </div>
+    )
+
+
+}
 
 
 const getGananciaAnual =  (rentabilidad: string, investment: number) => (
@@ -185,6 +238,29 @@ const ThemeTableHeadElement: React.FC<ITableHeadElementProps> = ({columnNames}) 
         </>
     )
 }
+
+const ThemeFooterElement: React.FC<any> = ({state: {pagination, rowData}, dispatch}) => {
+    const {data: session} = useSession()
+    const first = pagination.length * pagination.page
+    const last = pagination.length * (pagination.page + 1)
+
+    return (
+        <div className="flex item-center my-2 float-right">
+        {rowData.length > pagination.length && (
+            <>
+                <div>
+                    <span className="material-symbols-outlined text-slate-500 hover:text-slate-800 text-md cursor-pointer" onClick={() => session?.user ? dispatch({type: ACTIONS.SET_PAGE, payload: pagination.page - 1}) : signIn('google')}> arrow_left </span>
+                </div>
+                <div className="text-md text-slate-500 mx-2">{first} - {last} ({rowData.length})</div>
+                <div>
+                    <span className="material-symbols-outlined text-slate-500 hover:text-slate-800 text-md cursor-pointer" onClick={() => session?.user ? dispatch({type: ACTIONS.SET_PAGE, payload: pagination.page + 1}) : signIn('google')}> arrow_right </span>
+                </div>
+            </>
+        )}
+        </div>
+    )
+}
+
 
 const ThemeTableElement: React.FC<ITableElementProps> = ({id, TableHead, TableBody, TableFooter}) => {
     return (
@@ -306,9 +382,7 @@ const riesgoValid = ({row, riesgo}: {row: any, riesgo: any}) => {
 // }
 
 
-const InvestmentRange = ({value, onChange}: {value: number, onChange: (arg0: number) => unknown}) => {
-
-
+export const InvestmentRange = ({value, onChange}: {value: number, onChange: (arg0: number) => unknown}) => {
     return (
             <div className="w-full">
                 <Range
@@ -335,6 +409,7 @@ const InvestmentRange = ({value, onChange}: {value: number, onChange: (arg0: num
                         <div
                             {...props}
                             style={{...props.style}}
+                            className='outline-none'
                         >
                             <div className={` my-2 text-lg text-purple-500 font-bold absolute top-0`}
                                 style={{top: '-120%', transform: 'translateX(-50%)', left: '50%', textAlign: 'center', minWidth: '9em'}}
@@ -361,6 +436,7 @@ const InvestmentTableHeader = ({rows, state, dispatch}: {dispatch: DispatchType,
     //     return acc;
     // }, {}))
 
+    const {data: session } = useSession()
     const valuesPerColumn = rows.reduce((acc: {[key: string]: Set<string>} , curr: InvestmentOption) => {
         Object.keys(curr).forEach((key: string) => {
             if(["__typename", "id"].includes(key)) {}
@@ -391,7 +467,7 @@ const InvestmentTableHeader = ({rows, state, dispatch}: {dispatch: DispatchType,
                     Quiero Invertir: ${numberWithCommas(state.sliderValue)} MXN
                 </div>
                 <button className='bg-purple-500 text-white flex items-center rounded-md py-2 px-4'
-                    onClick={() => dispatch({type: "setFilterBarVisibility", payload: !state.filterBarVisibility})}
+                    onClick={() => session?.user ? dispatch({type: "setFilterBarVisibility", payload: !state.filterBarVisibility}) : signIn('google')}
                 >
                     Filtros <span className="material-symbols-outlined text-white ">filter_alt</span>
                 </button>
@@ -466,16 +542,16 @@ type TInvestmentTableState = {
     filterableColumns: {[key: string]: string};
 }
 
-const InitialInvestmentTableState = {
+const InitialInvestmentTableState = ({answers}: {answers: Array<ClientQuestionAnswerInput>}) => ({
     sortValue: '',
     filterBarVisibility: false,
     investmentOptions: [],
     isFiltering: false,
-    sliderValue: 5000,
+    sliderValue: answers?.[0]?.customValue || 5000,
     activeFilters: [],
     filterableColumns: {},
     investmentTypeFilters: []
-}
+})
 
 type TActionType = {
     type: string;
@@ -565,9 +641,10 @@ const filter = (state: TInvestmentTableState) => (row: InvestmentOption): boolea
     }
 }
 
-const InvestmentTable: React.FC<TFormResults> = () => {
-    const [state, dispatch] = useReducer<ReducerType>(reducer, InitialInvestmentTableState)
+const InvestmentTable: React.FC<TFormResults> = ({answers}) => {
+    const [state, dispatch] = useReducer<ReducerType>(reducer, InitialInvestmentTableState({answers}))
     const {data, loading} = useGetInvestmentOptionsQuery()
+    const { data: session } = useSession()
     if(loading)
         return <div>Loading</div>
 
@@ -577,8 +654,26 @@ const InvestmentTable: React.FC<TFormResults> = () => {
     if(rows.length < 3)
         rows = rows.slice(0,3)
 
-    const tableConfiguration = InvestmentTableConfig({sliderValue: state.sliderValue, state,  isAdmin: localStorage.getItem('tasp.capr') == 'true'});
+    const tableConfiguration = InvestmentTableConfig({signIn, session, sliderValue: state.sliderValue, state,  isAdmin: localStorage.getItem('tasp.capr') == 'true'});
     const columnNames: string[] = tableConfiguration.columns.filter(t => t.display !== false).map(t => t.label)
+
+    const rowData = rows.filter(filter(state)).sort((a,b) => {
+        if(state?.sortValue) {
+            switch(state.sortValue) {
+                case "Empresa":
+                    return a.nombre.localeCompare(b.nombre);
+                case "Retorno anual promedio":
+                    return Number(rentabilidadToNumber(b.rentabilidad)) - Number(rentabilidadToNumber(a.rentabilidad));
+                case "Ganancia anual estimada": 
+                    return getGananciaAnual(b.rentabilidad, state.sliderValue) - getGananciaAnual(a.rentabilidad, state.sliderValue)
+                default: 
+                    return a.nombre.localeCompare(b.nombre);
+            }
+
+        } else {
+            return Number(a.id) - Number(b.id);
+        }
+    })
 
     return (
         <div className='container mx-auto'>
@@ -590,46 +685,40 @@ const InvestmentTable: React.FC<TFormResults> = () => {
                             dispatch={dispatch}
                         />
                         <div className="flex justify-center flex-col">
-                            <div className="bg-white rounded-md py-4 overflow-x-hidden">
-                            <div className="flex w-full justify-between grid grid-cols-12 gap-4">
-                                <div className='hidden md:col-span-6 md:block'></div>
-                                <div className='px-4 col-span-12 md:col-span-6 flex items-center'>
-                                    <ThemeSelectElement
-                                        name='sortOption' 
-                                        label='Ordenar Por'
-                                        value={state.sortValue}
-                                        options={columnNames.filter((name: string) => name != '').map((name: string) => ({value: name, label: name}))}
-                                        onChange={(sortValue: any) => {
-                                            dispatch({type: "setSortOption", payload: sortValue.value as string})
-                                        }}
-                                    />
-                                    <span className="ml-4 text-purple-500 material-symbols-outlined text-4xl" style={{transform: 'translateY(-10%)'}}> edit_square </span>
+                            <div className="md:bg-white rounded-md py-4 overflow-x-hidden">
+                                <div className="flex w-full justify-between grid grid-cols-12 gap-4">
+                                    <div className='hidden md:col-span-6 md:block'></div>
+                                    <div className='bg-white p-4 md:p-0 px-4 col-span-12 md:col-span-6 flex items-center'>
+                                        <ThemeSelectElement
+                                            name='sortOption' 
+                                            label='Ordenar Por'
+                                            value={state.sortValue}
+                                            options={columnNames.filter((name: string) => name != '').map((name: string) => ({value: name, label: name}))}
+                                            onChange={(sortValue: any) => {
+                                                session?.user ? dispatch({type: "setSortOption", payload: sortValue.value as string})
+                                                : signIn('google')
+                                            }}
+                                        />
+                                        <span className="ml-4 text-purple-500 material-symbols-outlined text-4xl" style={{transform: 'translateY(-10%)'}}> edit_square </span>
+                                    </div>
                                 </div>
-                            </div>
-                            <div className="w-full overflow-x-scroll md:overflow-visible">
-                                    <Table
-                                        rowData={rows.filter(filter(state)).sort((a,b) => {
-                                            if(state?.sortValue) {
-                                                switch(state.sortValue) {
-                                                    case "Empresa":
-                                                        return a.nombre.localeCompare(b.nombre);
-                                                    case "Retorno anual promedio":
-                                                        return Number(rentabilidadToNumber(b.rentabilidad)) - Number(rentabilidadToNumber(a.rentabilidad));
-                                                    case "Ganancia anual estimada": 
-                                                        return getGananciaAnual(b.rentabilidad, state.sliderValue) - getGananciaAnual(a.rentabilidad, state.sliderValue)
-                                                    default: 
-                                                        return a.nombre.localeCompare(b.nombre);
-                                                }
+                                <div className="hidden md:block bg-white w-full overflow-x-scroll md:overflow-visible">
+                                        <Table
+                                            rowData={rowData}
+                                            configuration={tableConfiguration}
+                                            TableElement={ThemeTableElement}
+                                            HeadElement={ThemeTableHeadElement}
+                                            FooterElement={ThemeFooterElement}
+                                        />
+                                </div>
 
-                                            } else {
-                                                return Number(a.id) - Number(b.id);
-                                            }
-                                        })}
-                                        configuration={tableConfiguration}
-                                        TableElement={ThemeTableElement}
-                                        HeadElement={ThemeTableHeadElement}
-                                    />
-        </div>
+                                <div className="flex flex-col block md:hidden w-full">
+                                    {rowData.map(row => (
+                                        <div className="my-2">
+                                            <InvestmentOptionCard investmentValue={state.sliderValue} investmentOption={row}/>
+                                        </div>
+                                    ))}
+                                </div>
                             </div>
                         </div>
                     </Section>

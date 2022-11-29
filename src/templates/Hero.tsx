@@ -10,7 +10,7 @@ const Hero = () => (
         <div id="hero-background" ></div>
         <div className="container mx-auto flex flex-col md:flex-row items-center relative  text-center md:text-left">
             <div className="grow text-white font-light">
-                <div className="text-5xl pt-16">
+                <div className="text-5xl pt-16" style={{fontWeight: '400'}}>
                     Invertir es fácil cuando puedes comparar
                 </div>
                 <div className="text-2xl my-16 md:w-2/3">
@@ -18,7 +18,7 @@ const Hero = () => (
                 </div>
                 <Link href='/form' passHref>
                     <button>
-                        <Button primary xl shadow>Har la prueba Gratis</Button>
+                        <Button primary xl shadow>Haz la prueba Gratis</Button>
                     </button>
                 </Link>
             </div>

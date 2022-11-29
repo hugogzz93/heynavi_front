@@ -2,6 +2,7 @@ import { useReducer, useState, useEffect } from 'react'
 import Questions from './questions'
 import { Range } from 'react-range'
 import { Question, ClientQuestionAnswerInput } from '../generated/graphql'
+import { InvestmentRange } from 'components/InvestmentTable'
 
 export const numberWithCommas = (x: number): String => (
     x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
@@ -128,47 +129,7 @@ const QuestionComponent: React.FC<{question: Question, state: QuestionnaireState
     if(question.questionType === 'slider') {
         return (
             <div className="flex flex-col md:mx-0 mx-6 mt-6">
-                <div className={` my-2 text-lg text-purple-500 font-bold absolute`}
-            style={{
-                top: thumbCoordinates.top - thumbCoordinates.height - 5,
-                left: thumbCoordinates.left,
-                transform: `translateX(${sliderValue == 0 ? '0%' : sliderValue == 500000 ? '-75%' : '-25%'})`
-            }}
-                >${numberWithCommas(sliderValue)} {sliderValue == 500000 ? 'o más' : ''}</div>
-                <Range
-                    step={5000}
-                    values={[sliderValue]}
-                    min={Number(question.min)}
-                    max={Number(question.max)}
-                    onChange={(values: any) => {
-                        setSliderValue(values)
-                        setThumbCoordinates(getThumbCoordinates)
-                    }}
-                    renderTrack={({props, children}) => (
-                        <div {...props}
-                            style={{
-                                ...props.style,
-                                    height: '6px',
-                                    width: '100%',
-                                    backgroundColor: '#ccc'
-                            }}
-                        >
-                            {children}
-                        </div>
-                    )}
-                    renderThumb={({props}) => (
-                        <div 
-                            {...props}
-                            className='slider__thumb rounded-md bg-purple-500'
-                            style={{
-                                ...props.style,
-                                height: '28px',
-                                width: '28px',
-                            }}
-                        />
-                    )}
-                />
-
+                <InvestmentRange value={sliderValue} onChange={setSliderValue}/>
                 <div className='mt-8 '>
                    <button className="cursor-pointer w-full md:w-fit ml-2 float-right inline-block p-4 rounded-md  text-white bg-purple-500 duration-300 transition-all" 
                         style={{opacity: sliderValue == 0 ? '0.5' : '1'}}
