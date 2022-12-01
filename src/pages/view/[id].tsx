@@ -8,6 +8,7 @@ import { Logo } from '../../templates/Logo';
 import { Footer} from 'templates/Footer';
 import { useGetInvestmentOptionsQuery } from "api"
 import { numberWithCommas, rentabilidadToNumber } from 'components/InvestmentTable'
+import Spinner from 'components/Spinner'
 import { InvestmentOption } from 'generated/graphql'
 
 
@@ -66,7 +67,7 @@ const ViewInvestmentOption = (props: {id: string}) => {
     if(loading)
         return (
             <div className="container mx-auto">
-                <div className="text-md">Loading</div>
+            <Spinner/>
             </div>
         )
 
@@ -93,17 +94,21 @@ const ViewInvestmentOption = (props: {id: string}) => {
                     <Link href='/form'>
                         <span className="material-symbols-outlined text-blue-500 text-left w-full cursor-pointer"> arrow_back </span>
                     </Link>
-                    <picture className='min-w-96 min-h-96 border border-1 border-slate-300 m-2'>
+                    <picture className='min-w-96 min-h-96 border border-1 border-slate-300 m-2 mb-4'>
                         <img className="object-contain w-full w-96 h-96" src={`${investmentOption?.image?.link}`} alt={investmentOption.nombre} />
                     </picture>
                     <Link href='https://api.whatsapp.com/send/?phone=5218132647979&text=Hola%2C+me+podr%C3%ADan+apoyar+a+resolver+mis+dudas%3F&type=phone_number&app_absent=0' passHref>
-                        <button className="shadow-md bg-purple-500 text-white px-6 py-4 w-96 rounded-xl hidden md:inline-block">
+                        <button className="shadow-md bg-purple-500 text-white px-6 py-4 w-96 rounded-xl">
                             Conocer más
                         </button>
                     </Link>
                 </div>
 
-                <div className="flex flex-col w-full md:w-2/4 pt-24 items-center md:items-start">
+                <div className="flex flex-col w-full md:w-2/4 pt-8 items-center md:items-start">
+
+                    <div className="text-2xl font-bold mb-6 text-center md:text-left">
+                        {investmentOption.nombreEmpresa} - {investmentOption.nombre}
+                    </div>
                     <div className="text-md mb-6 text-center md:text-left">
                         {investmentOption.descripcion}
                     </div>

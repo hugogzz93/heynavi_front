@@ -10,7 +10,7 @@ const Hero = () => (
         <div id="hero-background" ></div>
         <div className="container mx-auto flex flex-col md:flex-row items-center relative  text-center md:text-left">
             <div className="grow text-white font-light">
-                <p className="pt-16 md:text-6xl font-medium" >
+                <p className="pt-16 text-4xl md:text-6xl font-medium" >
                     Invertir es fácil cuando <br/> puedes comparar
                 </p>
                 <div className="text-2xl my-16 md:w-2/3">

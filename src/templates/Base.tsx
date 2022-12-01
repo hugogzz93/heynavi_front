@@ -40,6 +40,7 @@ const imgs = [
 const scrollTo = (gsap: any, scrollTo: string) => {
     // gsap.registerPlugin(ScrollTrigger);
     gsap.to(window, {duration: 1, scrollTo});
+
 }
 
 const setActiveLink = (link: string) => {
@@ -98,6 +99,7 @@ const Base = () => {
             onEnter: () => setActiveLink('#porque-link'),
             onEnterBack: () => setActiveLink('#porque-link')
         })
+
     })
  return ( <div className="antialiased text-gray-600">
     <Meta title={AppConfig.title} description={AppConfig.description} />
@@ -118,16 +120,16 @@ const Base = () => {
   >
   </NavbarTwoColumns>
     <Hero />
-    <Section>
-        <div className="carousel__wrapper">
-            <div className="carousel__body mov flex flex-nowrap items-center overflow-x-scroll">
+     <div className='max-w-screen mx-auto'>
+        <div className="slider">
+            <div className="slider-track items-center">
                 {imgs.map(( src: string ) => (
-                            <img key={src} style={{opacity: 0.5, filter: 'grayscale(100%)'}} className='carousel__item mx-4 h-8 md:h-12 my-3 md:m-8 object-contain' src={`${router.basePath}/logos/${src}`} alt="" />
+                            <img key={src} style={{opacity: 0.5, filter: 'grayscale(100%)'}} className='slide h-8 md:h-12 object-contain' src={`${router.basePath}/logos/${src}`} alt="" />
                 ))}
              </div>
         </div>
+     </div>
         
-    </Section>
 
     <section id='como-funciona' className='flex flex-col container mx-auto py-40 md:px-20'>
         <div className="text-3xl text-center font-bold" style={{marginBottom: '2em'}}>¿Como Funciona?</div>
@@ -141,9 +143,9 @@ const Base = () => {
     <section id='porque' className='py-32 flex flex-col overflow-x-visible py-32' style={{backgroundColor: '#5F3FC73A'}}>
         <div className="text-3xl text-center font-bold text-slate-800 mb-12">¿Por qué usar Vali?</div>
         <div className="overflow-x-hidden md:overflow-x-visible">
-            <div className="carousel__body md:static flex flex-nowrap items-center md:justify-center">
+            <div className="carousel__body md:static flex flex-nowrap items-center md:justify-center" style={{scrollSnapType: 'x mandatory'}}>
                 <TestimonialBox src='/assets/images/registrate.svg' title='Nombre de usuario' body='Entre más personas accedan a la base de datos, más nos ayuda a ofrecer herramientas de inversión de valor.' starCount={3}/>
-                <TestimonialBox focused={true} src='/assets/images/registrate.svg' title='Nombre de usuario' body='Entre más personas accedan a la base de datos, más nos ayuda a ofrecer herramientas de inversión de valor.' starCount={5}/>
+                <TestimonialBox src='/assets/images/registrate.svg' title='Nombre de usuario' body='Entre más personas accedan a la base de datos, más nos ayuda a ofrecer herramientas de inversión de valor.' starCount={5}/>
                 <TestimonialBox src='/assets/images/registrate.svg' title='Nombre de usuario' body='Entre más personas accedan a la base de datos, más nos ayuda a ofrecer herramientas de inversión de valor.' starCount={5}/>
              </div>
         </div>
