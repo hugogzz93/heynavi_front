@@ -8,6 +8,7 @@ import { signIn, useSession } from 'next-auth/react'
 import { Session } from 'next-auth'
 import moment from 'moment'
 
+import Spinner from 'components/Spinner'
 
 import { dehydrate, useQuery, useMutation } from 'react-query'
 import { useGetInvestmentOptionsQuery } from '../api'
@@ -653,7 +654,11 @@ const InvestmentTable: React.FC<TFormResults> = ({answers}) => {
     // const { data: session } = useSession()
     const session = {user: true}
     if(loading)
-        return <div>Loading</div>
+        return (
+            <div className="container mx-auto">
+                <Spinner/>
+            </div>
+        )
 
 
     let rows: InvestmentOption[] = data?.investmentOptions || []

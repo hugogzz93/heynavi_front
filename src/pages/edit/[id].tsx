@@ -1,6 +1,7 @@
 // import { useState, useEffect } from 'react'
 import { FormComponent, TFormConfiguration } from 'components/baseComponents'
 
+import Spinner from 'components/Spinner'
 import { dehydrate, useQuery, useMutation } from 'react-query'
 // import { queryClient, GetInvestmentOptions, UpdateInvestmentOption, DeleteInvestmentOption} from '../../api'
 import { useGetInvestmentOptionsQuery, useUpdateInvestmentOptionMutation, useDeleteInvestmentOptionMutation } from '../../api'
@@ -205,7 +206,9 @@ const ViewEditOption = (props: {id: string}) => {
         return <div>404</div>
 
     if(loading)
-        return <div>Loading</div>
+        return <div className="container mx-auto">
+            <Spinner/>
+        </div>
 
     return (
         <div className="container mx-auto p-8">

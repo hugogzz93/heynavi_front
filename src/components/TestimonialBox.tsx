@@ -19,7 +19,7 @@ const TestimonialBox = (props: ITestimonialBoxProps) => {
 
     return (
         <div 
-        style={{boxShadow: '0 10px 35px #888F', fontSize: props.focused ? '18px' : '14px', transform: props.focused ? 'scale(1.15)' : 'scale(1)', zIndex: props.focused ? '1' : '0'}}
+        style={{scrollSnapAlign: 'start', boxShadow: '0 10px 35px #888F', fontSize: props.focused ? '18px' : '14px', transform: props.focused ? 'scale(1.15)' : 'scale(1)', zIndex: props.focused ? '1' : '0'}}
         className={` 
             testimonial__box
             flex mx-8 my-8 text-white flex-col rounded-2xl items-center 
