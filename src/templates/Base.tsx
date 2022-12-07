@@ -102,7 +102,7 @@ const Base = () => {
 
     })
  return ( <div className="antialiased text-gray-600">
-    <Meta title={AppConfig.title} description={AppConfig.description} />
+    <Meta title={'Vali - El lugar para encontrar tu próxima inversión'} description={AppConfig.description} />
 
      <NavbarTwoColumns logo={() => {
           return ( <Logo/>)
@@ -132,7 +132,7 @@ const Base = () => {
         
 
     <section id='como-funciona' className='flex flex-col container mx-auto py-40 md:px-20'>
-        <div className="text-3xl text-center font-bold" style={{marginBottom: '2em'}}>¿Como Funciona?</div>
+        <div className="text-3xl text-center font-bold" style={{marginBottom: '2em'}}>¿Cómo funciona?</div>
          <div className='flex justify-between flex-col md:flex-row px-10'>
             <ImageCard src='/assets/images/registrate.svg' title='Ingresa' body='Cuéntanos sobre ti para mostrarte opciones a tu medida'/>
             <ImageCard src='/assets/images/personaliza.svg' title='Personaliza y explora' body='Configura la plataforma para que se ajuste mejor a tus necesidades.'/>
