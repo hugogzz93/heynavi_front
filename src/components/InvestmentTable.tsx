@@ -699,8 +699,8 @@ const InvestmentTable: React.FC<TFormResults> = ({answers}) => {
                         <div className="flex justify-center flex-col">
                             <div className="md:bg-white rounded-md py-4 overflow-x-hidden">
                                 <div className="flex w-full justify-between grid grid-cols-12 gap-4">
-                                    <div className='hidden md:col-span-6 md:block'></div>
-                                    <div className='bg-white p-4 md:p-0 px-4 col-span-12 md:col-span-6 flex items-center'>
+                                    <div className='hidden md:col-span-8 md:block'></div>
+                                    <div className='bg-white p-4 md:p-0 px-4 col-span-12 md:col-span-4 flex items-center'>
                                         <ThemeSelectElement
                                             name='sortOption' 
                                             label='Ordenar Por'
@@ -711,7 +711,7 @@ const InvestmentTable: React.FC<TFormResults> = ({answers}) => {
                                                 : signIn('google')
                                             }}
                                         />
-                                        <span className="ml-4 text-purple-500 material-symbols-outlined text-4xl" style={{transform: 'translateY(-10%)'}}> edit_square </span>
+                                        <span className="mx-4 text-purple-500 material-symbols-outlined text-4xl" style={{transform: 'translateY(-10%)'}}> edit_square </span>
                                     </div>
                                 </div>
                                 <div className="hidden md:block bg-white w-full overflow-x-scroll md:overflow-visible">
