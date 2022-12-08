@@ -63,7 +63,6 @@ const Form = (props: {questions: Array<Question>}) => {
         }
     }, [])
 
-    debugger
 
     return (
         <div className="flex flex-col antialiased text-gray-600 justify-between bg-purple-100 pt-32" style={{height: '100vh'}}>

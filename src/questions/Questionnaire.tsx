@@ -149,7 +149,6 @@ const QuestionComponent: React.FC<{question: Question, state: QuestionnaireState
                     onClick={() => {
                         dispatch({type: 'submitQuestion', payload: {questionId: question.id, answerId: opt.id, answerValue: opt.text}})
                         if(state.currentQuestion == Object.keys(Questions).length - 1) {
-                            debugger
                             onSubmit()
                         }
                     }}

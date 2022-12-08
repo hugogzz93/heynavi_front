@@ -55,7 +55,7 @@ const InvestmentTableConfig = ({signIn, session, sliderValue, state, isAdmin = f
 			filterable: false,
             renderFn: (d) => {
                 if(d.image?.link)
-                    return <img className='object-contain' src={`${d.image.link}`} alt={d.nombre} style={{width: '13em'}}/>
+                    return <img className='object-contain mx-auto' src={`${d.image.link}`} alt={d.nombre} style={{width: '13em'}}/>
                 return <div>{d.nombre}</div>
             },
             filterFn: ({filterValue, dataValue}) => { return dataValue.tipo.match(new RegExp(filterValue, 'i'))},
@@ -229,10 +229,8 @@ const ThemeTableHeadElement: React.FC<ITableHeadElementProps> = ({columnNames}) 
         <>
             <tr className='bg-white font-bold text-lg font-center border-b-1 border-b border-slate-300'>
                 {columnNames.map((name: string) => {
-                    return <td key={name}> 
-                        <div className="flex items-center text-sm text-center">
+                    return <td key={name} className='text-center'> 
                             {name}
-                        </div>
                     </td>
                 })}
             </tr>
@@ -655,7 +653,7 @@ const InvestmentTable: React.FC<TFormResults> = ({answers}) => {
     const session = {user: true}
     if(loading)
         return (
-            <div className="container mx-auto">
+            <div className="container mx-auto flex items-center justify-center py-96">
                 <Spinner/>
             </div>
         )

@@ -1,5 +1,10 @@
 import Link from "next/link"
-import { useSession } from 'next-auth/react'
+import Image from "next/image";
+import { Doughnut } from 'react-chartjs-2'
+import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
+
+ChartJS.register(ArcElement, Tooltip, Legend);
+
 
 import { Meta } from 'layout/Meta'
 import { AppConfig } from 'utils/AppConfig';
@@ -66,14 +71,37 @@ const ViewInvestmentOption = (props: {id: string}) => {
 
     if(loading)
         return (
-            <div className="container mx-auto">
-            <Spinner/>
+            <div className="container mx-auto flex items-center justify-center py-96">
+                <Spinner/>
             </div>
         )
 
     const investmentOption = data.investmentOptions.find(io => io.id == props.id)
     if(investmentOption == undefined) 
         return <div className="container mx-auto">Error</div>
+    const rentabilidad = rentabilidadToNumber(investmentOption.rentabilidad)
+
+    let riesgo_img = 'Bajo'
+    switch(investmentOption.riesgo) {
+        case 'Muy Bajo':
+            riesgo_img = 'nivel_bajo.svg'
+            break;
+        case 'Bajo':
+            riesgo_img = 'nivel_bajo.svg'
+            break;
+        case 'Moderado':
+            riesgo_img = 'nivel_medio.svg'
+            break;
+        case 'Alto':
+            riesgo_img = 'nivel_alto.svg'
+            break;
+        case 'Muy Alto':
+            riesgo_img = 'nivel_alto.svg'
+            break;
+        default:
+            riesgo_img = 'nivel_alto.svg'
+            break;
+    }
 
     return (
         <div className="flex flex-col antialiased h-screen justify-between">
@@ -142,7 +170,81 @@ const ViewInvestmentOption = (props: {id: string}) => {
                             </tr>
                         </tbody>
                     </table>
-                </div>
+
+                    <div className="flex flex-col md:flex-row w-full h-fit md:h-56">
+
+
+                                <div className="flex flex-row w-full md:w-2/4 relative h-64 md:h-48">
+                                    <div>
+                                        <div className="text-4xl absolute left-1/2 top-1/2 font-bold" style={{transform: 'translate(-50%, -35%)'}}>{investmentOption.rentabilidad}</div>
+                                        <div className="w-48 h-48 absolute left-1/2 top-1/2" style={{transform: 'translate(-50%, -50%)'}}>
+                                            <Doughnut data={{
+                                                labels: [],
+                                                datasets: [{
+                                                    data: [rentabilidad, 100 - rentabilidad],
+                                                    backgroundColor: [
+                                                        '#0089FF',
+                                                        '#F6F7F9'
+                                                    ]
+
+                                                }]
+                                            }}
+                                            options={{
+                                                cutout: '65%',
+                                                    plugins: {
+                                                        tooltip: {
+                                                            enabled: false
+                                                        }
+                                                    }
+                                            }}
+                                        />
+                                        </div>
+                                    </div>
+                                </div>
+
+                            <div className="h-64 md:h-48 flex items-center w-full justify-center">
+                                <Image src={"/assets/images/" + riesgo_img} alt="Nivel riesgo" width={150} height={150}/>
+                            </div>
+
+                                <div className="flex flex-row w-full md:w-2/4 relative h-64 md:h-48">
+                                    <div>
+                                        <div className="absolute left-1/2 top-1/2 font-bold whitespace-normal w-16" style={{transform: 'translate(-50%, -45%)'}}>
+                                            <div className="text-5xl text-center " style={{marginBottom: '-20px'}}>
+                                                {investmentOption.tiempo.split(' ')[0]}
+                                            </div>
+
+                                            <div className="text-2xl text-center ">
+                                                {investmentOption.tiempo.split(' ')[1]}
+                                            </div>
+                                        </div>
+                                        <div className="w-48 h-48 absolute left-1/2 top-1/2" style={{transform: 'translate(-50%, -50%)'}}>
+                                            <Doughnut data={{
+                                                labels: [],
+                                                datasets: [{
+                                                    data: [100],
+                                                    backgroundColor: [
+                                                        '#F6F7F9'
+                                                    ]
+
+                                                }]
+                                            }}
+                                            options={{
+                                                cutout: '65%',
+                                                    plugins: {
+                                                        tooltip: {
+                                                            enabled: false
+                                                        }
+                                                    }
+                                            }}
+                                        />
+                                        </div>
+                                    </div>
+                                </div>
+                    </div>
+        </div>
+        
+
+                
         </div>
 
         <div>

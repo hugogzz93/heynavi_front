@@ -6,7 +6,6 @@ export const ThemeTextFieldElement = ({name = '', onChange, value, label, errors
     // try {
     // resolvePath(errors, name)
     // } catch(e) {
-    //     debugger
     // }
     return (
         <>

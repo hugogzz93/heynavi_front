@@ -100,6 +100,10 @@ const Base = () => {
             onEnterBack: () => setActiveLink('#porque-link')
         })
 
+        return () => {
+            ScrollTrigger.getAll().forEach(t => t.kill());
+        }
+
     })
  return ( <div className="antialiased text-gray-600">
     <Meta title={'Vali - El lugar para encontrar tu próxima inversión'} description={AppConfig.description} />

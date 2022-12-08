@@ -206,7 +206,7 @@ const ViewEditOption = (props: {id: string}) => {
         return <div>404</div>
 
     if(loading)
-        return <div className="container mx-auto">
+           return <div className="container mx-auto flex items-center justify-center py-96">
             <Spinner/>
         </div>
 
