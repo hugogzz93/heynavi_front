@@ -71,7 +71,7 @@ const InvestmentTableConfig = ({signIn, session, sliderValue, state, isAdmin = f
             label: 'Nombre Inversión',
             id: 'nombre',
             display: false,
-			filterable: !state['nombre'],
+			filterable: false,
             valueFn: (d) => d.nombre,
             filterFn: ({filterValue, dataValue}) => {return dataValue.nombre.match(new RegExp(filterValue, 'i'))},
         },
@@ -91,7 +91,7 @@ const InvestmentTableConfig = ({signIn, session, sliderValue, state, isAdmin = f
         {
             label: 'Retorno anual promedio',
             id: 'rentabilidad',
-			filterable: !state['rentabilidad'],
+			filterable: false,
             filterFn: ({filterValue, dataValue}) => dataValue.rentabilidad.match(new RegExp(filterValue, 'i')),
             valueFn: (d) => { 
                 return rentabilidadToNumber(d.rentabilidad) + '%'
@@ -106,10 +106,10 @@ const InvestmentTableConfig = ({signIn, session, sliderValue, state, isAdmin = f
             valueFn: (d) => d.riesgo
         },
         {
-            label: 'Tiempo Mínimo',
+            label: 'Plazo',
             id: 'tiempo',
             display: false,
-			filterable: !state['tiempo'],
+			filterable: false,
             filterFn: ({filterValue, dataValue}) => dataValue.tiempo.match(new RegExp(filterValue, 'i')),
             valueFn: (d) => d.tiempo
         },
@@ -288,11 +288,11 @@ const extractPlazoMinimoFromOption = (str: string): number => {
         const isMonths = !!str.match(new RegExp(/mes/))
         const isYears = !!str.match(new RegExp(/año/))
         if(isNaN(amount))
-            return 99999
+            return 0
 
         return amount * (isYears ? 12*30 : isMonths ? 30 : 1)
     } catch {
-        return 99999;
+        return 0;
     }
 }
 
@@ -430,15 +430,37 @@ export const InvestmentRange = ({value, onChange}: {value: number, onChange: (ar
     )
 }
 
+const getRentabilidadOptions = (rows: InvestmentOption[]) => {
+    let options = []
+    const max = rows.reduce((acc, row) => {
+        const rentabilidad = rentabilidadToNumber(row.rentabilidad);
+        return acc > rentabilidad ? acc : rentabilidad;
+    }, 0)
+
+
+    const min = rows.reduce((acc, row) => {
+        const rentabilidad = rentabilidadToNumber(row.rentabilidad);
+        if(isNaN(rentabilidad))
+            return acc;
+        return acc < rentabilidad ? acc : rentabilidad;
+    }, max)
+
+    let count = min
+    debugger
+
+    do {
+        options.push({value: count + '%', label: count + '%'})
+        if(Math.abs(count - max) < 5)
+            options.push({value: max + '%', label: max + '%'})
+        count += 5;
+    } while(count < max)
+    return options;
+
+}
+
 const InvestmentTableHeader = ({rows, state, dispatch}: {dispatch: DispatchType, rows: InvestmentOption[], state: TInvestmentTableState}) => {
     const filterableColumns = InvestmentTableConfig({sliderValue: state.sliderValue, state, isAdmin: false}).columns.filter(c => c.filterable !== false)
-    // const availableInvestmentTypes = Object.keys(rows.reduce((acc: any, curr:  InvestmentOption) => {
-    //     if(!acc[curr.tipo])
-    //         acc[curr.tipo] = true;
-    //     return acc;
-    // }, {}))
 
-    // const {data: session } = useSession()
     const session = {
         user: true
     }
@@ -477,13 +499,73 @@ const InvestmentTableHeader = ({rows, state, dispatch}: {dispatch: DispatchType,
                     Filtros <span className="material-symbols-outlined text-white ">filter_alt</span>
                 </button>
             </div>
-            <div className={` toggle-section flex box-border items-center ${state.filterBarVisibility ? 'active' : ''}` }>
+            <div className={` toggle-section justify-between flex box-border items-center ${state.filterBarVisibility ? 'active' : ''}` }>
                 <div className="text-md w-1/3">¿Cuanto dinero te gustaría inverir?</div>
-                <div className="w-2/3">
+                <div className="w-3/5 md:w-2/3">
                     <InvestmentRange value={state.sliderValue} onChange={(v: number) => dispatch({type: "setSliderValue", payload: v})}/>
                 </div>
             </div>
             <div className={` toggle-section items-center box-border grid grid-cols-12 gap-4 w-full ${state.filterBarVisibility ? 'active' : ''}`}>
+
+                        <div className="col-span-12 md:col-span-4">
+                            <ThemeSelectElement 
+                                label={'Empresa'}
+                                name={'empresa'}
+                                isMulti
+                                value={state.activeFilters['empresa'] || null}
+                                options={rows.map(r => ( {label: r.nombreEmpresa, value: r.nombreEmpresa} ))}
+                                onChange={(e) => {
+                                    dispatch({type: "setFilterValue", payload: {
+                                        id: 'empresa',
+                                        value: e
+                                    }})
+                                }}
+                            />
+                        </div>
+
+                        <div className="col-span-12 md:col-span-4">
+                            <ThemeSelectElement 
+                                label={'Retorno anual promedio'}
+                                name={'rentabilidad'}
+                                value={state.activeFilters['rentabilidad'] || null}
+                                options={ [
+                                            {value: 'Hasta 5%', label: 'Hasta 5%'},
+                                            {value: 'De 6% a 10%', label: 'De 6% a 10%'},
+                                            {value: '11% a 18%', label: '11% a 18%'},
+                                            {value: 'Más de 18%', label: 'Más de 18%'},
+                                        ]
+                                }
+                                onChange={(e) => {
+                                    dispatch({type: "setFilterValue", payload: {
+                                        id: 'rentabilidad',
+                                        value: e
+                                    }})
+                                }}
+                            />
+                        </div>
+
+                        <div className="col-span-12 md:col-span-4">
+                            <ThemeSelectElement 
+                                label={'Plazo'}
+                                name={'tiempo'}
+                                value={state.activeFilters['tiempo'] || null}
+                                isMulti
+                                options={[
+                                    {value: '0 dias', label:  'Sin plazo mínimo'},
+                                    {value: '1 mes', label:  '1 mes'},
+                                    {value: '3 meses', label:  '3 meses'},
+                                    {value: '6 meses', label:  '6 meses'},
+                                    {value: '12 meses', label:  '12 meses'},
+                                    {value: 'Más de 12 meses', label:  'Más de 12 meses'},
+                                ]}
+                                onChange={(e) => {
+                                    dispatch({type: "setFilterValue", payload: {
+                                        id: 'tiempo',
+                                        value: e
+                                    }})
+                                }}
+                            />
+                        </div>
                 {filterableColumns.map(f => {
                     try {
                     return (
@@ -515,7 +597,7 @@ const InvestmentTableHeader = ({rows, state, dispatch}: {dispatch: DispatchType,
                     return (
                         <div className="col-span-12 md:col-span-4">
                             <ThemeCheckboxElement
-                                value={state.investmentTypeFilters[name]}
+                                value={state.investmentTypeFilters.length > 0 && state.investmentTypeFilters[name]}
                                 onChange={(e) => dispatch({type: "setInvestmentTypeFilter", payload: {name, value: e.target.checked} })}
                                 name={name.replaceAll(' ', '_')}
                                 label={name}
@@ -525,6 +607,11 @@ const InvestmentTableHeader = ({rows, state, dispatch}: {dispatch: DispatchType,
 
                 })}
             </div>
+            <button className={` toggle-section w-full md:w-fit bg-red-500 text-white text-center rounded-md md:m-4 py-2 md:px-8 ${state.filterBarVisibility ? 'active' : ''} `}
+                onClick={() => session?.user ? dispatch({type: "cleanFilters"}) : signIn('google')}
+            >
+                Eliminar Filtros
+            </button>
         </div>
     )
 
@@ -612,6 +699,14 @@ const reducer: ReducerType = (state, action) => {
                 investmentTypeFilters: action.payload.value ? [...state.investmentTypeFilters, action.payload.name] : state.investmentTypeFilters.filter(t => t != action.payload.name)
             }
         }
+        case "cleanFilters": {
+            return {
+                ...state,
+                activeFilters: [],
+                investmentTypeFilters: [],
+            }
+
+        }
         default:
             return state;
     }
@@ -623,16 +718,35 @@ const filter = (state: TInvestmentTableState) => (row: InvestmentOption): boolea
             return false
         }
 
-        if(state.activeFilters['nombre'] && state.activeFilters['nombre'].value != row.nombre)
+        if(state.activeFilters['empresa'] && state.activeFilters['empresa'].length > 0 && !state.activeFilters['empresa'].some(val => val.value == row.nombreEmpresa))
+            return false
+        if(state.activeFilters['nombre'] && state.activeFilters['nombre'].length > 0 && !state.activeFilters['nombre'].some(val => val.value == row.nombre))
             return false
         if(state.activeFilters['rentabilidad']) {
-            if(Number(rentabilidadToNumber(state.activeFilters['rentabilidad'].value)) > Number(rentabilidadToNumber(row.rentabilidad)))
-                return false
+            switch(state.activeFilters['rentabilidad'].value) {
+                case 'Hasta 5%': {
+                    return (rentabilidadToNumber(row.rentabilidad) <= 5 )
+                }
+                case 'De 6% a 10%': {
+                    return (rentabilidadToNumber(row.rentabilidad) > 5 && rentabilidadToNumber(row.rentabilidad) <= 10 )
+                }
+                case '11% a 18%': {
+                    return (rentabilidadToNumber(row.rentabilidad) > 10 && rentabilidadToNumber(row.rentabilidad) <= 18 )
+                }
+                case 'Más de 18%': {
+                    return (rentabilidadToNumber(row.rentabilidad) > 18 )
+                }
+                default:
+                    return false
+            }
+
+            // if(Number(rentabilidadToNumber(state.activeFilters['rentabilidad'].value)) > Number(rentabilidadToNumber(row.rentabilidad)))
+            //     return false
         }
         if(state.activeFilters['riesgo'] && !riesgoValid({ row, riesgo: state.activeFilters['riesgo'].value})) {
             return false
         }
-        if(state.activeFilters['tiempo'] && !plazoMinimoValid({row, plazoMinimo: state.activeFilters['tiempo'].value}))
+        if(state.activeFilters['tiempo'] && state.activeFilters['tiempo'].length > 0 && state.activeFilters['tiempo'].every(val => plazoMinimoValid({row, plazoMinimo: val.value})))
             return false
         if(state.activeFilters['montoMin'] && Number(state.activeFilters['montoMin'].value) > Number(row.montoMin))
             return false

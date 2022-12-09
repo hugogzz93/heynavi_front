@@ -16,7 +16,8 @@ const DerechosArco = () => (
     <div></div>
 
         <div className="container mx-auto">
-            <div className='text-xl font-bold'>Derechos ARCO</div>
+    <div className="py-32 px-2">
+            <div className='text-xl font-bold '>Derechos ARCO</div>
             <p>Con la finalidad de dar cumplimiento a lo previsto en la Ley Federal de Protección de Datos Personales en Posesión de los Particulares, les recordamos los derechos que pueden ejercer los titulares de datos personales.</p>
             <p>Acceso: Derecho del titular, a obtener sus datos personales que obran en poder de Vali, así como a conocer el Aviso de Privacidad al que está sujeto el tratamiento.</p>
             <p>Rectificación: Derecho del titular, a solicitar a Vali, la rectificación de sus datos personales cuando estos resulten ser inexactos o incompletos.</p>
@@ -31,6 +32,7 @@ const DerechosArco = () => (
             <p>6. Una dirección de correo electrónico a la que se le hará llegar nuestra respuesta.</p>
             <p>Las solicitudes se atenderán dentro de los siguientes 20 días hábiles contados a partir de la fecha en que se presentó la solicitud.</p>
             <p>El titular podrá elegir recibir la respuesta en nuestro domicilio mediante la recepción de copias simples, o bien, de ser el caso, mediante el envío de documentos electrónicos enviados al correo electrónico que en su caso proporcione.</p>
+    </div>
         </div>
         <Footer/>
     </div>

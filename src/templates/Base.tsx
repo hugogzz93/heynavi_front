@@ -138,9 +138,9 @@ const Base = () => {
     <section id='como-funciona' className='flex flex-col container mx-auto py-40 md:px-20'>
         <div className="text-3xl text-center font-bold" style={{marginBottom: '2em'}}>¿Cómo funciona?</div>
          <div className='flex justify-between flex-col md:flex-row px-10'>
-            <ImageCard src='/assets/images/registrate.svg' title='Ingresa' body='Cuéntanos sobre ti para mostrarte opciones a tu medida'/>
-            <ImageCard src='/assets/images/personaliza.svg' title='Personaliza y explora' body='Configura la plataforma para que se ajuste mejor a tus necesidades.'/>
-            <ImageCard src='/assets/images/Asesorate.svg' title='Asesorate e Invierte' body='Obtén asesoria gratuita e invierte en las opciones que mejor te convengan.'/>
+            <ImageCard src='/assets/images/registrate.svg' title='Elegimos las mejores opciones de inversión' body='Vali filtra las mejores opciones de inversión del mercado'/>
+            <ImageCard src='/assets/images/personaliza.svg' title='Explora y compara - gratis' body='Compara más de 50 opciones de inversión en pocos clicks y sin costo'/>
+            <ImageCard src='/assets/images/Asesorate.svg' title='Elige sin presión' body='Cuando te sientas cómod@, te ayudamos a dar el paso hacía tu inversión'/>
          </div>
      </section>
 

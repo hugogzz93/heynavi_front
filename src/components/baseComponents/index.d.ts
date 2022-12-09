@@ -85,7 +85,9 @@ export interface IInputProps {
 }
 
 export interface ISelectInputProps extends IInputProps {
-    options: Array<TSelectOption>
+    options: Array<TSelectOption>,
+    isMulti?: boolean,
+
 }
 
 export interface ITableColumnConfiguration {

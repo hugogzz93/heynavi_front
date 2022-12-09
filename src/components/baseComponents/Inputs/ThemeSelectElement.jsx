@@ -10,13 +10,15 @@ export const ThemeSelectElement = ({options,
     label,
     name,
     errors = {},
-    inputOptions = {}
+    inputOptions = {},
+    isMulti = false
         }) => {
-    if(!!value && !value.hasOwnProperty('value')) {
+    if(!isMulti && !!value && !value.hasOwnProperty('value')) {
         value = options.find(o => o.value == value) || undefined
     }
 
     const [isActive, setIsActive] = useState(false)
+    const hasValue = isMulti ? value?.length > 0 : value?.value
 
 
     return (
@@ -29,6 +31,7 @@ export const ThemeSelectElement = ({options,
                     onChange={onChange}
                     filterOption={createFilter({ ignoreAccents: false })}
                     placeholder={''}
+                    isMulti={isMulti}
                     className={`rounded-md theme__select-container ${ resolvePath(errors, name) ? '!border-red-500' : ''}`}
                     styles={{
                         container: () => ({
@@ -45,7 +48,7 @@ export const ThemeSelectElement = ({options,
                     }}
                     {...inputOptions}
                 />
-                <label className={`theme__text-field-label theme__text-field-label--select ${(value?.value || isActive) ? 'active' : 'inactive'}`} htmlFor={name}>{label}</label>
+                <label className={`theme__text-field-label theme__text-field-label--select ${(hasValue || isActive) ? 'active' : 'inactive'}`} htmlFor={name}>{label}</label>
             </div> 
             {resolvePath(errors, name) && (
                 <div className="text-base text-red-400">{resolvePath(errors, name).message || resolvePath(errors, name).type}</div>

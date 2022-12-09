@@ -198,13 +198,17 @@ const ViewInvestmentOption = (props: {id: string}) => {
                                                     }
                                             }}
                                         />
+                                        <div className="text-center text-xl font-bold">Retorno anual</div>
                                         </div>
                                     </div>
                                 </div>
 
-                            <div className="h-64 md:h-48 flex items-center w-full justify-center">
+                            <div className="h-64 md:h-48 flex md:pt-10 flex-col items-center w-full justify-center">
                                 <Image src={"/assets/images/" + riesgo_img} alt="Nivel riesgo" width={150} height={150}/>
+
+                                <div className="md:relative md:top-8 text-center text-xl font-bold">Riesgo</div>
                             </div>
+
 
                                 <div className="flex flex-row w-full md:w-2/4 relative h-64 md:h-48">
                                     <div>
@@ -237,6 +241,7 @@ const ViewInvestmentOption = (props: {id: string}) => {
                                                     }
                                             }}
                                         />
+                                        <div className="text-center text-xl font-bold">Plazo mínimo</div>
                                         </div>
                                     </div>
                                 </div>
