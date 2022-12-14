@@ -148,9 +148,9 @@ const Base = () => {
         <div className="text-3xl text-center font-bold text-slate-800 mb-12">¿Por qué usar Vali?</div>
         <div className="overflow-x-hidden md:overflow-x-visible">
             <div className="carousel__body md:static flex flex-nowrap items-center md:justify-center" style={{scrollSnapType: 'x mandatory'}}>
-                <TestimonialBox src='/assets/images/registrate.svg' title='Nombre de usuario' body='Entre más personas accedan a la base de datos, más nos ayuda a ofrecer herramientas de inversión de valor.' starCount={3}/>
-                <TestimonialBox src='/assets/images/registrate.svg' title='Nombre de usuario' body='Entre más personas accedan a la base de datos, más nos ayuda a ofrecer herramientas de inversión de valor.' starCount={5}/>
-                <TestimonialBox src='/assets/images/registrate.svg' title='Nombre de usuario' body='Entre más personas accedan a la base de datos, más nos ayuda a ofrecer herramientas de inversión de valor.' starCount={5}/>
+                <TestimonialBox src='/assets/images/registrate.svg' title='Jimena G.' body='Excelente plataforma! Me ahorraron la necesidad y el tiempo de hacer una búsqueda por mi cuenta entre Google y amigos para ver dónde invertir mis ahorros. ' starCount={3}/>
+                <TestimonialBox src='/assets/images/registrate.svg' title='Luis P.' body='Muy buena experiencia en Vali, me gusta que hay de todo tipo de opciones de inversión y que puedo consultar la información sin necesidad de hablar con nadie.' starCount={5}/>
+                <TestimonialBox src='/assets/images/registrate.svg' title='Maria Sara G.' body='Sin duda recomiendo Vali para las personas que no están seguros dónde invertir su dinero. Te vas a ahorrar  tiempo en estar comparando opciones de inversión por fuera.' starCount={5}/>
              </div>
         </div>
     </section>

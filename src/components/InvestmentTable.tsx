@@ -184,7 +184,6 @@ const InvestmentTableConfig = ({signIn, session, sliderValue, state, isAdmin = f
 
 
 const InvestmentOptionCard: React.FC<{investmentOption: InvestmentOption, investmentValue: number}> = ({investmentOption, investmentValue}) => {
-
     return (
         <div className="bg-white border border-1 border-slate-300 rounded-md p-8 flex flex-col">
             <picture>
@@ -214,14 +213,11 @@ const InvestmentOptionCard: React.FC<{investmentOption: InvestmentOption, invest
             </Link>
         </div>
     )
-
-
 }
 
 
 const getGananciaAnual =  (rentabilidad: string, investment: number) => (
     Number(rentabilidadToNumber(rentabilidad)) * investment/100
-
 )
 
 const ThemeTableHeadElement: React.FC<ITableHeadElementProps> = ({columnNames}) => {
@@ -513,7 +509,20 @@ const InvestmentTableHeader = ({rows, state, dispatch}: {dispatch: DispatchType,
                                 name={'empresa'}
                                 isMulti
                                 value={state.activeFilters['empresa'] || null}
-                                options={rows.map(r => ( {label: r.nombreEmpresa, value: r.nombreEmpresa} ))}
+                                options={rows.reduce((acc, r) =>{
+                                    if(r.nombreEmpresa == '' || !r.nombreEmpresa)
+                                        return acc;
+                                    if(acc.memo[r.nombreEmpresa])
+                                        return acc
+                                    else
+                                        return {
+                                            memo: {
+                                                ...acc.memo,
+                                                [r.nombreEmpresa]: r.nombreEmpresa
+                                            },
+                                            empresas: [...acc.empresas, r.nombreEmpresa]
+                                        }
+                                }, {empresas: [], memo: {}}).empresas.map(e => ({label: e, value: e}))}
                                 onChange={(e) => {
                                     dispatch({type: "setFilterValue", payload: {
                                         id: 'empresa',
@@ -549,7 +558,6 @@ const InvestmentTableHeader = ({rows, state, dispatch}: {dispatch: DispatchType,
                                 label={'Plazo'}
                                 name={'tiempo'}
                                 value={state.activeFilters['tiempo'] || null}
-                                isMulti
                                 options={[
                                     {value: '0 dias', label:  'Sin plazo mínimo'},
                                     {value: '1 mes', label:  '1 mes'},
@@ -634,16 +642,62 @@ type TInvestmentTableState = {
     filterableColumns: {[key: string]: string};
 }
 
-const InitialInvestmentTableState = ({answers}: {answers: Array<ClientQuestionAnswerInput>}) => ({
-    sortValue: '',
-    filterBarVisibility: false,
-    investmentOptions: [],
-    isFiltering: false,
-    sliderValue: answers?.[0]?.customValue || 5000,
-    activeFilters: [],
-    filterableColumns: {},
-    investmentTypeFilters: []
-})
+const InitialInvestmentTableState = ({answers}: {answers: Array<ClientQuestionAnswerInput>}) => {
+    const tiempoInvertidoAns = answers.find(a => a.questionId == '2')?.answerValue
+    let tiempoMin = null
+    switch(tiempoInvertidoAns) {
+        case 'Menos de 3 meses':
+            tiempoMin = {value: '3 meses', label:  '3 meses'}
+            break;
+        case 'De 3 a 6 meses':
+            tiempoMin = '6 meses'
+            break;
+        case 'De 12 a 36 meses':
+            tiempoMin = {value: '12 meses', label:  '12 meses'}
+            break;
+        case 'Más de 36 meses':
+            tiempoMin = {value: 'Más de 12 meses', label:  'Más de 12 meses'}
+            break;
+        default: 
+            debugger
+            throw "Invalid answer for default filter tiempoMin"
+    }
+    const riesgoAns = answers.find(a => a.questionId == '4')?.answerId
+    let riesgo = null
+    switch(riesgoAns) {
+        case '10':
+            riesgo = 'Bajo'
+            break;
+        case '11':
+            riesgo = 'Moderado'
+            break;
+        case '12':
+            riesgo = 'Alto'
+            break;
+        case '13':
+            riesgo = 'Alto'
+            break;
+        default: 
+            debugger
+            throw "Invalid answer for default filter tiempoMin"
+    }
+    let activeFilters = {
+        'montoMin':  answers.find(a => a.questionId == '1')?.customValue,
+        'tiempo': tiempoMin,
+        'riesgo': riesgo
+    } 
+    activeFilters
+    return {
+        sortValue: '',
+        filterBarVisibility: false,
+        investmentOptions: [],
+        isFiltering: false,
+        sliderValue: answers?.[0]?.customValue || 5000,
+        activeFilters,
+        filterableColumns: {},
+        investmentTypeFilters: []
+    }
+}
 
 type TActionType = {
     type: string;

@@ -16,7 +16,8 @@ type ActionType = {
 type QuestionnaireState = {
     answers: Array<ClientQuestionAnswerInput>,
     questions: Array<Question>,
-    currentQuestion: number
+    currentQuestion: number,
+    formSubmitted: boolean
 }
 
 const reducer = (state: QuestionnaireState, action: ActionType): QuestionnaireState => {
@@ -52,6 +53,18 @@ const reducer = (state: QuestionnaireState, action: ActionType): QuestionnaireSt
                 ]
             }
         }
+        case 'submitFinalQuestion': {
+            return {
+                ...state,
+                formSubmitted: true,
+                answers: [
+                    ...state.answers.filter(a => a.questionId != action.payload.questionId),
+                    action.payload
+                ]
+
+            }
+
+        }
         default: {
             throw new Error('Invalid action type');
         }
@@ -61,7 +74,9 @@ const reducer = (state: QuestionnaireState, action: ActionType): QuestionnaireSt
 const InitialState = (input: {questions: Array<Question>}) => ({
     currentQuestion: 0,
     questions: input.questions,
-    answers: []
+    answers: [],
+    formSubmitted: false,
+
 })
 
 const QuestionnaireHeading: React.FC= () => {
@@ -123,7 +138,7 @@ const QuestionCount: React.FC<{state: QuestionnaireState}> = ({state}) => {
     )
 }
 
-const QuestionComponent: React.FC<{question: Question, state: QuestionnaireState, dispatch: any, onSubmit: () => void}> = ({question, dispatch, onSubmit, state}) => {
+const QuestionComponent: React.FC<{question: Question, state: QuestionnaireState, dispatch: any}> = ({question, dispatch, state}) => {
     const [sliderValue, setSliderValue] = useState<number>(0)
     const [thumbCoordinates, setThumbCoordinates] = useState<any>(getThumbCoordinates())
     if(question.questionType === 'slider') {
@@ -147,9 +162,10 @@ const QuestionComponent: React.FC<{question: Question, state: QuestionnaireState
                 <div 
                     key={`${question.id}-${opt.id}`}
                     onClick={() => {
-                        dispatch({type: 'submitQuestion', payload: {questionId: question.id, answerId: opt.id, answerValue: opt.text}})
                         if(state.currentQuestion == Object.keys(Questions).length - 1) {
-                            onSubmit()
+                            dispatch({type: 'submitFinalQuestion', payload: {questionId: question.id, answerId: opt.id, answerValue: opt.text}})
+                        } else {
+                            dispatch({type: 'submitQuestion', payload: {questionId: question.id, answerId: opt.id, answerValue: opt.text}})
                         }
                     }}
                     style={{flexBasis: '48%', margin: '1%'}}
@@ -174,12 +190,12 @@ const QuestionComponent: React.FC<{question: Question, state: QuestionnaireState
 
 
 
-const QuestionnaireForm: React.FC<{question: Question, state: QuestionnaireState, dispatch: any, onSubmit: (arg0: any) => void}> = ({question, dispatch, onSubmit, state}) => {
+const QuestionnaireForm: React.FC<{question: Question, state: QuestionnaireState, dispatch: any}> = ({question, dispatch, state}) => {
     return (
         <div className="border-1 border-gray-300 rounded-md flex flex-col">
             <QuestionCount state={state}/>
             <div className="text-2xl my-6 mb:my-20 max-w-4xl">{question.text}</div>
-            <QuestionComponent question={question} dispatch={dispatch} onSubmit={onSubmit} state={state}/>
+            <QuestionComponent question={question} dispatch={dispatch}  state={state}/>
         </div>
     )
 }
@@ -187,11 +203,17 @@ const QuestionnaireForm: React.FC<{question: Question, state: QuestionnaireState
 const Questionnaire: React.FC<{onSubmit: (arg0: any) => void, questions: Array<Question>}> = ({onSubmit, questions}) => {
     const [state, dispatch] = useReducer(reducer, InitialState({questions}))
 
+    useEffect(() => {
+        if(state.formSubmitted) {
+            onSubmit({answers: state.answers})
+        }
+    }, [state.formSubmitted])
+
     return (
         <div className="antialiased">
             <div className="flex flex-col">
                 <QuestionnaireHeading/>
-                <QuestionnaireForm onSubmit={() => onSubmit({answers: state.answers})} question={state.questions[state.currentQuestion]} dispatch={dispatch} state={state}/>
+                <QuestionnaireForm question={state.questions[state.currentQuestion]} dispatch={dispatch} state={state}/>
             </div>
         </div>
     )

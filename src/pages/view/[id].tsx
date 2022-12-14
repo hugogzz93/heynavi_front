@@ -140,6 +140,82 @@ const ViewInvestmentOption = (props: {id: string}) => {
                     <div className="text-md mb-6 text-center md:text-left">
                         {investmentOption.descripcion}
                     </div>
+
+                    <div className="flex flex-col md:flex-row w-full h-fit md:h-56">
+
+
+                            <div className="flex flex-row w-full md:w-2/4 relative h-64 md:h-48">
+                                <div>
+                                    <div className="text-4xl absolute left-1/2 top-1/2 font-bold" style={{transform: 'translate(-50%, -35%)'}}>{investmentOption.rentabilidad}</div>
+                                    <div className="w-48 h-48 absolute left-1/2 top-1/2" style={{transform: 'translate(-50%, -50%)'}}>
+                                        <Doughnut data={{
+                                            labels: [],
+                                            datasets: [{
+                                                data: [rentabilidad, 100 - rentabilidad],
+                                                backgroundColor: [
+                                                    '#0089FF',
+                                                    '#F6F7F9'
+                                                ]
+
+                                            }]
+                                        }}
+                                        options={{
+                                            cutout: '65%',
+                                                plugins: {
+                                                    tooltip: {
+                                                        enabled: false
+                                                    }
+                                                }
+                                        }}
+                                    />
+                                    <div className="text-center text-xl font-bold">Retorno anual</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        <div className="h-64 md:h-48 flex md:pt-10 flex-col items-center w-full justify-center">
+                            <Image src={"/assets/images/" + riesgo_img} alt="Nivel riesgo" width={150} height={150}/>
+
+                            <div className="md:relative md:top-8 text-center text-xl font-bold">Riesgo</div>
+                        </div>
+
+
+                            <div className="flex flex-row w-full md:w-2/4 relative h-64 md:h-48">
+                                <div>
+                                    <div className="absolute left-1/2 top-1/2 font-bold whitespace-normal w-16" style={{transform: 'translate(-50%, -45%)'}}>
+                                        <div className="text-5xl text-center " style={{marginBottom: '-20px'}}>
+                                            {investmentOption.tiempo.split(' ')[0]}
+                                        </div>
+
+                                        <div className="text-2xl text-center ">
+                                            {investmentOption.tiempo.split(' ')[1]}
+                                        </div>
+                                    </div>
+                                    <div className="w-48 h-48 absolute left-1/2 top-1/2" style={{transform: 'translate(-50%, -50%)'}}>
+                                        <Doughnut data={{
+                                            labels: [],
+                                            datasets: [{
+                                                data: [100],
+                                                backgroundColor: [
+                                                    '#F6F7F9'
+                                                ]
+
+                                            }]
+                                        }}
+                                        options={{
+                                            cutout: '65%',
+                                                plugins: {
+                                                    tooltip: {
+                                                        enabled: false
+                                                    }
+                                                }
+                                        }}
+                                    />
+                                    <div className="text-center text-xl font-bold">Plazo mínimo</div>
+                                    </div>
+                                </div>
+                            </div>
+                    </div>
                     <table className='text-left c__table w-full'>
                         <thead>
                             <tr className='bg-purple-100 rounded-md overflow-hidden'>
@@ -171,81 +247,7 @@ const ViewInvestmentOption = (props: {id: string}) => {
                         </tbody>
                     </table>
 
-                    <div className="flex flex-col md:flex-row w-full h-fit md:h-56">
-
-
-                                <div className="flex flex-row w-full md:w-2/4 relative h-64 md:h-48">
-                                    <div>
-                                        <div className="text-4xl absolute left-1/2 top-1/2 font-bold" style={{transform: 'translate(-50%, -35%)'}}>{investmentOption.rentabilidad}</div>
-                                        <div className="w-48 h-48 absolute left-1/2 top-1/2" style={{transform: 'translate(-50%, -50%)'}}>
-                                            <Doughnut data={{
-                                                labels: [],
-                                                datasets: [{
-                                                    data: [rentabilidad, 100 - rentabilidad],
-                                                    backgroundColor: [
-                                                        '#0089FF',
-                                                        '#F6F7F9'
-                                                    ]
-
-                                                }]
-                                            }}
-                                            options={{
-                                                cutout: '65%',
-                                                    plugins: {
-                                                        tooltip: {
-                                                            enabled: false
-                                                        }
-                                                    }
-                                            }}
-                                        />
-                                        <div className="text-center text-xl font-bold">Retorno anual</div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                            <div className="h-64 md:h-48 flex md:pt-10 flex-col items-center w-full justify-center">
-                                <Image src={"/assets/images/" + riesgo_img} alt="Nivel riesgo" width={150} height={150}/>
-
-                                <div className="md:relative md:top-8 text-center text-xl font-bold">Riesgo</div>
-                            </div>
-
-
-                                <div className="flex flex-row w-full md:w-2/4 relative h-64 md:h-48">
-                                    <div>
-                                        <div className="absolute left-1/2 top-1/2 font-bold whitespace-normal w-16" style={{transform: 'translate(-50%, -45%)'}}>
-                                            <div className="text-5xl text-center " style={{marginBottom: '-20px'}}>
-                                                {investmentOption.tiempo.split(' ')[0]}
-                                            </div>
-
-                                            <div className="text-2xl text-center ">
-                                                {investmentOption.tiempo.split(' ')[1]}
-                                            </div>
-                                        </div>
-                                        <div className="w-48 h-48 absolute left-1/2 top-1/2" style={{transform: 'translate(-50%, -50%)'}}>
-                                            <Doughnut data={{
-                                                labels: [],
-                                                datasets: [{
-                                                    data: [100],
-                                                    backgroundColor: [
-                                                        '#F6F7F9'
-                                                    ]
-
-                                                }]
-                                            }}
-                                            options={{
-                                                cutout: '65%',
-                                                    plugins: {
-                                                        tooltip: {
-                                                            enabled: false
-                                                        }
-                                                    }
-                                            }}
-                                        />
-                                        <div className="text-center text-xl font-bold">Plazo mínimo</div>
-                                        </div>
-                                    </div>
-                                </div>
-                    </div>
+                    
         </div>
         
 

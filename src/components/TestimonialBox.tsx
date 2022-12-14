@@ -27,8 +27,8 @@ const TestimonialBox = (props: ITestimonialBoxProps) => {
             w-96
         `}>
             <div className='flex items-left mb-12'>
-                <img style={{width: '3em', height: '3em', borderRadius: '100%'}}src={props.src} alt="" />
-                <div className='flex flex-col items-left ml-4'>
+                <img style={{display: 'none', width: '3em', height: '3em', borderRadius: '100%'}}src={props.src} alt="" />
+                <div className='flex flex-col items-center ml-4'>
                         <div className="text-left text-md font-bold">{props.title}</div>
                         <div>
                             {starCount}

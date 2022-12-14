@@ -39,30 +39,23 @@ const Form = (props: {questions: Array<Question>}) => {
     let formAnswers: any;
 
     const submitForm = (result: TFormResults) => {
-        localStorage.setItem('formAnswers', JSON.stringify(result))
+        localStorage.setItem('formAnswers', JSON.stringify(result.answers))
         setFormResult(result)
     }
 
     try {
         isAdmin = localStorage.getItem('tasp.capr') == 'true'
-        formAnswers = localStorage.getItem('formAnswers')
-
-    }catch {}
-
-
-    try {
-        isAdmin = localStorage.getItem('tasp.capr') == 'true'
-    }catch {}
+        formAnswers = JSON.parse(localStorage.getItem('formAnswers'))
+    } catch { }
 
     useEffect(() => {
         try {
             if(formAnswers)
-                setFormResult(JSON.parse(formAnswers))
+                setFormResult({answers: formAnswers})
         } catch(e) {
 
         }
     }, [])
-
 
     return (
         <div className="flex flex-col antialiased text-gray-600 justify-between bg-purple-100 pt-32" style={{height: '100vh'}}>
@@ -76,7 +69,7 @@ const Form = (props: {questions: Array<Question>}) => {
                     <div></div>
                   </NavbarTwoColumns>
                             {
-                                (!isAdmin && formResult.answers.length == 0 && !formAnswers)? (
+                                (formResult.answers.length == 0)? (
                                     <div className="flex items-center justify-center">
                                         <div className="rounded-md shadow-md p-8 bg-white m-auto">
                                             <div className="text-lg">
