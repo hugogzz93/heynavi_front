@@ -442,7 +442,6 @@ const getRentabilidadOptions = (rows: InvestmentOption[]) => {
     }, max)
 
     let count = min
-    debugger
 
     do {
         options.push({value: count + '%', label: count + '%'})
@@ -643,59 +642,72 @@ type TInvestmentTableState = {
 }
 
 const InitialInvestmentTableState = ({answers}: {answers: Array<ClientQuestionAnswerInput>}) => {
-    const tiempoInvertidoAns = answers.find(a => a.questionId == '2')?.answerValue
-    let tiempoMin = null
-    switch(tiempoInvertidoAns) {
-        case 'Menos de 3 meses':
-            tiempoMin = {value: '3 meses', label:  '3 meses'}
-            break;
-        case 'De 3 a 6 meses':
-            tiempoMin = '6 meses'
-            break;
-        case 'De 12 a 36 meses':
-            tiempoMin = {value: '12 meses', label:  '12 meses'}
-            break;
-        case 'Más de 36 meses':
-            tiempoMin = {value: 'Más de 12 meses', label:  'Más de 12 meses'}
-            break;
-        default: 
-            debugger
-            throw "Invalid answer for default filter tiempoMin"
-    }
-    const riesgoAns = answers.find(a => a.questionId == '4')?.answerId
-    let riesgo = null
-    switch(riesgoAns) {
-        case '10':
-            riesgo = 'Bajo'
-            break;
-        case '11':
-            riesgo = 'Moderado'
-            break;
-        case '12':
-            riesgo = 'Alto'
-            break;
-        case '13':
-            riesgo = 'Alto'
-            break;
-        default: 
-            debugger
-            throw "Invalid answer for default filter tiempoMin"
-    }
-    let activeFilters = {
-        'montoMin':  answers.find(a => a.questionId == '1')?.customValue,
-        'tiempo': tiempoMin,
-        'riesgo': riesgo
-    } 
-    activeFilters
-    return {
-        sortValue: '',
-        filterBarVisibility: false,
-        investmentOptions: [],
-        isFiltering: false,
-        sliderValue: answers?.[0]?.customValue || 5000,
-        activeFilters,
-        filterableColumns: {},
-        investmentTypeFilters: []
+    try {
+        const tiempoInvertidoAns = answers.find(a => a.questionId == '2')?.answerValue
+        let tiempoMin = null
+        switch(tiempoInvertidoAns) {
+            case 'Menos de 3 meses':
+                tiempoMin = {value: '3 meses', label:  '3 meses'}
+                break;
+            case 'De 3 a 6 meses':
+                tiempoMin = {value: '6 meses', label: '6 meses'}
+                break;
+            case 'De 12 a 36 meses':
+                tiempoMin = {value: '12 meses', label:  '12 meses'}
+                break;
+            case 'Más de 36 meses':
+                tiempoMin = {value: 'Más de 12 meses', label:  'Más de 12 meses'}
+                break;
+            default: 
+                throw "Invalid answer for default filter tiempoMin"
+        }
+        const riesgoAns = answers.find(a => a.questionId == '4')?.answerId
+        let riesgo = null
+        switch(riesgoAns) {
+            case '10':
+                riesgo = 'Bajo'
+                break;
+            case '11':
+                riesgo = 'Moderado'
+                break;
+            case '12':
+                riesgo = 'Alto'
+                break;
+            case '13':
+                riesgo = 'Alto'
+                break;
+            default: 
+                throw "Invalid answer for default filter tiempoMin"
+        }
+        let activeFilters = {
+            'montoMin':  {value: answers.find(a => a.questionId == '1')?.customValue},
+            'tiempo': tiempoMin,
+            'riesgo': {value: riesgo, label: riesgo}
+        } 
+        activeFilters
+        return {
+            sortValue: '',
+            filterBarVisibility: false,
+            investmentOptions: [],
+            isFiltering: false,
+            sliderValue: answers?.[0]?.customValue || 5000,
+            activeFilters,
+            filterableColumns: {},
+            investmentTypeFilters: []
+        }
+    } catch (e) {
+        localStorage.removeItem('formAnswers')
+        return {
+            sortValue: '',
+            filterBarVisibility: false,
+            investmentOptions: [],
+            isFiltering: false,
+            sliderValue: answers?.[0]?.customValue || 5000,
+            activeFilters: {},
+            filterableColumns: {},
+            investmentTypeFilters: []
+        }
+
     }
 }
 
