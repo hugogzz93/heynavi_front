@@ -232,11 +232,11 @@ const ViewInvestmentOption = (props: {id: string}) => {
                                 <td><div className="font-bold">Liquidez: </div></td>
                                 <td>{investmentOption.recurrencia}</td>
                             </tr>
-                            <tr>
+                            <tr style={{display: 'none'}}>
                                 <td><div className="font-bold">Comisiones: </div></td>
                                 <td></td>
                             </tr>
-                            <tr>
+                            <tr style={{display: 'none'}}>
                                 <td><div className="font-bold">Penalidades: </div></td>
                                 <td></td>
                             </tr>

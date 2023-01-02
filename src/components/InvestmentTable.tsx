@@ -234,29 +234,42 @@ const ThemeTableHeadElement: React.FC<ITableHeadElementProps> = ({columnNames}) 
     )
 }
 
-const ThemeFooterElement: React.FC<any> = ({state: {pagination, rowData}, dispatch}) => {
-    // const {data: session} = useSession()
-    const session = {
-        user: true
-    }
-    const first = pagination.length * pagination.page
-    const last = pagination.length * (pagination.page + 1)
+const FooterHOC: (arg0: () => unknown) => React.FC<any> = (cleanFilters) => {
 
-    return (
-        <div className="flex item-center my-2 float-right">
-        {rowData.length > pagination.length && (
-            <>
-                <div>
-                    <span className="material-symbols-outlined text-slate-500 hover:text-slate-800 text-md cursor-pointer" onClick={() => session?.user ? dispatch({type: ACTIONS.SET_PAGE, payload: pagination.page - 1}) : signIn('google')}> arrow_left </span>
-                </div>
-                <div className="text-md text-slate-500 mx-2">{first} - {last} ({rowData.length})</div>
-                <div>
-                    <span className="material-symbols-outlined text-slate-500 hover:text-slate-800 text-md cursor-pointer" onClick={() => session?.user ? dispatch({type: ACTIONS.SET_PAGE, payload: pagination.page + 1}) : signIn('google')}> arrow_right </span>
-                </div>
-            </>
-        )}
-        </div>
-    )
+    const ThemeFooterElement: React.FC<any> = ({state: {pagination, rowData}, dispatch}) => {
+        // const {data: session} = useSession()
+        const session = {
+            user: true
+        }
+        const first = pagination.length * pagination.page
+        const last = pagination.length * (pagination.page + 1)
+
+        return (
+            <div className="w-full flex flex-col items-center">
+                    <div className="w-full">
+                        <div className="flex item-center my-2 float-right">
+                        {rowData.length > pagination.length && (
+                            <>
+                                <div>
+                                    <span className="material-symbols-outlined text-slate-500 hover:text-slate-800 text-md cursor-pointer" onClick={() => session?.user ? dispatch({type: ACTIONS.SET_PAGE, payload: pagination.page - 1}) : signIn('google')}> arrow_left </span>
+                                </div>
+                                <div className="text-md text-slate-500 mx-2">{first} - {last} ({rowData.length})</div>
+                                <div>
+                                    <span className="material-symbols-outlined text-slate-500 hover:text-slate-800 text-md cursor-pointer" onClick={() => session?.user ? dispatch({type: ACTIONS.SET_PAGE, payload: pagination.page + 1}) : signIn('google')}> arrow_right </span>
+                                </div>
+                            </>
+                        )}
+                        </div>
+                    </div>
+                    <button className=' mx-auto bg-purple-500 text-white flex items-center rounded-md py-2 px-4'
+                    onClick={cleanFilters}
+                    >
+                        Ver Todas
+                    </button>
+            </div>
+        )
+    }
+    return ThemeFooterElement;
 }
 
 
@@ -686,7 +699,7 @@ const InitialInvestmentTableState = ({answers}: {answers: Array<ClientQuestionAn
         } 
         activeFilters
         return {
-            sortValue: '',
+            sortValue: 'Empresa',
             filterBarVisibility: false,
             investmentOptions: [],
             isFiltering: false,
@@ -698,7 +711,7 @@ const InitialInvestmentTableState = ({answers}: {answers: Array<ClientQuestionAn
     } catch (e) {
         localStorage.removeItem('formAnswers')
         return {
-            sortValue: '',
+            sortValue: 'Empresa',
             filterBarVisibility: false,
             investmentOptions: [],
             isFiltering: false,
@@ -780,7 +793,7 @@ const reducer: ReducerType = (state, action) => {
 
 const filter = (state: TInvestmentTableState) => (row: InvestmentOption): boolean => {
     try {
-        if(state.investmentTypeFilters.some(t => t != row.tipo )) {
+        if(state.investmentOptions.length > 0 && state.investmentTypeFilters.every(t => t != row.tipo )) {
             return false
         }
 
@@ -898,7 +911,7 @@ const InvestmentTable: React.FC<TFormResults> = ({answers}) => {
                                             configuration={tableConfiguration}
                                             TableElement={ThemeTableElement}
                                             HeadElement={ThemeTableHeadElement}
-                                            FooterElement={ThemeFooterElement}
+                                            FooterElement={FooterHOC(() => session?.user ? dispatch({type: "cleanFilters"}) : signIn('google'))}
                                         />
                                 </div>
 
