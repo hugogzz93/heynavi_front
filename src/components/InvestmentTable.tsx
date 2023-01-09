@@ -117,7 +117,7 @@ const InvestmentTableConfig = ({signIn, session, sliderValue, state, isAdmin = f
             label: 'Monto Mínimo de Inversión (en MXN)',
             id: 'montoMin',
             display: false,
-			filterable: !state['monto'],
+			filterable: false,
             filterFn: ({filterValue, dataValue}) => {try {return Number(dataValue.montoMin) >= Number(filterValue)} catch(e) {return false}},
             valueFn: (d) => '$' + numberWithCommas(d.montoMin)
         },
@@ -197,7 +197,7 @@ const InvestmentOptionCard: React.FC<{investmentOption: InvestmentOption, invest
 
             <div className="flex items-center justify-between w-full my-4">
                 <div className="font-bold text-lg">Ganancia anual estimada</div>
-                {'$' + numberWithCommas(getGananciaAnual(investmentOption.rentabilidad, investmentValue))}
+                {'$' + numberWithCommas(Number(getGananciaAnual(investmentOption.rentabilidad, investmentValue).toFixed(2)))}
             </div>
 
             <div className="flex items-center justify-between w-full mb-4">
@@ -655,7 +655,19 @@ type TInvestmentTableState = {
 }
 
 const InitialInvestmentTableState = ({answers}: {answers: Array<ClientQuestionAnswerInput>}) => {
+    const defaultState = {
+            sortValue: 'Empresa',
+            filterBarVisibility: false,
+            investmentOptions: [],
+            isFiltering: false,
+            sliderValue: answers?.[0]?.customValue || 5000,
+            activeFilters: {},
+            filterableColumns: {},
+            investmentTypeFilters: []
+        }
     try {
+        if(localStorage.getItem('filtersCleaned') == 'true')
+            return defaultState
         const tiempoInvertidoAns = answers.find(a => a.questionId == '2')?.answerValue
         let tiempoMin = null
         switch(tiempoInvertidoAns) {
@@ -709,17 +721,7 @@ const InitialInvestmentTableState = ({answers}: {answers: Array<ClientQuestionAn
             investmentTypeFilters: []
         }
     } catch (e) {
-        localStorage.removeItem('formAnswers')
-        return {
-            sortValue: 'Empresa',
-            filterBarVisibility: false,
-            investmentOptions: [],
-            isFiltering: false,
-            sliderValue: answers?.[0]?.customValue || 5000,
-            activeFilters: {},
-            filterableColumns: {},
-            investmentTypeFilters: []
-        }
+        return defaultState
 
     }
 }
@@ -779,6 +781,7 @@ const reducer: ReducerType = (state, action) => {
             }
         }
         case "cleanFilters": {
+            localStorage.setItem('filtersCleaned', 'true')
             return {
                 ...state,
                 activeFilters: [],
@@ -864,6 +867,8 @@ const InvestmentTable: React.FC<TFormResults> = ({answers}) => {
         if(state?.sortValue) {
             switch(state.sortValue) {
                 case "Empresa":
+                    if(a.nombre[0] == 'A')
+                        debugger
                     return a.nombre.localeCompare(b.nombre);
                 case "Retorno anual promedio":
                     return Number(rentabilidadToNumber(b.rentabilidad)) - Number(rentabilidadToNumber(a.rentabilidad));

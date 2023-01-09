@@ -2,6 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
+#whatsapp-icon {
+    color: green;
+    fill: green;
+}
+
 
 .material-symbols-outlined {
   font-variation-settings:
