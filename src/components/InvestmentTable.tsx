@@ -867,9 +867,11 @@ const InvestmentTable: React.FC<TFormResults> = ({answers}) => {
         if(state?.sortValue) {
             switch(state.sortValue) {
                 case "Empresa":
-                    if(a.nombre[0] == 'A')
-                        debugger
-                    return a.nombre.localeCompare(b.nombre);
+                    try {
+                        return a.nombreEmpresa.localeCompare(b.nombreEmpresa);
+                    } catch {
+                        return a.nombre.localeCompare(b.nombre);
+                    }
                 case "Retorno anual promedio":
                     return Number(rentabilidadToNumber(b.rentabilidad)) - Number(rentabilidadToNumber(a.rentabilidad));
                 case "Ganancia anual estimada": 

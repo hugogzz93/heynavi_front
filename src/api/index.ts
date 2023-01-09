@@ -2,7 +2,7 @@ import { QueryClient } from 'react-query'
 import { ApolloClient, InMemoryCache, ApolloProvider, gql } from '@apollo/client';
 
 const devUrl = "http://localhost:3000/graphql";
-const prodUrl = "https://api.navibase.io/graphql";
+const prodUrl = "https://api.heyvali.com/graphql";
 export const baseUrl = prodUrl;
 
 
